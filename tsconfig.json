@@ -26,7 +26,13 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedIndexedAccess": true
   },
-  // Only the Ground is type-checked. Adding the existing sections here would
-  // produce errors in code this task must not change.
-  "include": ["src/ground"]
+  // Both TypeScript modules are checked: the Ground and the ordering
+  // application. Ordering was left out when it was written and stayed out —
+  // two thousand lines compiled by esbuild, which strips types without ever
+  // looking at them, so nothing checked it at all. It is in now.
+  //
+  // Sections 01-05 remain deliberately absent. They are JSX, they are not
+  // being migrated, and `allowJs` above is on only so the Ground can import a
+  // couple of their hooks.
+  "include": ["src/ground", "src/ordering", "src/vite-env.d.ts"]
 }

@@ -3,11 +3,12 @@
   "private": true,
   "version": "0.1.0",
   "type": "module",
+  "//": "Every script calls its tool through `node node_modules/...` rather than by name. The project directory is called Parts&Service, and npm puts node_modules/.bin on PATH for a shell that treats the ampersand as a command separator — so a bare `vite` or `tsc` dies with 'Service\\node_modules\\.bin\\' is not recognized. dev and build were already written this way; typecheck and check were not, and had never run.",
   "scripts": {
     "dev": "node node_modules/vite/bin/vite.js",
     "build": "node node_modules/vite/bin/vite.js build",
     "preview": "node node_modules/vite/bin/vite.js preview",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "node node_modules/typescript/bin/tsc --noEmit",
     "check": "npm run typecheck && npm run build"
   },
   "dependencies": {

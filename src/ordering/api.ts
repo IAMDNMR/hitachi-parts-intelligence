@@ -1,5 +1,4 @@
 import type {
-  Part,
   PartDetail,
   PartRow,
   PartUsage,
@@ -9,12 +8,19 @@ import type {
 } from './types'
 
 /**
- * Points at the FastAPI service in backend/parts_ordering. Overridable via
- * VITE_ORDERING_API_URL (an .env at the project root) for anything other
- * than "the backend is running on localhost:8000", which is what
- * `uvicorn app.main:app --port 8000` gives you with no flags.
+ * Where the parts-ordering service is.
+ *
+ * Empty by default, which means same-origin: requests go to `/api/...` on
+ * whatever host is serving the page, and Vite proxies them to the service
+ * (see vite.config.js). That removes the cross-origin hop entirely, so the
+ * dev loop no longer depends on the backend's CORS list naming the exact port
+ * Vite happened to get — which it did, and which broke the whole ordering app
+ * every time 5173 was taken.
+ *
+ * Set VITE_ORDERING_API_URL to an absolute URL when the API is genuinely
+ * somewhere else and nothing is proxying for you.
  */
-const BASE = (import.meta.env.VITE_ORDERING_API_URL as string | undefined) ?? 'http://localhost:8000'
+const BASE = (import.meta.env.VITE_ORDERING_API_URL as string | undefined) ?? ''
 
 /**
  * Every error the backend can return is a JSON body shaped
@@ -44,7 +50,12 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
     // before a response existed. Distinguished from a 4xx/5xx on purpose:
     // the fix for "it's not running" is different from the fix for "it said
     // no", and the message should say which one this is.
-    throw new ApiError(0, `Cannot reach the parts-ordering service at ${BASE}. Is it running?`)
+    // BASE is empty when the request is proxied, and "at " followed by
+    // nothing is not an error message anyone can act on.
+    throw new ApiError(
+      0,
+      `Cannot reach the parts-ordering service${BASE ? ` at ${BASE}` : ''}. Is it running?`,
+    )
   }
 
   if (!res.ok) {
