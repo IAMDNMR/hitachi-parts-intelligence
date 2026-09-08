@@ -48,10 +48,17 @@ export default function App() {
     window.scrollTo(0, 0)
   }, [])
 
-  if (route === GROUND) return <TheGround onHome={goHome} onOpenOrdering={openOrdering} />
+  /* Matched by prefix, not by equality.
+     The Ground writes the selected node into the hash — `#/the-ground/sys-d365`
+     — so a node can be linked to and survives a reload. Compared with `===`
+     that hash matches no route at all and the whole page silently fell
+     through to the scrolling home page. Anything after the route name belongs
+     to the route and is read by the view itself. */
+  const on = (base) => route === base || route.startsWith(`${base}/`)
 
-  if (route === ORDERING)
-    return <PartsOrdering onHome={goHome} onOpenGround={openGround} />
+  if (on(GROUND)) return <TheGround onHome={goHome} onOpenOrdering={openOrdering} />
+
+  if (on(ORDERING)) return <PartsOrdering onHome={goHome} onOpenGround={openGround} />
 
   return (
     <>

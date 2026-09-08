@@ -149,9 +149,28 @@
   color: var(--ink);
 }
 
-.gr__caption-role {
-  color: var(--ink-2);
-  margin-left: 7px;
+/* The way into the detail column from the caption itself.
+   The Details button in the controls is the deliberate route; this is the
+   one for a reader whose eye is already on the sentence and wants the rest
+   of it. Only drawn where there is a rest of it to want. */
+.gr__caption-more {
+  margin-left: 10px;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  font: inherit;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--orange);
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.16s var(--ease);
+}
+
+.gr__caption-more:hover {
+  border-bottom-color: var(--orange);
 }
 
 .gr__controls {
@@ -456,6 +475,95 @@
   line-height: 1.45;
   color: var(--ink-2);
   opacity: 0.85;
+}
+
+/* SEARCH ---------------------------------------------------------------------
+   Small and quiet in the bar until it is used. It is a way in, not a feature
+   to advertise — the map is the thing on this page. */
+.gr__search {
+  position: relative;
+}
+
+.gr__search-input {
+  width: 132px;
+  height: 26px;
+  padding: 0 9px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--white);
+  font: inherit;
+  font-size: 11px;
+  color: var(--ink);
+  transition: width 0.18s var(--ease), border-color 0.16s var(--ease),
+    box-shadow 0.16s var(--ease);
+}
+
+.gr__search-input::placeholder {
+  color: var(--ink-2);
+}
+
+.gr__search-input:focus {
+  outline: none;
+  width: 190px;
+  border-color: var(--orange);
+  box-shadow: 0 0 0 3px var(--orange-soft);
+}
+
+.gr__search-pop {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  z-index: 40;
+  width: 268px;
+  padding: 5px;
+  border: 1px solid var(--grey-100);
+  border-radius: 10px;
+  background: var(--white);
+  box-shadow: 0 14px 34px rgba(31, 31, 31, 0.14);
+}
+
+.gr__search-hit {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  width: 100%;
+  padding: 7px 9px;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  cursor: pointer;
+  font: inherit;
+  text-align: left;
+}
+
+/* One highlight, driven by the keyboard cursor — the mouse moves the cursor
+   rather than lighting a second row, so hovering and arrowing can never show
+   two selected results at once. */
+.gr__search-hit.is-cursor {
+  background: var(--orange-soft);
+}
+
+.gr__search-hit-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--charcoal);
+}
+
+.gr__search-hit-kind {
+  flex: none;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+}
+
+.gr__search-empty {
+  margin: 0;
+  padding: 9px;
+  font-size: 11.5px;
+  color: var(--ink-2);
 }
 
 /* The Details control -------------------------------------------------------
@@ -1182,10 +1290,31 @@
     right: 12px;
   }
 
-  /* The caption is the first thing to go on a phone: the bar is already two
-     rows, and the map is what the reader came for. */
+  /* The caption stays on a phone now.
+     It used to be the first thing dropped here, and that was the right call
+     when it carried a 370-character role and wrapped the bar to four rows.
+     Carrying only the kind and a summary that never exceeds seventy-eight
+     characters, it is one line — and on a screen this size it is the only
+     thing on the page that says what the selected box actually is. Dropping
+     it left a phone reader with a map and no legend. */
   .gr__caption {
+    font-size: 11px;
+  }
+
+  .gr__caption-kind {
+    /* The word "Business Process" in caps ahead of every summary is most of
+       the line's width at this size, and the detail column names the kind
+       again at the top of itself. */
     display: none;
+  }
+
+  .gr__search-input,
+  .gr__search-input:focus {
+    width: 108px;
+  }
+
+  .gr__search-pop {
+    width: 240px;
   }
 
   .gr__key {

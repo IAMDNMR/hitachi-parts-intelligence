@@ -1,10 +1,11 @@
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import '../styles/ground.css'
 
 import { NODE_TYPE_LABELS, OPENING_ID, ORIGIN_ID, groundEdges, groundNodes } from '../data/graph'
 import { useGraphState } from '../hooks/useGraphState'
 import { GraphCanvas } from './GraphCanvas'
 import { NodeDetail, hasDeeperContent } from './NodeDetail'
+import { NodeSearch } from './NodeSearch'
 
 /**
  * THE GROUND.
@@ -75,6 +76,50 @@ export function TheGround({ onHome, onOpenOrdering }: Props) {
   const [detailOpen, setDetailOpen] = useState(false)
   const selected = state.selected
   const hasDetail = selected ? hasDeeperContent(selected) : false
+
+  /**
+   * The selected node, in the URL.
+   *
+   * `#/the-ground/sys-d365` selects that node on load, and walking the map
+   * rewrites the hash as you go. Without this a node could not be linked to
+   * at all: the only way to put someone on Returns Order was to tell them
+   * which seven boxes to click, and a reload put them back at the start.
+   *
+   * The route is not encoded, only the destination — `activate` computes a
+   * way there from the start of the story, which is the same thing it does
+   * for a search result or any other jump.
+   */
+  const applyingHash = useRef(false)
+
+  useEffect(() => {
+    const read = () => {
+      const id = window.location.hash.split('/')[2]
+      if (!id || id === state.selectedId) return
+      if (!groundNodes.some((n) => n.id === id)) return
+      applyingHash.current = true
+      state.activate(id)
+    }
+    read()
+    window.addEventListener('hashchange', read)
+    return () => window.removeEventListener('hashchange', read)
+    // `state.activate` is stable and `selectedId` is read, not depended on:
+    // listing it would re-run this on every navigation and fight the writer
+    // below for control of the hash.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  useEffect(() => {
+    if (!state.selectedId) return
+    /* replaceState, not a hash assignment: every node opened would otherwise
+       be a separate history entry, and backing out of a ten-step drill would
+       take ten presses. The back button belongs to the three ROUTES, not to
+       every step within one of them. */
+    const next = `#/the-ground/${state.selectedId}`
+    if (window.location.hash !== next) {
+      window.history.replaceState(null, '', next)
+    }
+    applyingHash.current = false
+  }, [state.selectedId])
 
   const home = useCallback(
     (event: React.MouseEvent) => {
@@ -154,6 +199,11 @@ export function TheGround({ onHome, onOpenOrdering }: Props) {
           </div>
 
           <div className="gr__controls">
+            {/* Seventy-five nodes, and before this the only way to reach one
+                was to know which branch it was down. Press "/" from anywhere
+                on the page. */}
+            <NodeSearch nodes={groundNodes} onPick={state.activate} />
+
             {/* There is deliberately no "expand all". Opening everything at
                 once is the state this page was rebuilt to avoid: it puts
                 sixty-eight nodes across nineteen layers on a canvas that can
@@ -202,14 +252,27 @@ export function TheGround({ onHome, onOpenOrdering }: Props) {
 
           {/* One line, under both. It names what is selected and what kind of
               thing it is — the words the node itself no longer prints. */}
+          {/* The kind and the summary, and nothing else.
+              The role used to be printed here too, and roles run to three
+              hundred and seventy characters against summaries that stop at
+              seventy-eight — so the line was cut off mid-word on every node
+              that had one, which is the twenty most important nodes on the
+              map. It reads in full in the detail column now, which is where
+              a paragraph belongs. Every summary fits this line. */}
           {state.selected && (
             <p className="gr__caption">
               <span className="gr__caption-kind">
                 {NODE_TYPE_LABELS[state.selected.type]}
               </span>
               <span className="gr__caption-main">{state.selected.summary}</span>
-              {state.selected.role && (
-                <span className="gr__caption-role">{state.selected.role}</span>
+              {hasDetail && (
+                <button
+                  type="button"
+                  className="gr__caption-more"
+                  onClick={() => setDetailOpen(true)}
+                >
+                  More
+                </button>
               )}
             </p>
           )}

@@ -159,33 +159,95 @@ export function useGraphState(
   const routeTo = useCallback(
     (target: string): string[] => {
       if (target === rootId) return [rootId]
+
+      /* The search runs to exhaustion rather than stopping at the target.
+         It used to break the moment it found what it was looking for, which
+         is faster and leaves `cameFrom` half-built — no use at all to the
+         fallback below, which needs to know how far the root reaches. The
+         graph is 75 nodes; walking all of it costs nothing measurable. */
       const cameFrom = new Map<string, string | null>([[rootId, null]])
       const queue = [rootId]
-      let found = false
-      while (queue.length && !found) {
+      while (queue.length) {
         const at = queue.shift() as string
         for (const to of downstream.get(at) ?? []) {
           if (cameFrom.has(to)) continue
           cameFrom.set(to, at)
-          if (to === target) {
-            found = true
-            break
-          }
           queue.push(to)
         }
       }
+
+      /** Reads a finished path out of the search above. */
+      const trace = (to: string): string[] => {
+        const path: string[] = []
+        let at: string | null | undefined = to
+        while (at) {
+          path.unshift(at)
+          at = cameFrom.get(at)
+        }
+        return path
+      }
+
       if (!cameFrom.has(target)) {
-        // Nothing downstream reaches it — it only ever feeds things. Walk
-        // back up instead, so it is still joined to the story.
-        return [target]
+        /**
+         * Nothing downstream reaches it.
+         *
+         * Four nodes are like this: the start of the story, and Machine Data,
+         * Warranty and the dealer Network. They are not steps in the flow,
+         * they are INPUTS to it — a warranty covers a repair, monitoring
+         * raises a requirement — so no path that follows the direction of
+         * flow arrives at them.
+         *
+         * This used to return the node on its own, which the comment above it
+         * described as walking back up and did not do. The effect was a
+         * breadcrumb reading only "Warranty": no spine, no context, and on a
+         * deep link that was the entire trail. The reader landed on a box
+         * with nothing saying where it sat.
+         *
+         * So route to the nearest thing it FEEDS — which is reachable — and
+         * put the node on the end. The trail then reads
+         * "… / Service / Repair / Warranty", which is how the reader got
+         * there and what the node relates to. The direction is never
+         * misstated: the canvas still draws the arrow from Warranty into
+         * Repair, because that comes from the edge, not from this.
+         */
+        /* Walk forward from the orphan until something the root CAN reach
+           turns up, and anchor the trail there.
+
+           Its immediate children are not always enough. Warranty feeds
+           Repair, which is one step and reachable, so that one is easy.
+           Machine Data feeds an entire chain of its own — information,
+           status, monitoring — none of which the flow reaches either, and
+           the first reachable thing is four steps down where monitoring
+           raises a parts requirement. Looking only one step ahead left
+           Machine Data with a breadcrumb reading "Machine Data" and nothing
+           else, which is the state this whole fallback exists to avoid. */
+        const seen = new Set<string>([target])
+        const ahead = [...(downstream.get(target) ?? [])]
+        let best: string[] | null = null
+        while (ahead.length) {
+          const at = ahead.shift() as string
+          if (seen.has(at)) continue
+          seen.add(at)
+          if (cameFrom.has(at)) {
+            /* Among every reachable descendant, the one with the SHORTEST
+               route from the start of the story wins — not the one fewest
+               steps from the orphan. Those differ: the dealer network feeds
+               the Dealer directly, but the Dealer is twelve steps down the
+               parts chain, while the Service Engineer it also feeds reaches
+               Repair in six. Both are true relationships, and six steps is a
+               breadcrumb somebody can read. */
+            const via = trace(at)
+            if (!best || via.length < best.length) best = via
+            // Anything past a reachable node is reachable too, and further
+            // from the story — nothing below it can beat it.
+            continue
+          }
+          ahead.push(...(downstream.get(at) ?? []))
+        }
+        return best ? [...best, target] : [target]
       }
-      const path: string[] = []
-      let at: string | null | undefined = target
-      while (at) {
-        path.unshift(at)
-        at = cameFrom.get(at)
-      }
-      return path
+
+      return trace(target)
     },
     [rootId, downstream],
   )
