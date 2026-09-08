@@ -20,3 +20,4 @@ __pycache__/
 
 # Scratch output from backend/video-processing/ survey scripts
 backend/video-processing/survey-s01/
+.test-build/

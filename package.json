@@ -9,7 +9,8 @@
     "build": "node node_modules/vite/bin/vite.js build",
     "preview": "node node_modules/vite/bin/vite.js preview",
     "typecheck": "node node_modules/typescript/bin/tsc --noEmit",
-    "check": "npm run typecheck && npm run build"
+    "test": "node scripts/build-tests.mjs && node --test \"tests/*.test.mjs\"",
+    "check": "npm run typecheck && npm run test && npm run build"
   },
   "dependencies": {
     "gsap": "^3.12.5",
