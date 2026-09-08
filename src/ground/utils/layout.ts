@@ -53,7 +53,12 @@ const COL_GAP = 34
     Every level saved here is a level the reader gets at full size. */
 const ROW_GAP = 46
 
-const ROW_PITCH = MAJOR_H + ROW_GAP
+/* There is no ROW_PITCH any more. Every row used to be spaced at
+   MAJOR_H + ROW_GAP whether or not it held anything MAJOR_H tall, and most
+   rows hold 42px process steps — so most rows carried twelve pixels of
+   nothing, and the camera, which on these views is always pinned by height
+   rather than width, spent it out of the size of the labels. Rows are now
+   measured; see rowHeight in layoutGraph. */
 
 /**
  * How wide a name is, actually measured.
@@ -308,18 +313,44 @@ export function layoutGraph(
   const byId = new Map<string, PlacedNode>()
   const levelInfo: Layout['levels'] = []
 
+  /**
+   * How tall each row actually is, rather than assuming every row holds the
+   * tallest kind of node there is.
+   *
+   * Every row used to be pitched at MAJOR_H + ROW_GAP — 100px — whether it
+   * held a 54px milestone or a 42px process step. Most rows hold process
+   * steps, so most rows were carrying twelve pixels of nothing, and a
+   * seven-rank drill paid eighty-four pixels for it. Height is what the
+   * camera runs out of first on these views: the graph is a chain one or two
+   * boxes wide, so the scale is always pinned by height, never by width, and
+   * every pixel of unused height came straight off the size of the labels.
+   */
+  const rowTop: number[] = []
+  const rowHeight: number[] = []
+  let cursor = 0
   rows.forEach((r, slot) => {
     const list = levels.get(r) as GroundNode[]
-    const y = slot * ROW_PITCH
+    const tallest = Math.max(
+      ...list.map((n) => (size.get(n.id) as { h: number }).h),
+    )
+    rowTop[slot] = cursor
+    rowHeight[slot] = tallest
+    cursor += tallest + ROW_GAP
+  })
+
+  rows.forEach((r, slot) => {
+    const list = levels.get(r) as GroundNode[]
+    const y = rowTop[slot] as number
+    const band = rowHeight[slot] as number
     let x = (width - (rowWidth.get(r) as number)) / 2
     levelInfo.push({ rank: r, y, count: list.length })
 
     list.forEach((node) => {
       const s = size.get(node.id) as { w: number; h: number; major: boolean }
       const off = offsets?.get(node.id)
-      // Centred within the level's pitch, so a 42px node and a 54px one sit
-      // on one line rather than on their own tops.
-      const top = y + (MAJOR_H - s.h) / 2
+      // Centred within the row's own height, so a 42px node and a 54px one
+      // sitting on the same level share a centre line rather than a top.
+      const top = y + (band - s.h) / 2
       const px = x + (off ? off.dx : 0)
       const py = top + (off ? off.dy : 0)
       const p: PlacedNode = {
@@ -526,8 +557,13 @@ export function layoutGraph(
           curX = arriving
           curY = rowTop
           if (!isLast) {
-            // Through this row's own band before judging the next gap.
-            curY = bandY(r) + MAJOR_H
+            /* Through this row's own band before judging the next gap.
+               Measured from the row, not from MAJOR_H: rows are now only as
+               tall as what they hold, so a fixed 54 would drop the path
+               below a 42px row and start the next sidestep inside the gap
+               it was supposed to begin after. */
+            const slotOf = rows.indexOf(r)
+            curY = bandY(r) + ((rowHeight[slotOf] as number | undefined) ?? MAJOR_H)
             d += ` V ${curY}`
           }
         })
@@ -545,6 +581,10 @@ export function layoutGraph(
     })
   })
 
+  /* The bottom of the last row, measured rather than assumed: with per-row
+     heights the last row is not necessarily MAJOR_H tall, and overstating it
+     hands the camera a graph taller than the one it is fitting. */
   const lastY = levelInfo.length ? (levelInfo[levelInfo.length - 1] as { y: number }).y : 0
-  return { nodes: placed, edges, byId, levels: levelInfo, width, height: lastY + MAJOR_H }
+  const lastH = rowHeight.length ? (rowHeight[rowHeight.length - 1] as number) : MAJOR_H
+  return { nodes: placed, edges, byId, levels: levelInfo, width, height: lastY + lastH }
 }
