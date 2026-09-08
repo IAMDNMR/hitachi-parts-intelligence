@@ -1,0 +1,120 @@
+/* ---------------------------------------------------------------------------
+   HCME After-Sales — design tokens
+   Light industrial: paper-white grounds, charcoal type, orange used sparingly
+   for state, emphasis and connection.
+--------------------------------------------------------------------------- */
+:root {
+  --orange: #f15a24;
+  --orange-soft: rgba(241, 90, 36, 0.14);
+  --charcoal: #1f1f1f;
+  --ink: #171717;
+  --ink-2: #5f6368;
+  --bg: #f7f7f5;
+  --white: #ffffff;
+  --border: #d9d9d6;
+  --grey-100: #ececea;
+  --green: #4f8a3a;
+
+  --font: 'Inter', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue',
+    Arial, sans-serif;
+
+  --header-h: 72px;
+  --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+
+  /* --- Composition grid -------------------------------------------------
+     The cinematic stage is stable; the typography moves around it. Both are
+     expressed here rather than as pixel positions scattered through the
+     components. */
+  --page-gutter: 6%;
+  --content-width: 88%;
+  --grid-columns: 12;
+
+
+  /* Type never enters the machine's territory; these are the bands outside
+     it that the headlines are composed into. */
+  --machine-safe-zone: 74%;
+  --text-max-width: 26ch;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  /* Scroll driving a video timeline must not fight native smooth scrolling. */
+  scroll-behavior: auto;
+
+  /* The page is one continuous scroll-driven composition, so the scrollbar
+     is hidden: it sat over the artwork and measured a length that means
+     nothing to the reader. The page still scrolls exactly as before —
+     wheel, trackpad, keyboard, touch and Find-in-page are untouched. */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+h1,
+h2,
+h3,
+p,
+figure {
+  margin: 0;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+}
+
+a {
+  color: inherit;
+}
+
+:focus-visible {
+  outline: 2px solid var(--orange);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Shared type styles ------------------------------------------------------ */
+.eyebrow {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  color: var(--orange);
+  text-transform: uppercase;
+}
+
+.label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  color: var(--ink-2);
+  text-transform: uppercase;
+}

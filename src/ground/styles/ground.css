@@ -1,0 +1,1208 @@
+/* ---------------------------------------------------------------------------
+   THE GROUND — the Parts & Services architecture graph.
+
+   Light industrial, like the rest of the site: paper ground, charcoal type,
+   fine grey connectors. Orange is reserved for what is live — the traced
+   path from the selected node, and nothing else — so the eye lands on the
+   answer rather than on decoration.
+
+   A node's architectural layer is legible from its treatment before anything
+   is clicked: business nodes are white cards, systems sit on a grey ground,
+   hubs and third parties are dashed because a boundary is being crossed, and
+   the data layer carries the orange hairline of the canonical model.
+--------------------------------------------------------------------------- */
+
+.ground {
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--ink);
+  display: flex;
+  flex-direction: column;
+}
+
+.gr {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding-top: var(--header-h);
+  min-height: 0;
+}
+
+/* Bar ---------------------------------------------------------------------- */
+/* The bar earns its height or it does not get it.
+   Title, breadcrumb, caption and two buttons were taking 145px of an 860px
+   window — a sixth of the page — to say things the graph says better. The
+   title and the controls now share one line, and the caption is held to a
+   single line of its own. */
+.gr__bar {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  column-gap: 24px;
+  row-gap: 4px;
+  padding: 10px 2.4vw 11px;
+  border-bottom: 1px solid var(--grey-100);
+  flex: none;
+}
+
+.gr__titles {
+  min-width: 0;
+}
+
+.gr__titles {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  min-width: 0;
+}
+
+.gr__title {
+  margin: 0;
+  flex: none;
+  font-size: clamp(14px, 1.15vw, 17px);
+  font-weight: 700;
+  letter-spacing: -0.005em;
+  text-transform: uppercase;
+  color: var(--charcoal);
+}
+
+/* Breadcrumb --------------------------------------------------------------- */
+/* On the title's own line, and never wrapping to a second: the route can be
+   eight steps deep and the bar must not grow with it. */
+.gr__trail {
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;
+  gap: 1px;
+  min-width: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.gr__trail::-webkit-scrollbar {
+  display: none;
+}
+
+.gr__trail-item {
+  display: inline-flex;
+  align-items: center;
+}
+
+.gr__trail-step {
+  white-space: nowrap;
+  padding: 3px 4px;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  font: inherit;
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+  transition: color 0.18s var(--ease);
+}
+
+.gr__trail-step:hover {
+  color: var(--ink);
+}
+
+.gr__trail-step[aria-current='true'] {
+  color: var(--orange);
+}
+
+.gr__trail-sep {
+  color: var(--border);
+  font-size: 9px;
+}
+
+/* Caption ------------------------------------------------------------------
+   The one place the model's own words reach the screen. Two lines at most:
+   what the selected thing is, and — where the model says so — what opening it
+   will show. Clamped rather than truncated, because a sentence cut mid-word
+   reads as a bug. */
+/* One line, spanning under the title. Two lines of prose in the header cost
+   more room than they were worth against a graph that is the point of the
+   page; what is left is the sentence that names what is selected. */
+.gr__caption {
+  grid-column: 1 / -1;
+  margin: 0;
+  max-width: 96ch;
+  font-size: 11.5px;
+  line-height: 1.4;
+  color: var(--ink-2);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.gr__caption-kind {
+  font-size: 8.5px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--orange);
+  margin-right: 9px;
+}
+
+.gr__caption-main {
+  color: var(--ink);
+}
+
+.gr__caption-role {
+  color: var(--ink-2);
+  margin-left: 7px;
+}
+
+.gr__controls {
+  display: flex;
+  gap: 8px;
+  flex: none;
+}
+
+.gr__btn {
+  padding: 7px 13px;
+  border: 1px solid var(--border);
+  background: var(--white);
+  cursor: pointer;
+  font: inherit;
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--ink-2);
+  transition: color 0.2s var(--ease), border-color 0.2s var(--ease);
+}
+
+.gr__btn:hover:not(:disabled) {
+  color: var(--orange);
+  border-color: var(--orange);
+}
+
+.gr__btn:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.gr__btn--ghost {
+  background: none;
+  border-color: transparent;
+}
+
+/* The one control on this page that leaves it for somewhere that does
+   something, rather than moving the map around. Filled, so it does not read
+   as one more view control sitting beside Start over. */
+.gr__btn--go {
+  background: var(--orange);
+  border-color: var(--orange);
+  color: var(--white);
+}
+
+.gr__btn--go:hover:not(:disabled) {
+  background: #d94d1a;
+  border-color: #d94d1a;
+  color: var(--white);
+}
+
+/* Canvas ------------------------------------------------------------------- */
+/* The row the canvas and the detail column share. */
+.gr__body {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+}
+
+.gr__stage {
+  position: relative;
+  /* minmax(0) in flex terms: without min-width the canvas refuses to shrink
+     below its content and the panel pushes it off the right of the page
+     instead of taking width from it. */
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+}
+
+/* THE DETAIL COLUMN ----------------------------------------------------------
+   A column, not a card on the canvas. It has its own ground, a hairline
+   between it and the map, and it never covers a node.
+
+   The width is fixed rather than proportional: this is a measure of text, and
+   text has one right measure regardless of how large the monitor is. On a
+   wide screen the graph takes the extra room; the reading column does not
+   get harder to read because the window got bigger. */
+.gr__panel {
+  flex: none;
+  width: 340px;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  border-left: 1px solid var(--grey-100);
+  background: var(--white);
+}
+
+.gr__panel-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  flex: none;
+  padding: 16px 18px 14px;
+  border-bottom: 1px solid var(--grey-100);
+}
+
+.gr__panel-ident {
+  min-width: 0;
+}
+
+.gr__panel-kind {
+  margin: 0 0 4px;
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--orange);
+}
+
+.gr__panel-title {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--charcoal);
+}
+
+.gr__panel-close {
+  flex: none;
+  width: 26px;
+  height: 26px;
+  border: 0;
+  border-radius: 50%;
+  background: none;
+  cursor: pointer;
+  font-size: 19px;
+  line-height: 1;
+  color: var(--ink-2);
+  transition: background 0.16s var(--ease), color 0.16s var(--ease);
+}
+
+.gr__panel-close:hover {
+  background: var(--grey-100);
+  color: var(--charcoal);
+}
+
+/* The body scrolls on its own. The map beside it must not move when a long
+   entity record is read to the bottom. */
+.gr__panel-body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 16px 18px 26px;
+}
+
+.gr__panel-summary {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--charcoal);
+}
+
+.gr__panel-role {
+  margin: 10px 0 0;
+  font-size: 12px;
+  line-height: 1.55;
+  color: var(--ink-2);
+}
+
+.gr__panel-section {
+  margin-top: 22px;
+}
+
+.gr__panel-heading {
+  margin: 0 0 9px;
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+}
+
+/* Each line is a statement about a flow or a source, so they are set as
+   separate blocks with a rule down the left rather than as bullets — a
+   bulleted list of twenty-word sentences reads as prose that has been
+   chopped up. */
+.gr__panel-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 9px;
+}
+
+.gr__panel-list li {
+  padding-left: 12px;
+  border-left: 2px solid var(--grey-100);
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--charcoal);
+}
+
+/* The system-of-record table. */
+.gr__panel-facts {
+  margin: 0;
+  display: grid;
+  gap: 1px;
+  background: var(--grey-100);
+  border: 1px solid var(--grey-100);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.gr__panel-facts > div {
+  background: var(--white);
+  padding: 9px 11px;
+}
+
+.gr__panel-facts dt {
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+}
+
+.gr__panel-facts dd {
+  margin: 4px 0 0;
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--charcoal);
+}
+
+/* A cell the source left empty says so, in the voice of a missing value
+   rather than of an answer. */
+.gr__panel-facts dd.is-blank {
+  color: var(--ink-2);
+  font-style: italic;
+  opacity: 0.75;
+}
+
+/* Provenance ---------------------------------------------------------------
+   The reason this model is worth showing a client: it says what it knows,
+   what it inferred, and what their own diagrams are unsure about. That was
+   previously a 3px dot with a tooltip. */
+.gr__panel-prov {
+  padding-top: 18px;
+  border-top: 1px solid var(--grey-100);
+}
+
+.gr__panel-confidence {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--charcoal);
+}
+
+.gr__panel-flag {
+  flex: none;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  border: 1.4px solid var(--ink-2);
+  background: none;
+}
+
+/* The same vocabulary the flags on the nodes use, so the dot on a box and
+   the dot in this panel mean the same thing. */
+.gr__panel-confidence.is-confirmed .gr__panel-flag {
+  border-color: var(--green);
+  background: var(--green);
+}
+
+.gr__panel-confidence.is-source-unsure .gr__panel-flag {
+  border-color: var(--orange);
+}
+
+.gr__panel-confidence.is-inferred .gr__panel-flag {
+  border-color: transparent;
+  background: var(--ink-2);
+  opacity: 0.6;
+}
+
+.gr__panel-confidence.is-assumed .gr__panel-flag {
+  border-color: transparent;
+  background: var(--ink-2);
+  opacity: 0.32;
+}
+
+.gr__panel-confidence.is-not-supplied .gr__panel-flag {
+  border-style: dashed;
+}
+
+.gr__panel-source {
+  margin: 8px 0 0;
+  font-size: 11.5px;
+  line-height: 1.5;
+  color: var(--ink-2);
+}
+
+.gr__panel-ref {
+  margin: 6px 0 0;
+  font-size: 11px;
+  line-height: 1.45;
+  color: var(--ink-2);
+  opacity: 0.85;
+}
+
+/* The Details control -------------------------------------------------------
+   The dot is the whole point of it: it says "there is something behind this
+   node" without the reader having to open the panel on every box to find out
+   which ones are worth opening. */
+.gr__btn--detail {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.gr__btn--detail.is-on {
+  border-color: var(--orange);
+  color: var(--orange);
+}
+
+.gr__btn-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--orange);
+}
+
+.gr__canvas {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  /* Both axes, and min-height is the one that matters.
+     A flex item defaults to min-height:auto, so this could not shrink below
+     the <svg> inside it — while that svg is sized from a measurement of this
+     very element. The two chased each other: any overshoot was locked in, the
+     page grew past the viewport, and the detail card was pushed below the
+     fold on a shorter window. */
+  min-height: 0;
+  overflow: hidden;
+  cursor: grab;
+  touch-action: none;
+  /* The ground. Its size and offset are written from the camera in
+     GraphCanvas, so the grid travels with the graph — see the note there. */
+  background-image: radial-gradient(circle at 1px 1px, rgba(31, 31, 31, 0.09) 1px, transparent 0);
+}
+
+.gr__canvas:active {
+  cursor: grabbing;
+}
+
+/* Out of flow, deliberately.
+   The svg carries an explicit height taken from a measurement of the canvas
+   it sits in, so in normal flow it drove that canvas's own height: the two
+   settled at a size 28px larger than the viewport, the page grew, and the
+   detail card was pushed below the fold. Positioned absolutely it no longer
+   contributes any intrinsic height, so the canvas is sized by the layout
+   alone and the measurement has nothing to chase. */
+.gr__svg {
+  display: block;
+  position: absolute;
+  inset: 0;
+  /* A soft edge on all four sides.
+     The camera holds a readable scale rather than shrinking to fit, so on a
+     narrow screen a wide row genuinely runs past the frame and has to be
+     panned to. Cut off square that reads as a rendering fault; faded, it
+     reads as what it is — there is more of this over there. Small enough
+     that nothing inside the frame is dulled by it. */
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 22px, #000 calc(100% - 22px), transparent),
+    linear-gradient(to bottom, transparent, #000 22px, #000 calc(100% - 22px), transparent);
+  -webkit-mask-composite: source-in;
+  mask-image: linear-gradient(to right, transparent, #000 22px, #000 calc(100% - 22px), transparent),
+    linear-gradient(to bottom, transparent, #000 22px, #000 calc(100% - 22px), transparent);
+  mask-composite: intersect;
+}
+
+/* Connectors --------------------------------------------------------------- */
+/* Connectors are the relationships, so they have to be visible whether or not
+   they happen to touch the selection.
+
+   These were drawn in --border (#d9d9d6) — a hairline chosen against a plain
+   white card, laid over a dotted ground it is not distinguishable from. The
+   effect was that a node whose only visible link was unlit read as an island
+   floating on the canvas with nothing joining it to anything: the graph
+   looked disconnected when in fact every one of those relationships was
+   drawn. Orange still marks what is live; grey now marks what is merely not
+   selected, rather than what is invisible. */
+.gr__edge {
+  fill: none;
+  stroke: #9d9d97;
+  stroke-width: 1.1;
+  /* Held at one screen pixel however far the camera is zoomed out. A deep
+     path drops the scale to ~0.8, and a scaled hairline over a dotted ground
+     stops being a line at all — the connectors were the first thing to go. */
+  vector-effect: non-scaling-stroke;
+  transition: stroke 0.3s var(--ease), stroke-width 0.3s var(--ease),
+    opacity 0.3s var(--ease);
+}
+
+.gr__edge.is-system {
+  stroke-dasharray: 3 4;
+}
+
+.gr__edge.is-integration {
+  stroke-dasharray: 4 4;
+}
+
+.gr__edge.is-data {
+  stroke-dasharray: 1 4;
+  stroke-linecap: round;
+}
+
+/* How sure the line is, in its own dashes: the client's own uncertainty is
+   the loosest, an inference is lighter than a stated fact, an assumption is
+   lighter still. A reader can weigh a relationship without opening it.
+
+   Carried by the dash pattern rather than by fading, now. Stacking a low
+   opacity on top of an already pale stroke was what pushed the least certain
+   relationships — which are the ones a client most needs to notice — below
+   the threshold of being visible at all. */
+.gr__edge.is-source-unsure {
+  stroke-dasharray: 2 5;
+  opacity: 0.9;
+}
+
+.gr__edge.is-inferred {
+  stroke-dasharray: 5 3;
+  opacity: 0.92;
+}
+
+.gr__edge.is-assumed {
+  stroke-dasharray: 1 5;
+  stroke-linecap: round;
+  opacity: 0.85;
+}
+
+.gr__edge.is-lit {
+  stroke: var(--orange);
+  stroke-width: 1.6;
+  opacity: 1;
+}
+
+.gr__edge.is-dim {
+  opacity: 0.3;
+}
+
+.gr__arrow {
+  fill: #9d9d97;
+}
+
+.gr__arrow.is-lit {
+  fill: var(--orange);
+}
+
+.gr__edge-label {
+  font-size: 8.5px;
+  font-weight: 600;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  fill: var(--orange);
+  paint-order: stroke;
+  stroke: var(--bg);
+  stroke-width: 3.5px;
+  stroke-linejoin: round;
+}
+
+/* The travelling mark on a lit connector. Small and the same orange as the
+   line it rides, so it reads as the flow moving rather than as an object. */
+.gr__pulse {
+  fill: var(--orange);
+  opacity: 0.85;
+}
+
+/* Nodes --------------------------------------------------------------------
+   A pill as wide as its own name, with a dot saying what kind of thing it is.
+   What this replaces was a 220px rectangle with a coloured rule down one
+   edge, repeated identically down the page: the single biggest reason the
+   graph read as a stack of cards rather than as a set of related things.
+
+   The type word is not printed on the node any more. It was 7.5px, which is
+   not read at a glance, and it forced every node to the same width to hold
+   it. The dot groups them by eye; the word is in the caption and in the key. */
+.gr__n {
+  cursor: pointer;
+}
+
+/* NO TRANSITION ON A NODE'S POSITION. This is deliberate, and it was tried.
+   Sliding nodes to their new places when the graph re-ranks is nicer to
+   watch, and for one build they did. But a transition only reaches its end
+   state if something ticks it, and in a background or throttled tab nothing
+   does: the nodes were left stranded partway between the old arrangement and
+   the new one — Parts and Parts Requirement rendered seven pixels apart on a
+   layout that had put them a hundred and thirty apart, with the connectors
+   drawn where the layout said they were.
+
+   This is the fourth time an animated transform has stranded this graph; the
+   camera's own comment above records the other three. A node's position is
+   how the reader is told what relates to what, so it is written outright and
+   is correct in the frame it is written. The arrival fade below carries the
+   motion instead, because opacity cannot move anything. */
+
+.gr__n-box {
+  fill: var(--white);
+  stroke: #c8c8c4;
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+  transition: fill 0.22s var(--ease), stroke 0.22s var(--ease),
+    stroke-width 0.22s var(--ease);
+}
+
+.gr__n-label {
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.005em;
+  fill: var(--charcoal);
+  pointer-events: none;
+  transition: fill 0.22s var(--ease);
+}
+
+/* The spine and the five domains. These are the structure of the thing; the
+   processes, systems and entities hang off them. Bigger, heavier, and the
+   only nodes that carry a full-strength dot. */
+.gr__n.is-major .gr__n-label {
+  font-size: 13.5px;
+  font-weight: 700;
+  letter-spacing: -0.005em;
+}
+
+/* The type dot -------------------------------------------------------------
+   Charcoal is the business story, orange is after-sales and the data it
+   produces, hollow is a boundary being crossed. The palette stays the site's
+   own; the distinction is weight and filled-versus-hollow. */
+.gr__n-dot {
+  fill: var(--ink-2);
+  opacity: 0.5;
+  pointer-events: none;
+  transition: fill 0.22s var(--ease), opacity 0.22s var(--ease);
+}
+
+.gr__n.is-milestone .gr__n-dot,
+.gr__n.is-pillar .gr__n-dot {
+  fill: var(--orange);
+  opacity: 1;
+}
+
+.gr__n.is-party .gr__n-dot,
+.gr__n.is-stage .gr__n-dot {
+  fill: var(--charcoal);
+  opacity: 0.85;
+}
+
+.gr__n.is-system .gr__n-dot {
+  fill: var(--charcoal);
+  opacity: 0.9;
+}
+
+.gr__n.is-hub .gr__n-dot,
+.gr__n.is-third-party .gr__n-dot {
+  fill: none;
+  stroke: var(--charcoal);
+  stroke-width: 1.4;
+  opacity: 0.65;
+}
+
+.gr__n.is-entity .gr__n-dot {
+  fill: var(--orange);
+  opacity: 0.45;
+}
+
+.gr__n.is-canonical .gr__n-dot {
+  fill: var(--orange);
+  opacity: 0.85;
+}
+
+/* AFTER-SALES is where the ecosystem opens out, so it is drawn as the point
+   it is rather than as one more stage in a line. */
+.gr__n.is-stage.is-major .gr__n-box {
+  stroke: var(--ink-2);
+  stroke-width: 1.4;
+}
+
+.gr__n.is-milestone .gr__n-box {
+  fill: var(--charcoal);
+  stroke: var(--charcoal);
+}
+
+.gr__n.is-milestone .gr__n-label {
+  fill: var(--white);
+}
+
+.gr__n.is-pillar .gr__n-box {
+  stroke: rgba(241, 90, 36, 0.55);
+}
+
+.gr__n.is-canonical .gr__n-box {
+  fill: rgba(241, 90, 36, 0.06);
+  stroke: rgba(241, 90, 36, 0.4);
+}
+
+.gr__n.is-hub .gr__n-box,
+.gr__n.is-third-party .gr__n-box {
+  stroke-dasharray: 4 3;
+}
+
+/* Confidence flags ---------------------------------------------------------
+   Hollow is a question the source itself raises; filled is a claim this model
+   makes, and the fainter it is the less is behind it. */
+.gr__n-flag {
+  fill: none;
+  stroke: var(--ink-2);
+  stroke-width: 1.2;
+  pointer-events: none;
+}
+
+.gr__n-flag.is-source-unsure {
+  stroke: var(--orange);
+}
+
+.gr__n-flag.is-inferred {
+  fill: var(--ink-2);
+  stroke: none;
+  opacity: 0.6;
+}
+
+.gr__n-flag.is-assumed {
+  fill: var(--ink-2);
+  stroke: none;
+  opacity: 0.32;
+}
+
+.gr__n-flag.is-not-supplied {
+  stroke-dasharray: 1.6 1.6;
+}
+
+/* States ------------------------------------------------------------------- */
+.gr__n-hit {
+  cursor: grab;
+}
+
+.gr__n-hit:active {
+  cursor: grabbing;
+}
+
+.gr__n-hit:focus,
+.gr__n-chip:focus {
+  outline: none;
+}
+
+.gr__n-hit:focus-visible .gr__n-box {
+  stroke: var(--orange);
+  stroke-width: 1.8;
+}
+
+.gr__n:hover .gr__n-box {
+  stroke: var(--ink-2);
+}
+
+/* The route, and everything else -------------------------------------------
+   Two kinds of node are on screen at once: the path the reader walked, and
+   whatever the node in hand happens to touch. The second kind arrives and
+   leaves as they move — Repair and Monitoring turn up under Parts Requirement
+   because a repair and a monitoring alert both raise one — and with both
+   drawn identically that reads as the picture changing subject rather than as
+   the model showing its own cross-links.
+
+   The route is drawn firmly. What hangs off it is drawn lightly, so a glance
+   separates "where I am" from "what this connects to". */
+.gr__n.is-path .gr__n-box {
+  stroke: #8b8b85;
+}
+
+.gr__n.is-branch .gr__n-box {
+  stroke: #cfcfc9;
+}
+
+.gr__n.is-branch .gr__n-label {
+  fill: var(--ink-2);
+}
+
+.gr__n.is-branch:hover .gr__n-box {
+  stroke: var(--ink-2);
+}
+
+.gr__n.is-branch:hover .gr__n-label {
+  fill: var(--charcoal);
+}
+
+/* Orange is for what is active, and nothing else.
+   On the path is not active: the whole route is on the path, and painting it
+   all orange left the reader with a picture in which everything was the
+   answer. A node on the route firms up; the selected node is orange. */
+.gr__n.is-lit .gr__n-box {
+  stroke: #b4b4af;
+}
+
+.gr__n.is-selected .gr__n-box {
+  stroke: var(--orange);
+  stroke-width: 1.8;
+}
+
+.gr__n.is-selected .gr__n-label {
+  fill: var(--orange);
+}
+
+.gr__n.is-selected .gr__n-dot {
+  fill: var(--orange);
+  opacity: 1;
+}
+
+.gr__n.is-selected.is-hub .gr__n-dot,
+.gr__n.is-selected.is-third-party .gr__n-dot {
+  fill: none;
+  stroke: var(--orange);
+}
+
+.gr__n.is-selected.is-milestone .gr__n-box {
+  fill: var(--orange);
+  stroke: var(--orange);
+}
+
+.gr__n.is-selected.is-milestone .gr__n-label {
+  fill: var(--white);
+}
+
+.gr__n.is-selected.is-milestone .gr__n-dot {
+  fill: var(--white);
+}
+
+/* A node the reader has dragged keeps a faint mark. */
+.gr__n.is-moved .gr__n-box {
+  stroke-dasharray: 3 2.5;
+}
+
+/* The expand chip ----------------------------------------------------------
+   "+2" in a grey outline read as a badge — a label on the node rather than a
+   thing to press. A chevron says there is more underneath, the number says
+   how much, and the whole node is the target, so the chip only has to make
+   the offer legible. */
+.gr__n-chip-bg {
+  fill: rgba(241, 90, 36, 0.09);
+  stroke: rgba(241, 90, 36, 0.35);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+  transition: fill 0.2s var(--ease), stroke 0.2s var(--ease);
+}
+
+.gr__n-chip-text {
+  font-size: 9.5px;
+  font-weight: 700;
+  fill: var(--orange);
+  text-anchor: middle;
+  pointer-events: none;
+}
+
+.gr__n-chip-mark {
+  fill: none;
+  stroke: var(--orange);
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  pointer-events: none;
+  transition: transform 0.24s var(--ease);
+  transform-origin: 19.5px 9px;
+}
+
+.gr__n:hover .gr__n-chip-bg {
+  fill: rgba(241, 90, 36, 0.18);
+  stroke: var(--orange);
+}
+
+.gr__n:hover .gr__n-chip-mark {
+  transform: translateY(1.5px);
+}
+
+.gr__n.is-selected .gr__n-chip-bg {
+  fill: var(--orange);
+  stroke: var(--orange);
+}
+
+.gr__n.is-selected .gr__n-chip-text {
+  fill: var(--white);
+}
+
+.gr__n.is-selected .gr__n-chip-mark {
+  stroke: var(--white);
+}
+
+/* Arriving -----------------------------------------------------------------
+   Opacity only, and no fill mode. Both of those are deliberate.
+
+   This faded in AND rose 10px, held with `both`. An animation that is never
+   ticked never finishes and never lets go of what it is holding — the same
+   failure that stranded the camera three times — and here it held the FIRST
+   keyframe: every node on the canvas sat ten pixels above where the layout
+   had put it, while the connectors were drawn where the layout said. Every
+   arrowhead on the page landed inside its target instead of against its edge.
+
+   Opacity cannot do that. If this animation never runs, the node is simply
+   visible, in the right place. The movement in the picture comes from the
+   transform transition above, which is a transition: it has a defined end
+   state and settles there whether or not anything watches it. */
+.gr__n[data-fresh='1'] .gr__n-hit,
+.gr__n[data-fresh='1'] .gr__n-chip {
+  animation: gr-in 0.32s var(--ease);
+}
+
+@keyframes gr-in {
+  from {
+    opacity: 0;
+  }
+}
+
+/* HUD ---------------------------------------------------------------------- */
+.gr__hud {
+  position: absolute;
+  top: 16px;
+  right: 18px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.gr__hud-zoom {
+  display: flex;
+  gap: 5px;
+}
+
+.gr__hud-zoom button {
+  min-width: 28px;
+  height: 28px;
+  padding: 0 8px;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.94);
+  cursor: pointer;
+  font: inherit;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+  transition: color 0.18s var(--ease), border-color 0.18s var(--ease);
+}
+
+.gr__hud-zoom button:hover {
+  color: var(--orange);
+  border-color: var(--orange);
+}
+
+/* Key ----------------------------------------------------------------------
+   Bottom-left, shut, and listing only what is currently on the canvas. A
+   fixed legend for a nine-type, six-confidence vocabulary is longer than most
+   of the pictures it would explain. */
+/* Under the control that opens it, rather than alone in the far corner. */
+.gr__key {
+  position: absolute;
+  top: 52px;
+  right: 18px;
+  width: 272px;
+  pointer-events: none;
+}
+
+.gr__key > * {
+  pointer-events: auto;
+}
+
+/* It floats over the canvas, and at a deep path it will cover part of it.
+   That is the trade for a key that lists only what is on screen: it has to be
+   near the picture. It is shut by default and one click closes it, so the
+   shadow is there to say "this is on top of the map" rather than to pretend
+   it is a hole in it. */
+.gr__key-body {
+  margin-top: 8px;
+  padding: 13px 15px 15px;
+  border: 1px solid var(--grey-100);
+  background: rgba(255, 255, 255, 0.96);
+  backdrop-filter: blur(3px);
+  box-shadow: 0 6px 22px rgba(31, 31, 31, 0.1);
+  animation: gr-key-in 0.24s var(--ease) both;
+}
+
+@keyframes gr-key-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+}
+
+.gr__key-head {
+  margin: 0 0 6px;
+  font-size: 7.5px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+  opacity: 0.7;
+}
+
+.gr__key-head + .gr__key-list + .gr__key-head {
+  margin-top: 12px;
+}
+
+.gr__key-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.gr__key-row {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 2.5px 0;
+  font-size: 10.5px;
+  line-height: 1.35;
+  color: var(--ink);
+}
+
+/* The same dot the nodes carry, so the key is a sample of the canvas rather
+   than a description of it. */
+.gr__key-dot {
+  flex: none;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--ink-2);
+  opacity: 0.5;
+}
+
+.gr__key-dot.is-milestone,
+.gr__key-dot.is-pillar {
+  background: var(--orange);
+  opacity: 1;
+}
+
+.gr__key-dot.is-party,
+.gr__key-dot.is-stage,
+.gr__key-dot.is-system {
+  background: var(--charcoal);
+  opacity: 0.88;
+}
+
+.gr__key-dot.is-hub,
+.gr__key-dot.is-third-party {
+  background: none;
+  box-shadow: inset 0 0 0 1.4px var(--charcoal);
+  opacity: 0.65;
+}
+
+.gr__key-dot.is-entity {
+  background: var(--orange);
+  opacity: 0.45;
+}
+
+.gr__key-dot.is-canonical {
+  background: var(--orange);
+  opacity: 0.85;
+}
+
+.gr__key-line {
+  flex: none;
+  width: 26px;
+  height: 8px;
+  overflow: visible;
+}
+
+/* Responsive --------------------------------------------------------------- */
+
+/* Between about a laptop and a tablet the column narrows before it goes. */
+@media (max-width: 1200px) {
+  .gr__panel {
+    width: 300px;
+  }
+}
+
+/* Below this there is no width to split.
+   Two columns of 340 and "whatever is left" on a 375px phone leaves the map
+   35 pixels, which is not a map. The panel becomes a sheet over the bottom
+   of the canvas instead — the one place an overlay is the right answer,
+   because the alternative is not showing the graph at all. It still covers
+   only part of the canvas, and the close button is the first thing under
+   the reader's thumb. */
+@media (max-width: 900px) {
+  .gr__panel {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 30;
+    width: auto;
+    max-height: 62%;
+    border-left: 0;
+    border-top: 1px solid var(--border);
+    border-radius: 14px 14px 0 0;
+    box-shadow: 0 -10px 30px rgba(31, 31, 31, 0.12);
+  }
+}
+
+@media (max-width: 900px) {
+  /* The title and the breadcrumb cannot share a line at this width: the grid
+     gave the title its full measure and squeezed the trail to nothing, so the
+     phone lost the one thing that says where the reader is. They stack, and
+     the trail keeps the scrolling it needs to stay one line. */
+  .gr__bar {
+    grid-template-columns: 1fr auto;
+    padding: 9px 5vw 10px;
+    row-gap: 5px;
+  }
+
+  .gr__titles {
+    display: contents;
+  }
+
+  .gr__title {
+    font-size: 14px;
+    align-self: center;
+  }
+
+  .gr__trail {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    max-width: 100%;
+  }
+
+  .gr__hud {
+    top: auto;
+    bottom: 54px;
+    right: 12px;
+  }
+
+  /* The caption is the first thing to go on a phone: the bar is already two
+     rows, and the map is what the reader came for. */
+  .gr__caption {
+    display: none;
+  }
+
+  .gr__key {
+    right: 12px;
+    left: 12px;
+    width: auto;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gr__n[data-fresh='1'] {
+    animation: none;
+  }
+
+  .gr__edge,
+  .gr__n-box,
+  .gr__n-label {
+    transition: none;
+  }
+}

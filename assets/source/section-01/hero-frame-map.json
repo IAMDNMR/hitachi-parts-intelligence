@@ -1,0 +1,508 @@
+{
+  "source": "assets/source/section-01/section-1.mp4",
+  "sourceFrames": 192,
+  "outputFrames": 90,
+  "outputSize": [
+    1280,
+    720
+  ],
+  "phases": {
+    "complete": {
+      "start": 1,
+      "end": 18,
+      "label": "Complete machine",
+      "sourceRange": [
+        0,
+        36
+      ]
+    },
+    "separation": {
+      "start": 19,
+      "end": 43,
+      "label": "Separation",
+      "sourceRange": [
+        37,
+        110
+      ]
+    },
+    "exploded": {
+      "start": 44,
+      "end": 60,
+      "label": "Exploded state",
+      "sourceRange": [
+        111,
+        147
+      ]
+    },
+    "reassembly": {
+      "start": 61,
+      "end": 76,
+      "label": "Reassembly",
+      "sourceRange": [
+        148,
+        166
+      ]
+    },
+    "completeEnd": {
+      "start": 77,
+      "end": 90,
+      "label": "Machine restored",
+      "sourceRange": [
+        167,
+        191
+      ]
+    }
+  },
+  "frames": [
+    {
+      "output": 1,
+      "source": 0,
+      "phase": "complete"
+    },
+    {
+      "output": 2,
+      "source": 2,
+      "phase": "complete"
+    },
+    {
+      "output": 3,
+      "source": 4,
+      "phase": "complete"
+    },
+    {
+      "output": 4,
+      "source": 7,
+      "phase": "complete"
+    },
+    {
+      "output": 5,
+      "source": 9,
+      "phase": "complete"
+    },
+    {
+      "output": 6,
+      "source": 11,
+      "phase": "complete"
+    },
+    {
+      "output": 7,
+      "source": 13,
+      "phase": "complete"
+    },
+    {
+      "output": 8,
+      "source": 15,
+      "phase": "complete"
+    },
+    {
+      "output": 9,
+      "source": 17,
+      "phase": "complete"
+    },
+    {
+      "output": 10,
+      "source": 19,
+      "phase": "complete"
+    },
+    {
+      "output": 11,
+      "source": 22,
+      "phase": "complete"
+    },
+    {
+      "output": 12,
+      "source": 24,
+      "phase": "complete"
+    },
+    {
+      "output": 13,
+      "source": 26,
+      "phase": "complete"
+    },
+    {
+      "output": 14,
+      "source": 28,
+      "phase": "complete"
+    },
+    {
+      "output": 15,
+      "source": 30,
+      "phase": "complete"
+    },
+    {
+      "output": 16,
+      "source": 32,
+      "phase": "complete"
+    },
+    {
+      "output": 17,
+      "source": 34,
+      "phase": "complete"
+    },
+    {
+      "output": 18,
+      "source": 36,
+      "phase": "complete"
+    },
+    {
+      "output": 19,
+      "source": 37,
+      "phase": "separation"
+    },
+    {
+      "output": 20,
+      "source": 44,
+      "phase": "separation"
+    },
+    {
+      "output": 21,
+      "source": 50,
+      "phase": "separation"
+    },
+    {
+      "output": 22,
+      "source": 56,
+      "phase": "separation"
+    },
+    {
+      "output": 23,
+      "source": 63,
+      "phase": "separation"
+    },
+    {
+      "output": 24,
+      "source": 72,
+      "phase": "separation"
+    },
+    {
+      "output": 25,
+      "source": 77,
+      "phase": "separation"
+    },
+    {
+      "output": 26,
+      "source": 80,
+      "phase": "separation"
+    },
+    {
+      "output": 27,
+      "source": 83,
+      "phase": "separation"
+    },
+    {
+      "output": 28,
+      "source": 86,
+      "phase": "separation"
+    },
+    {
+      "output": 29,
+      "source": 88,
+      "phase": "separation"
+    },
+    {
+      "output": 30,
+      "source": 90,
+      "phase": "separation"
+    },
+    {
+      "output": 31,
+      "source": 92,
+      "phase": "separation"
+    },
+    {
+      "output": 32,
+      "source": 94,
+      "phase": "separation"
+    },
+    {
+      "output": 33,
+      "source": 96,
+      "phase": "separation"
+    },
+    {
+      "output": 34,
+      "source": 97,
+      "phase": "separation"
+    },
+    {
+      "output": 35,
+      "source": 99,
+      "phase": "separation"
+    },
+    {
+      "output": 36,
+      "source": 100,
+      "phase": "separation"
+    },
+    {
+      "output": 37,
+      "source": 102,
+      "phase": "separation"
+    },
+    {
+      "output": 38,
+      "source": 103,
+      "phase": "separation"
+    },
+    {
+      "output": 39,
+      "source": 104,
+      "phase": "separation"
+    },
+    {
+      "output": 40,
+      "source": 106,
+      "phase": "separation"
+    },
+    {
+      "output": 41,
+      "source": 107,
+      "phase": "separation"
+    },
+    {
+      "output": 42,
+      "source": 109,
+      "phase": "separation"
+    },
+    {
+      "output": 43,
+      "source": 110,
+      "phase": "separation"
+    },
+    {
+      "output": 44,
+      "source": 111,
+      "phase": "exploded"
+    },
+    {
+      "output": 45,
+      "source": 112,
+      "phase": "exploded"
+    },
+    {
+      "output": 46,
+      "source": 113,
+      "phase": "exploded"
+    },
+    {
+      "output": 47,
+      "source": 114,
+      "phase": "exploded"
+    },
+    {
+      "output": 48,
+      "source": 115,
+      "phase": "exploded"
+    },
+    {
+      "output": 49,
+      "source": 116,
+      "phase": "exploded"
+    },
+    {
+      "output": 50,
+      "source": 117,
+      "phase": "exploded"
+    },
+    {
+      "output": 51,
+      "source": 118,
+      "phase": "exploded"
+    },
+    {
+      "output": 52,
+      "source": 119,
+      "phase": "exploded"
+    },
+    {
+      "output": 53,
+      "source": 121,
+      "phase": "exploded"
+    },
+    {
+      "output": 54,
+      "source": 122,
+      "phase": "exploded"
+    },
+    {
+      "output": 55,
+      "source": 124,
+      "phase": "exploded"
+    },
+    {
+      "output": 56,
+      "source": 126,
+      "phase": "exploded"
+    },
+    {
+      "output": 57,
+      "source": 130,
+      "phase": "exploded"
+    },
+    {
+      "output": 58,
+      "source": 136,
+      "phase": "exploded"
+    },
+    {
+      "output": 59,
+      "source": 145,
+      "phase": "exploded"
+    },
+    {
+      "output": 60,
+      "source": 147,
+      "phase": "exploded"
+    },
+    {
+      "output": 61,
+      "source": 148,
+      "phase": "reassembly"
+    },
+    {
+      "output": 62,
+      "source": 150,
+      "phase": "reassembly"
+    },
+    {
+      "output": 63,
+      "source": 151,
+      "phase": "reassembly"
+    },
+    {
+      "output": 64,
+      "source": 153,
+      "phase": "reassembly"
+    },
+    {
+      "output": 65,
+      "source": 154,
+      "phase": "reassembly"
+    },
+    {
+      "output": 66,
+      "source": 155,
+      "phase": "reassembly"
+    },
+    {
+      "output": 67,
+      "source": 156,
+      "phase": "reassembly"
+    },
+    {
+      "output": 68,
+      "source": 158,
+      "phase": "reassembly"
+    },
+    {
+      "output": 69,
+      "source": 159,
+      "phase": "reassembly"
+    },
+    {
+      "output": 70,
+      "source": 160,
+      "phase": "reassembly"
+    },
+    {
+      "output": 71,
+      "source": 161,
+      "phase": "reassembly"
+    },
+    {
+      "output": 72,
+      "source": 162,
+      "phase": "reassembly"
+    },
+    {
+      "output": 73,
+      "source": 163,
+      "phase": "reassembly"
+    },
+    {
+      "output": 74,
+      "source": 164,
+      "phase": "reassembly"
+    },
+    {
+      "output": 75,
+      "source": 165,
+      "phase": "reassembly"
+    },
+    {
+      "output": 76,
+      "source": 166,
+      "phase": "reassembly"
+    },
+    {
+      "output": 77,
+      "source": 167,
+      "phase": "completeEnd"
+    },
+    {
+      "output": 78,
+      "source": 168,
+      "phase": "completeEnd"
+    },
+    {
+      "output": 79,
+      "source": 169,
+      "phase": "completeEnd"
+    },
+    {
+      "output": 80,
+      "source": 170,
+      "phase": "completeEnd"
+    },
+    {
+      "output": 81,
+      "source": 171,
+      "phase": "completeEnd"
+    },
+    {
+      "output": 82,
+      "source": 172,
+      "phase": "completeEnd"
+    },
+    {
+      "output": 83,
+      "source": 173,
+      "phase": "completeEnd"
+    },
+    {
+      "output": 84,
+      "source": 174,
+      "phase": "completeEnd"
+    },
+    {
+      "output": 85,
+      "source": 175,
+      "phase": "completeEnd"
+    },
+    {
+      "output": 86,
+      "source": 177,
+      "phase": "completeEnd"
+    },
+    {
+      "output": 87,
+      "source": 179,
+      "phase": "completeEnd"
+    },
+    {
+      "output": 88,
+      "source": 182,
+      "phase": "completeEnd"
+    },
+    {
+      "output": 89,
+      "source": 186,
+      "phase": "completeEnd"
+    },
+    {
+      "output": 90,
+      "source": 191,
+      "phase": "completeEnd"
+    }
+  ]
+}

@@ -1,0 +1,598 @@
+/* ---------------------------------------------------------------------------
+   SECTION 04 — SERVICE
+
+   What happens after the part. Three zones in a pinned viewport: the claim on
+   the left, the service footage in the middle with the two capabilities
+   beneath it, and the service journey down the right. The footage is masked
+   into the page rather than framed — there is no media container here.
+
+   The journey is deliberately one object, not five: a single hairline with
+   five nodes on it, of which only the one being read opens to show its line.
+   The section previously carried a rail *and* a detail panel *and* a row of
+   step cards, which said the same thing three times.
+
+   Nothing decorative survives here — no arcs, no terrain, no generated
+   graphics. The negative space is the composition, and the only orange is
+   the active stage, the accent line of the headline and the section number.
+
+   The centre is section-4.mp4's own footage, scrubbed the same way as every
+   other section: 90 selected frames, drawn one at a time, forwards and
+   backwards. Unlike the earlier sections these are whole photographs, so
+   they are masked into the page on all four sides rather than framed.
+--------------------------------------------------------------------------- */
+.svc {
+  --s-bg: #fbfaf8;
+  --s-line: rgba(31, 31, 31, 0.1);
+  --s-glass: rgba(255, 255, 255, 0.7);
+
+  position: relative;
+  /* One viewport of scroll per stage, plus one to read the last one in. */
+  height: 600vh;
+  background: var(--s-bg);
+}
+
+.svc__viewport {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow: hidden;
+  isolation: isolate;
+  /* A warm ground rather than a neutral one: the section is lit like the
+     site the machine goes back to, deepening toward the lower right. The
+     footage is graded into it, so there is no cool rectangle sitting on a
+     warm page. */
+  background:
+    radial-gradient(70% 60% at 60% 34%, rgba(255, 255, 253, 0.92), transparent 62%),
+    linear-gradient(150deg,
+      #fdfaf5 0%,
+      #fdf4e6 26%,
+      #fae6c6 52%,
+      #f5d29b 76%,
+      #efbe74 100%);
+}
+
+.svc__grid {
+  position: relative;
+  z-index: 2;
+  height: 100%;
+  display: grid;
+  /* The footage is 16:9, so the plate is width-bound: at the previous
+     28%/20% split the centre track was 504px and the plate used barely half
+     the height available to it. The side columns give ground instead — the
+     claim still needs enough width not to wrap badly, which is what the
+     260px floor protects. */
+  grid-template-columns: minmax(260px, 24%) minmax(0, 1fr) minmax(172px, 16%);
+  grid-template-rows: minmax(0, 1fr);
+  align-items: center;
+  column-gap: clamp(16px, 2.4vw, 44px);
+  padding: calc(var(--header-h) + 3vh) var(--page-gutter) 7vh var(--page-gutter);
+}
+
+/* Left --------------------------------------------------------------------- */
+.svc__intro {
+  min-width: 0;
+}
+
+.svc__kicker {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+}
+
+.svc__kicker-num {
+  color: var(--orange);
+}
+
+.svc__kicker-rule {
+  width: 28px;
+  height: 1px;
+  background: var(--ink-2);
+  opacity: 0.45;
+}
+
+.svc__title {
+  margin-top: clamp(12px, 2vh, 22px);
+  display: flex;
+  flex-direction: column;
+  font-size: clamp(26px, 2.7vw, 46px);
+  font-weight: 800;
+  letter-spacing: -0.038em;
+  line-height: 1.02;
+  text-transform: uppercase;
+  color: var(--charcoal);
+}
+
+.svc__title-accent {
+  color: var(--orange);
+}
+
+.svc__tick {
+  display: block;
+  width: 26px;
+  height: 2px;
+  margin-top: clamp(14px, 2.4vh, 28px);
+  background: var(--orange);
+}
+
+.svc__lede {
+  margin-top: clamp(12px, 2vh, 20px);
+  max-width: 32ch;
+  font-size: clamp(12.5px, 1vw, 14.5px);
+  line-height: 1.62;
+  color: var(--ink-2);
+}
+
+/* The stage being read ----------------------------------------------------
+   The whole column is the stage now: headline, accent line, supporting line
+   and counter all come from the active step, and the block is keyed on it so
+   it re-enters on every change. The stage NAME is not printed here — the
+   journey on the right already names it, and having both said "MAINTAIN" on
+   one screen was the section's loudest redundancy. */
+.svc__intro-live {
+  animation: svc-open 520ms var(--ease) both;
+}
+
+@keyframes svc-open {
+  from {
+    opacity: 0;
+    transform: translateY(9px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.svc__stage-count {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 4px;
+  margin-top: clamp(14px, 2.4vh, 26px);
+  padding-top: clamp(10px, 1.6vh, 16px);
+  border-top: 1px solid rgba(31, 31, 31, 0.12);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+}
+
+.svc__stage-now {
+  color: var(--orange);
+}
+
+.svc__stage-total {
+  color: var(--ink-2);
+  opacity: 0.7;
+}
+
+/* Only the reduced-motion list uses this; the live column puts the same
+   sentence in .svc__lede. */
+.svc__stage-statement {
+  font-size: 12px;
+  line-height: 1.55;
+  color: var(--ink-2);
+}
+
+/* Centre ------------------------------------------------------------------- */
+.svc__centre {
+  min-width: 0;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: clamp(12px, 2.4vh, 30px);
+}
+
+.svc__stage {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Behind the footage, and masked at its own edges so the arcs do not end in
+   visible stubs. */
+.svc__ambient {
+  position: absolute;
+  inset: -6% -10%;
+  width: auto;
+  height: auto;
+  z-index: 0;
+  overflow: visible;
+  pointer-events: none;
+  -webkit-mask-image: radial-gradient(ellipse 82% 86% at 50% 46%, #000 55%, transparent 100%);
+  mask-image: radial-gradient(ellipse 82% 86% at 50% 46%, #000 55%, transparent 100%);
+}
+
+.svc__machine {
+  z-index: 1;
+}
+
+/* The footage sits IN the page, not in a container.
+   ------------------------------------------------------------------------
+   It was briefly given a border, a radius and a shadow, which turned it into
+   an obvious media card — "a video inserted here". That is all gone. What
+   replaces it is a mask: the frames' own studio is a flat light grey, so
+   fading the image out toward its edges lets that grey dissolve into the
+   page instead of meeting it at a rectangle.
+
+   The mask is deliberately generous and very soft. It holds full opacity
+   across the middle — where the machine and the technician always are — and
+   only gives way in the outer band and the corners, so nothing that matters
+   is ever faded. The machine itself is untouched: no blanket opacity, no
+   blur, no filter. Only the environment around it disappears. */
+.svc__machine {
+  position: relative;
+  max-width: 100%;
+  max-height: 100%;
+  display: flex;
+}
+
+.svc__canvas {
+  display: block;
+  max-width: 100%;
+  max-height: 100%;
+
+  /* Four-sided fade, intersected with an elliptical falloff.
+
+     The first attempt was far too timid: the ellipse alone still reached the
+     left and right edges at ~86% opacity, so the rectangle stayed visible.
+     Each side now fades across a fifth of the frame on an eased ramp, which
+     is wide enough that the boundary genuinely disappears into the page.
+
+     The ramps are wide on purpose: full opacity is held only across the
+     middle half or so (x 0.25-0.75, y 0.22-0.78), which is where the
+     machine being serviced always sits. Everything outside that — the studio
+     walls, the sky, the ground, and the second machine parked at the right
+     edge of the outdoor scene — is given up to the page. */
+  --svc-fade-radial:
+    radial-gradient(
+      ellipse 64% 68% at 50% 50%,
+      #000 0%,
+      #000 40%,
+      rgba(0, 0, 0, 0.94) 54%,
+      rgba(0, 0, 0, 0.74) 66%,
+      rgba(0, 0, 0, 0.42) 78%,
+      rgba(0, 0, 0, 0.14) 89%,
+      transparent 100%
+    );
+  --svc-fade-x:
+    linear-gradient(
+      to right,
+      transparent 0%,
+      rgba(0, 0, 0, 0.04) 5%,
+      rgba(0, 0, 0, 0.20) 11%,
+      rgba(0, 0, 0, 0.55) 17%,
+      #000 25%,
+      #000 75%,
+      rgba(0, 0, 0, 0.55) 83%,
+      rgba(0, 0, 0, 0.20) 89%,
+      rgba(0, 0, 0, 0.04) 95%,
+      transparent 100%
+    );
+  --svc-fade-y:
+    linear-gradient(
+      to bottom,
+      transparent 0%,
+      rgba(0, 0, 0, 0.04) 4%,
+      rgba(0, 0, 0, 0.20) 9%,
+      rgba(0, 0, 0, 0.55) 15%,
+      #000 22%,
+      #000 78%,
+      rgba(0, 0, 0, 0.55) 85%,
+      rgba(0, 0, 0, 0.20) 91%,
+      rgba(0, 0, 0, 0.04) 96%,
+      transparent 100%
+    );
+
+  -webkit-mask-image: var(--svc-fade-radial), var(--svc-fade-x), var(--svc-fade-y);
+  mask-image: var(--svc-fade-radial), var(--svc-fade-x), var(--svc-fade-y);
+  -webkit-mask-composite: source-in;
+  mask-composite: intersect;
+
+  /* The footage is cool — grey studio, blue sky — and the page is warm. A
+     mask alone cannot reconcile those: the edge stops being a rectangle but
+     the colour still announces "photograph". Grading the frames into the
+     page's own warmth is what makes them belong to it. The machine stays
+     orange because it already was; only the neutrals move. */
+  filter: sepia(0.42) saturate(1.28) hue-rotate(-12deg) brightness(1.04)
+    contrast(0.98);
+}
+
+.svc__stage--failed {
+  max-width: 32ch;
+  margin: 0 auto;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--ink-2);
+  text-align: center;
+}
+
+/* Service capabilities ----------------------------------------------------
+   One frosted card carrying both, each with a round icon badge and a hairline
+   between them. */
+.svc__systems {
+  flex: 0 0 auto;
+  margin: 0;
+  padding: clamp(12px, 1.8vh, 20px) clamp(14px, 1.6vw, 26px);
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(14px, 2vw, 30px);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(14px);
+  box-shadow: 0 20px 44px -34px rgba(120, 78, 26, 0.5);
+}
+
+.svc__systems li {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  min-width: 0;
+}
+
+.svc__systems li + li {
+  padding-left: clamp(14px, 2vw, 30px);
+  border-left: 1px solid rgba(31, 31, 31, 0.09);
+}
+
+.svc__system-badge {
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  width: clamp(38px, 3.2vw, 50px);
+  height: clamp(38px, 3.2vw, 50px);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 6px 16px -10px rgba(120, 78, 26, 0.65);
+  color: var(--orange);
+}
+
+.svc__system-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.svc__system-name {
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--charcoal);
+}
+
+.svc__system-line {
+  font-size: 11.5px;
+  line-height: 1.45;
+  color: var(--ink-2);
+}
+
+/* Right — the service journey ---------------------------------------------
+   One hairline, five nodes. Only the active stage opens. */
+.svc__journey {
+  position: relative;
+  min-width: 0;
+  align-self: center;
+}
+
+.svc__journey-line {
+  position: absolute;
+  top: 10px;
+  bottom: 10px;
+  left: 3px;
+  width: 1px;
+  background: var(--s-line);
+}
+
+.svc__journey ol {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(12px, 2.4vh, 26px);
+}
+
+.svc__journey button {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  text-align: left;
+  cursor: pointer;
+  color: var(--ink-2);
+}
+
+.svc__journey-node {
+  flex: 0 0 auto;
+  width: 7px;
+  height: 7px;
+  margin-top: 4px;
+  border-radius: 50%;
+  background: var(--white);
+  box-shadow: inset 0 0 0 1px var(--ink-2);
+  opacity: 0.5;
+  transition: box-shadow 320ms var(--ease), opacity 320ms var(--ease);
+}
+
+.svc__journey-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.svc__journey-index {
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  color: var(--ink-2);
+  opacity: 0.6;
+  transition: color 320ms var(--ease), opacity 320ms var(--ease);
+}
+
+.svc__journey-name {
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+  opacity: 0.55;
+  transition: color 320ms var(--ease), opacity 320ms var(--ease);
+}
+
+
+
+.svc__journey li.is-active .svc__journey-node {
+  background: var(--orange);
+  box-shadow: inset 0 0 0 1px var(--orange), 0 0 0 3px rgba(241, 90, 36, 0.14);
+  opacity: 1;
+}
+
+.svc__journey li.is-active .svc__journey-index,
+.svc__journey li.is-active .svc__journey-name {
+  color: var(--orange);
+  opacity: 1;
+}
+
+.svc__journey button:hover .svc__journey-name {
+  opacity: 0.85;
+}
+
+/* Scroll hint -------------------------------------------------------------- */
+.svc__scroll-hint {
+  position: absolute;
+  left: var(--page-gutter);
+  bottom: 3.2vh;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+}
+
+.svc__scroll-hint svg {
+  color: var(--orange);
+}
+
+.svc__scroll-rule {
+  width: 26px;
+  height: 1px;
+  background: var(--s-line);
+}
+
+/* Narrower viewports ------------------------------------------------------- */
+@media (max-width: 1240px) {
+  .svc__grid {
+    grid-template-columns: minmax(224px, 25%) minmax(0, 1fr) minmax(158px, 17%);
+    column-gap: clamp(12px, 1.8vw, 28px);
+  }
+
+  .svc__systems {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 10px;
+  }
+}
+
+/* Headline → machine → journey → capabilities. */
+@media (max-width: 980px) {
+  .svc__grid {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto minmax(0, 1fr) auto;
+    align-items: start;
+    row-gap: 2vh;
+    padding: calc(var(--header-h) + 2vh) var(--page-gutter) 6vh var(--page-gutter);
+  }
+
+  .svc__centre {
+    grid-row: 2;
+  }
+
+  .svc__journey {
+    grid-row: 3;
+  }
+
+  /* Across the foot rather than down the side: the numbers stay, the open
+     statement moves under the row so it never crushes the machine. */
+  .svc__journey ol {
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 10px;
+  }
+
+  .svc__journey-line {
+    top: 6px;
+    bottom: auto;
+    left: 3px;
+    right: 3px;
+    width: auto;
+    height: 1px;
+  }
+
+  .svc__journey button {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .svc__systems {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .svc__journey-name {
+    display: none;
+  }
+
+  .svc__systems {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* Reduced motion ----------------------------------------------------------- */
+.svc--static {
+  height: auto;
+  padding: calc(var(--header-h) + 6vh) var(--page-gutter) 10vh;
+}
+
+.svc__static-steps {
+  margin: 6vh 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 0;
+}
+
+.svc__static-steps li {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: clamp(18px, 2.6vh, 28px) 0;
+  border-top: 1px solid var(--s-line);
+}
+
+.svc--static .svc__intro-live {
+  animation: none;
+}
+
+.svc--static .svc__systems {
+  margin-top: 5vh;
+}

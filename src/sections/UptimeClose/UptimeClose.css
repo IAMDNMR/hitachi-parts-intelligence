@@ -1,0 +1,467 @@
+/* ---------------------------------------------------------------------------
+   SECTION 05 — UPTIME, and the site footer
+
+   The close. Every section before this one is a pinned scroll narrative;
+   this is where the page stops moving, so it is ordinary layout with no
+   sticky viewport and no scrubbing. The machine on the left is a still from
+   the service footage — the frame where it is back at work — graded warm and
+   feathered on all four sides exactly as Section 04 treats it, so it reads
+   as part of the page rather than as a photograph in a box.
+
+   Orange does more here than elsewhere, on purpose: this is the one place
+   the page asks for something (the CTA), and the accent half of the headline
+   is the payoff the whole scroll has been building to.
+--------------------------------------------------------------------------- */
+.up {
+  position: relative;
+  padding: clamp(60px, 11vh, 130px) var(--page-gutter) clamp(40px, 7vh, 84px);
+  background:
+    radial-gradient(58% 52% at 46% 40%, rgba(255, 255, 255, 0.9), transparent 66%),
+    linear-gradient(154deg, #fffefc 0%, #fdf8f0 34%, #fbefdd 62%, #f7e2c4 100%);
+}
+
+.up__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.08fr) minmax(320px, 0.92fr);
+  align-items: center;
+  gap: clamp(24px, 4vw, 76px);
+  max-width: 1560px;
+  margin: 0 auto;
+}
+
+/* The chapter rail ---------------------------------------------------------
+   A position indicator, not a control: this is the last chapter, so there is
+   nowhere for it to take you that scrolling does not. */
+.up__rail {
+  position: absolute;
+  left: calc(var(--page-gutter) * 0.34);
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.up__rail ol {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(16px, 3.4vh, 34px);
+}
+
+.up__rail li {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.up__rail-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: rgba(31, 31, 31, 0.2);
+}
+
+.up__rail li.is-active .up__rail-dot {
+  background: var(--orange);
+  box-shadow: 0 0 0 4px rgba(241, 90, 36, 0.16);
+}
+
+.up__rail-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--orange);
+  white-space: nowrap;
+}
+
+/* The machine -------------------------------------------------------------- */
+.up__stage {
+  position: relative;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+}
+
+.up__halo {
+  position: absolute;
+  width: min(100%, 108%);
+  aspect-ratio: 1;
+  z-index: 0;
+  pointer-events: none;
+  -webkit-mask-image: radial-gradient(circle at 50% 50%, #000 52%, transparent 96%);
+  mask-image: radial-gradient(circle at 50% 50%, #000 52%, transparent 96%);
+}
+
+/* Same treatment as Section 04's footage: graded into the page's warmth and
+   feathered on four sides, so there is no rectangle anywhere. */
+.up__machine {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: auto;
+  display: block;
+  filter: sepia(0.34) saturate(1.3) hue-rotate(-10deg) brightness(1.05)
+    contrast(0.97);
+
+  --u-fade-r:
+    radial-gradient(
+      ellipse 70% 74% at 50% 50%,
+      #000 0%,
+      #000 42%,
+      rgba(0, 0, 0, 0.92) 58%,
+      rgba(0, 0, 0, 0.66) 72%,
+      rgba(0, 0, 0, 0.3) 86%,
+      transparent 100%
+    );
+  --u-fade-x:
+    linear-gradient(to right, transparent 0%, #000 16%, #000 84%, transparent 100%);
+  --u-fade-y:
+    linear-gradient(to bottom, transparent 0%, #000 14%, #000 86%, transparent 100%);
+  -webkit-mask-image: var(--u-fade-r), var(--u-fade-x), var(--u-fade-y);
+  mask-image: var(--u-fade-r), var(--u-fade-x), var(--u-fade-y);
+  -webkit-mask-composite: source-in;
+  mask-composite: intersect;
+}
+
+/* The reveal ---------------------------------------------------------------
+   The section arrives one element at a time when it first comes into view.
+   Each element carries its own `--i`, so the order is declared in the markup
+   next to the thing being ordered, and the delay is derived from it — no
+   timeline to keep in step with the JSX.
+
+   Transitions, not keyframes: the finished state is the element's normal
+   state, so if the observer never fires (no JS, an old browser) everything
+   is still visible. Nothing here depends on the animation running. */
+.up__reveal {
+  opacity: 0;
+  transform: translateY(14px);
+  transition:
+    opacity 620ms var(--ease),
+    transform 620ms var(--ease);
+  transition-delay: calc(var(--i, 0) * 85ms);
+}
+
+.up.is-shown .up__reveal {
+  opacity: 1;
+  transform: none;
+}
+
+/* The machine is the backdrop the copy arrives over, so it comes up on its
+   own slower curve rather than in the same stagger. */
+.up__stage.up__reveal {
+  transform: translateY(18px) scale(0.99);
+  transition-duration: 900ms;
+}
+
+.up.is-shown .up__stage.up__reveal {
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .up__reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
+/* Copy --------------------------------------------------------------------- */
+.up__copy {
+  min-width: 0;
+}
+
+.up__kicker,
+.up__sub {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.up__kicker {
+  color: var(--orange);
+}
+
+.up__kicker-rule {
+  width: 40px;
+  height: 2px;
+  background: var(--orange);
+}
+
+.up__title {
+  margin-top: clamp(12px, 1.8vh, 20px);
+  display: flex;
+  flex-direction: column;
+  font-size: clamp(34px, 4.4vw, 72px);
+  font-weight: 800;
+  letter-spacing: -0.042em;
+  line-height: 0.96;
+  text-transform: uppercase;
+  color: var(--charcoal);
+}
+
+.up__title-accent {
+  color: var(--orange);
+}
+
+.up__sub {
+  margin-top: clamp(12px, 1.8vh, 20px);
+  color: var(--ink-2);
+}
+
+.up__sub-rule {
+  width: 34px;
+  height: 1px;
+  background: var(--ink-2);
+  opacity: 0.5;
+}
+
+.up__body {
+  margin-top: clamp(12px, 1.8vh, 20px);
+  max-width: 33ch;
+  font-size: clamp(12.5px, 0.98vw, 14.5px);
+  line-height: 1.62;
+  color: var(--ink-2);
+}
+
+.up__cta {
+  margin-top: clamp(18px, 2.8vh, 30px);
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 15px 24px;
+  border: 0;
+  border-radius: 8px;
+  background: var(--orange);
+  color: var(--white);
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  box-shadow: 0 18px 34px -22px rgba(241, 90, 36, 0.85);
+  /* Includes opacity and keeps the reveal's delay: declaring only transform
+     and box-shadow here replaced the reveal transition wholesale, which left
+     the CTA out of the stagger. */
+  transition:
+    opacity 620ms var(--ease),
+    transform 620ms var(--ease),
+    box-shadow 240ms var(--ease);
+  transition-delay: calc(var(--i, 0) * 85ms);
+}
+
+/* Hover is a separate, immediate response — it must not inherit the
+   reveal's delay. */
+.up.is-shown .up__cta {
+  transition:
+    transform 240ms var(--ease),
+    box-shadow 240ms var(--ease),
+    opacity 620ms var(--ease);
+  transition-delay: 0s;
+}
+
+.up__cta:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 22px 40px -22px rgba(241, 90, 36, 0.95);
+}
+
+/* The three pillars -------------------------------------------------------
+   One frosted card, hairline-divided. It restates parts, service and data —
+   nothing new, and nothing counted. */
+.up__pillars {
+  margin: clamp(30px, 5vh, 60px) auto 0;
+  padding: clamp(16px, 2.4vh, 26px) clamp(16px, 2vw, 34px);
+  max-width: 1240px;
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(14px, 2vw, 34px);
+  border: 1px solid rgba(255, 255, 255, 0.75);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(14px);
+  box-shadow: 0 26px 52px -40px rgba(120, 78, 26, 0.6);
+}
+
+.up__pillars li {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  min-width: 0;
+}
+
+.up__pillars li + li {
+  padding-left: clamp(14px, 2vw, 34px);
+  border-left: 1px solid rgba(31, 31, 31, 0.09);
+}
+
+.up__pillar-badge {
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  width: clamp(46px, 3.6vw, 58px);
+  height: clamp(46px, 3.6vw, 58px);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: 0 8px 20px -12px rgba(120, 78, 26, 0.7);
+  color: var(--orange);
+}
+
+.up__pillar-copy {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.up__pillar-title {
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--charcoal);
+}
+
+.up__pillar-line {
+  margin-top: 4px;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--ink-2);
+}
+
+/* Footer ------------------------------------------------------------------- */
+.foot {
+  padding: clamp(22px, 3.4vh, 34px) var(--page-gutter);
+  background: #f7e2c4;
+  border-top: 1px solid rgba(31, 31, 31, 0.08);
+}
+
+.foot__inner {
+  max-width: 1560px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: clamp(16px, 2.6vw, 46px);
+  flex-wrap: wrap;
+}
+
+.foot__brand {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.1;
+}
+
+.foot__brand-main {
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--charcoal);
+}
+
+.foot__brand-sub {
+  font-size: 8.5px;
+  font-weight: 700;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: var(--orange);
+}
+
+.foot__line {
+  font-size: 12px;
+  color: var(--ink-2);
+}
+
+.foot__line-accent {
+  color: var(--orange);
+  font-weight: 600;
+}
+
+.foot__links {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: clamp(12px, 1.6vw, 26px);
+  margin-left: auto;
+}
+
+.foot__links li + li {
+  padding-left: clamp(12px, 1.6vw, 26px);
+  border-left: 1px solid rgba(31, 31, 31, 0.16);
+}
+
+.foot__link {
+  font-size: 12px;
+  color: var(--ink-2);
+  cursor: default;
+}
+
+.foot__legal {
+  font-size: 12px;
+  color: var(--ink-2);
+}
+
+.foot__top {
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border: 1px solid rgba(241, 90, 36, 0.5);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.6);
+  color: var(--orange);
+  cursor: pointer;
+  transition: background-color 220ms var(--ease), transform 220ms var(--ease);
+}
+
+.foot__top:hover {
+  background: var(--white);
+  transform: translateY(-2px);
+}
+
+/* Narrower viewports ------------------------------------------------------- */
+@media (max-width: 1080px) {
+  .up__grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .up__rail {
+    display: none;
+  }
+
+  .up__pillars {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .up__pillars li + li {
+    padding-left: 0;
+    padding-top: clamp(12px, 2vh, 20px);
+    border-left: 0;
+    border-top: 1px solid rgba(31, 31, 31, 0.09);
+  }
+}
+
+@media (max-width: 760px) {
+  .foot__inner {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 14px;
+  }
+
+  .foot__links {
+    margin-left: 0;
+    flex-wrap: wrap;
+  }
+
+  .foot__links li + li {
+    padding-left: 12px;
+  }
+}

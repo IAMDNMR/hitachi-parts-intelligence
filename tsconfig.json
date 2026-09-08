@@ -1,0 +1,32 @@
+{
+  // TypeScript covers The Ground only. Sections 01-05 stay as JSX and are
+  // deliberately not migrated, so `allowJs` is on (the Ground reuses a couple
+  // of existing hooks) while `checkJs` stays off (the untyped existing site
+  // is not type-checked).
+  "compilerOptions": {
+    "target": "ES2022",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "jsx": "react-jsx",
+
+    "allowJs": true,
+    "checkJs": false,
+    "noEmit": true,
+    "isolatedModules": true,
+    "resolveJsonModule": true,
+    "allowImportingTsExtensions": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedIndexedAccess": true
+  },
+  // Only the Ground is type-checked. Adding the existing sections here would
+  // produce errors in code this task must not change.
+  "include": ["src/ground"]
+}

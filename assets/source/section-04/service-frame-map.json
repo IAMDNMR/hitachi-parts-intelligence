@@ -1,0 +1,52 @@
+{
+  "totalFrames": 90,
+  "source": "assets/source/section-04/section-4.mp4",
+  "sourceFrames": 240,
+  "stages": {
+    "inspect": {
+      "start": 1,
+      "end": 18,
+      "label": "Inspect",
+      "sourceRange": [
+        0,
+        54
+      ]
+    },
+    "diagnose": {
+      "start": 19,
+      "end": 36,
+      "label": "Diagnose",
+      "sourceRange": [
+        65,
+        87
+      ]
+    },
+    "maintain": {
+      "start": 37,
+      "end": 54,
+      "label": "Maintain",
+      "sourceRange": [
+        96,
+        150
+      ]
+    },
+    "repair": {
+      "start": 55,
+      "end": 72,
+      "label": "Repair",
+      "sourceRange": [
+        151,
+        209
+      ]
+    },
+    "backToWork": {
+      "start": 73,
+      "end": 90,
+      "label": "Back to work",
+      "sourceRange": [
+        220,
+        239
+      ]
+    }
+  }
+}

@@ -1,0 +1,434 @@
+/* ---------------------------------------------------------------------------
+   SECTION 02 — AFTER-SALES ECOSYSTEM
+
+   One machine, four readings of it. Two columns in a pinned viewport: the
+   masthead and the state being read on the left, the excavator large on the
+   right with a single marker naming that state on the machine itself. A
+   numeric 01-04 indicator sits on the outer edge.
+
+   The composition is mostly empty on purpose. There is one headline, one
+   state title, one statement and one line of support on screen at a time —
+   no cards, no tiles, no panels of numbers. The machine is the subject and
+   the type stays out of its way.
+
+   The rotation is photographic: scroll scrubs 71 real frames of the studio
+   orbit, drawn one at a time into a canvas. No CSS 3D, nothing spinning by
+   animation.
+
+   Orange marks state and nothing else — the section number, the second half
+   of the headline, the active marker and the active rail number.
+--------------------------------------------------------------------------- */
+.eco {
+  --e-bg: #fbfaf8;
+  --e-line: rgba(31, 31, 31, 0.1);
+  --e-glass: rgba(255, 255, 255, 0.72);
+
+  position: relative;
+  /* One viewport of scroll per state, plus one to read the last one in.
+     At four states that is ~63px of scroll per frame of the rotation, which
+     is fine enough that the turn reads as continuous. */
+  height: calc((var(--eco-states, 4) + 1) * 100vh);
+  background: var(--e-bg);
+}
+
+.eco__viewport {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow: hidden;
+  isolation: isolate;
+  /* A very light ground with one soft warm pool where the machine stands.
+     No arcs, no dot fields, no drawn connections — the negative space is
+     the composition. */
+  background:
+    radial-gradient(46% 52% at 68% 52%, rgba(241, 90, 36, 0.032), transparent 72%),
+    linear-gradient(164deg, #fdfdfc 0%, var(--e-bg) 52%, #f6f4f0 100%);
+}
+
+.eco__grid {
+  position: relative;
+  z-index: 2;
+  height: 100%;
+  display: grid;
+  grid-template-columns: minmax(300px, 32%) minmax(0, 1fr);
+  grid-template-rows: minmax(0, 1fr);
+  align-items: center;
+  column-gap: clamp(24px, 4vw, 88px);
+  /* Right padding clears the 01-04 indicator. */
+  padding: calc(var(--header-h) + 3vh) calc(var(--page-gutter) + 40px) 5vh
+    var(--page-gutter);
+}
+
+.eco__col {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: clamp(26px, 6vh, 76px);
+  min-width: 0;
+}
+
+/* Masthead ---------------------------------------------------------------- */
+.eco__kicker {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+}
+
+.eco__kicker-num {
+  color: var(--orange);
+}
+
+.eco__kicker-rule {
+  width: 28px;
+  height: 1px;
+  background: var(--ink-2);
+  opacity: 0.45;
+}
+
+.eco__title {
+  margin-top: clamp(12px, 2vh, 22px);
+  display: flex;
+  flex-direction: column;
+  font-size: clamp(40px, 5.4vw, 88px);
+  font-weight: 800;
+  letter-spacing: -0.045em;
+  line-height: 0.9;
+  text-transform: uppercase;
+}
+
+.eco__title-a {
+  color: var(--charcoal);
+}
+
+.eco__title-b {
+  color: var(--orange);
+}
+
+/* The state being read ----------------------------------------------------- */
+.eco__state-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: clamp(14px, 2.4vh, 24px);
+}
+
+.eco__counter {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 4px;
+  padding: 6px 12px;
+  border: 1px solid rgba(241, 90, 36, 0.26);
+  border-radius: 6px;
+  background: var(--e-glass);
+  backdrop-filter: blur(6px);
+  font-size: 12.5px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
+
+.eco__counter-now {
+  color: var(--orange);
+}
+
+.eco__counter-total {
+  color: var(--ink-2);
+  font-weight: 600;
+}
+
+.eco__state {
+  /* The hairline is the only thing that stays put between states; the copy
+     under it is replaced. So the column reads as one column changing its
+     contents rather than as four separate blocks. */
+  border-top: 1px solid var(--e-line);
+  padding-top: clamp(16px, 2.8vh, 28px);
+  animation: eco-enter 620ms var(--ease) both;
+}
+
+@keyframes eco-enter {
+  from {
+    opacity: 0;
+    transform: translateY(9px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.eco__state-head {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  color: var(--ink-2);
+}
+
+.eco__state-title {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.eco__statement {
+  margin-top: clamp(12px, 2vh, 20px);
+  max-width: 15ch;
+  font-size: clamp(22px, 2.15vw, 36px);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.08;
+  text-transform: uppercase;
+  color: var(--charcoal);
+}
+
+.eco__line {
+  margin-top: clamp(12px, 1.8vh, 18px);
+  max-width: 34ch;
+  font-size: clamp(12.5px, 1vw, 14.5px);
+  line-height: 1.62;
+  color: var(--ink-2);
+}
+
+/* Machine ------------------------------------------------------------------ */
+.eco__machine {
+  position: relative;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* The box tracks the canvas exactly, so a marker at a fraction of it lands
+   on the same point of the machine on every frame — all frames share one
+   crop. */
+.eco__frame-box {
+  position: relative;
+  display: flex;
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.eco__canvas {
+  max-width: 100%;
+  max-height: 100%;
+  /* No filter, no drop-shadow, no outline: the frames are the photograph. */
+}
+
+.eco__machine--failed {
+  padding: 24px;
+  max-width: 34ch;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--ink-2);
+}
+
+/* The marker on the machine ------------------------------------------------
+   A dot, a hairline and a small glass label naming the state. It says what
+   this part of the story is about; it does not pretend to read anything off
+   the machine. */
+.eco__marker {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  pointer-events: none;
+}
+
+.eco__marker-dot {
+  width: 7px;
+  height: 7px;
+  margin: -3.5px 0 0 -3.5px;
+  border-radius: 50%;
+  background: var(--orange);
+  box-shadow: 0 0 0 3px rgba(241, 90, 36, 0.16);
+  animation: eco-mark 620ms var(--ease) both;
+}
+
+.eco__marker-leader {
+  width: clamp(26px, 3vw, 52px);
+  height: 1px;
+  margin-left: 2px;
+  background: linear-gradient(90deg, rgba(241, 90, 36, 0.7), var(--e-line));
+  animation: eco-mark 620ms 60ms var(--ease) both;
+}
+
+.eco__marker-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 11px;
+  border: 1px solid var(--e-line);
+  border-radius: 7px;
+  background: var(--e-glass);
+  backdrop-filter: blur(8px);
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--charcoal);
+  animation: eco-mark 620ms 90ms var(--ease) both;
+}
+
+.eco__marker-label svg {
+  color: var(--orange);
+}
+
+@keyframes eco-mark {
+  from {
+    opacity: 0;
+    transform: translateX(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* The 01–04 indicator ------------------------------------------------------ */
+.eco__rail {
+  position: absolute;
+  top: 50%;
+  right: calc(var(--page-gutter) * 0.42);
+  transform: translateY(-50%);
+  z-index: 3;
+  display: flex;
+  align-items: center;
+}
+
+.eco__rail-line {
+  position: absolute;
+  top: 6px;
+  bottom: 6px;
+  left: 8px;
+  width: 1px;
+  background: var(--e-line);
+}
+
+.eco__rail ol {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(14px, 3.2vh, 34px);
+}
+
+.eco__rail button {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 2px 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  color: var(--ink-2);
+  opacity: 0.45;
+  transition: opacity 320ms var(--ease), color 320ms var(--ease);
+}
+
+/* A short tick rather than a dot: quieter, and it reads as a scale. */
+.eco__rail-tick {
+  width: 17px;
+  height: 1px;
+  background: currentColor;
+  transition: width 320ms var(--ease);
+}
+
+.eco__rail-num {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+}
+
+.eco__rail li.is-active button,
+.eco__rail button:hover {
+  opacity: 1;
+  color: var(--orange);
+}
+
+.eco__rail li.is-active .eco__rail-tick {
+  width: 26px;
+}
+
+/* Narrower viewports ------------------------------------------------------
+   The machine keeps its space for as long as possible: the type column
+   gives ground first, then the layout stacks with the machine below the
+   copy and still dominant. */
+@media (max-width: 1180px) {
+  .eco__grid {
+    grid-template-columns: minmax(260px, 38%) minmax(0, 1fr);
+    column-gap: clamp(16px, 2.6vw, 44px);
+  }
+
+  .eco__marker-leader {
+    width: 20px;
+  }
+}
+
+@media (max-width: 860px) {
+  .eco__grid {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto minmax(0, 1fr);
+    align-items: start;
+    row-gap: 2vh;
+    padding: calc(var(--header-h) + 2vh) calc(var(--page-gutter) + 32px) 4vh
+      var(--page-gutter);
+  }
+
+  .eco__col {
+    gap: clamp(14px, 2.6vh, 26px);
+  }
+
+  .eco__machine {
+    grid-row: 2;
+  }
+
+  /* The label would sit over the machine at this width; the state is already
+     named in the column above it. */
+  .eco__marker-leader,
+  .eco__marker-label {
+    display: none;
+  }
+
+  .eco__rail-num {
+    display: none;
+  }
+}
+
+/* Reduced motion ----------------------------------------------------------
+   No pinning, no scrubbing: four states read at the reader's own pace. */
+.eco--static {
+  height: auto;
+  padding: calc(var(--header-h) + 6vh) var(--page-gutter) 10vh;
+  background: linear-gradient(164deg, #fdfdfc 0%, var(--e-bg) 52%, #f6f4f0 100%);
+}
+
+.eco__static-state {
+  display: grid;
+  grid-template-columns: minmax(280px, 1fr) minmax(280px, 1.25fr);
+  align-items: center;
+  gap: clamp(20px, 4vw, 64px);
+  padding: 6vh 0;
+  border-bottom: 1px solid var(--e-line);
+}
+
+.eco__static-frame {
+  width: 100%;
+  height: auto;
+}
+
+.eco--static .eco__state {
+  animation: none;
+}
+
+@media (max-width: 860px) {
+  .eco__static-state {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,0 +1,22 @@
+# Dependencies and build output
+node_modules
+dist
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
+
+# Runtime state, not source.
+# The schema is owned by Alembic and the starter rows by app/seed.py, so this
+# file is rebuilt by `alembic upgrade head` + a first run. Committing it would
+# put one developer's demo requirements into everyone else's checkout.
+*.db
+
+# Local configuration. .env.example is committed; the real one is not.
+.env
+.env.local
+
+# Scratch output from backend/video-processing/ survey scripts
+backend/video-processing/survey-s01/
