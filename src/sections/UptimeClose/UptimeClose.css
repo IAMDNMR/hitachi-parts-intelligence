@@ -397,10 +397,21 @@
   border-left: 1px solid rgba(31, 31, 31, 0.16);
 }
 
+/* These go somewhere now, so they behave like it: a pointer, a hover, and a
+   focus ring. `cursor: default` was correct when they were inert. */
 .foot__link {
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
   font-size: 12px;
   color: var(--ink-2);
-  cursor: default;
+  cursor: pointer;
+  transition: color 200ms var(--ease);
+}
+
+.foot__link:hover {
+  color: var(--orange);
 }
 
 .foot__legal {

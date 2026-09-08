@@ -58,7 +58,7 @@ function useRevealOnce() {
  * feathered into the page on all four sides, so it never reads as a
  * photograph in a box.
  */
-export function UptimeClose() {
+export function UptimeClose({ onOpenGround, onOpenOrdering }) {
   const [sectionRef, shown] = useRevealOnce()
 
   const explore = useCallback(() => {
@@ -147,7 +147,11 @@ export function UptimeClose() {
         </ul>
       </section>
 
-      <SiteFooter onToTop={toTop} />
+      <SiteFooter
+        onToTop={toTop}
+        onOpenGround={onOpenGround}
+        onOpenOrdering={onOpenOrdering}
+      />
     </>
   )
 }
@@ -187,7 +191,16 @@ function Halo() {
   )
 }
 
-function SiteFooter({ onToTop }) {
+function SiteFooter({ onToTop, onOpenGround, onOpenOrdering }) {
+  /* The three destinations named in data/uptimeClose.js. Kept here rather
+     than in the data so the data stays declarative — it says where, this
+     says how. */
+  const go = {
+    ground: () => onOpenGround(),
+    ordering: () => onOpenOrdering(),
+    top: onToTop,
+  }
+
   return (
     <footer className="foot">
       <div className="foot__inner">
@@ -200,14 +213,17 @@ function SiteFooter({ onToTop }) {
           Built to perform. <span className="foot__line-accent">Supported to last.</span>
         </p>
 
-        {/* Placeholders: the pages behind these do not exist in this project,
-            so they are marked rather than pointed at URLs that would 404. */}
+        {/* Real destinations, not placeholders. This was four inert spans —
+            Privacy Policy, Terms of Use, Cookies, Sitemap — for pages that do
+            not exist. The header offers the two applications, and by the time
+            anyone reaches this footer the header is five sections of scrolling
+            away. */}
         <ul className="foot__links">
           {footerLinks.map((link) => (
-            <li key={link}>
-              <span className="foot__link" title="Placeholder — no page behind this yet">
-                {link}
-              </span>
+            <li key={link.to}>
+              <button type="button" className="foot__link" onClick={go[link.to]}>
+                {link.label}
+              </button>
             </li>
           ))}
         </ul>

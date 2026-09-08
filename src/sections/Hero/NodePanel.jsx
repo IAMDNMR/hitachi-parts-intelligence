@@ -4,11 +4,13 @@ import { CloseIcon } from './Icons'
 /**
  * Overview panel for one after-sales domain.
  *
- * This is the interaction seam for the deeper knowledge experience: today it
- * shows the node's summary, later the same `node.id` routes into a full
- * knowledge view. Everything a deeper view needs is already on the node.
+ * This was written as the seam for a deeper view that did not exist yet, and
+ * it ended with the line "Detailed view in development" — a promise printed
+ * on the public page. The deeper view is The Ground, it has been built, and
+ * every one of these six domains is a node on it, so the promise is now a
+ * door: see `groundId` in data/ecosystemNodes.js.
  */
-export function NodePanel({ node, onClose }) {
+export function NodePanel({ node, onClose, onOpenGround }) {
   const ref = useRef(null)
 
   useEffect(() => {
@@ -48,7 +50,16 @@ export function NodePanel({ node, onClose }) {
         ))}
       </ul>
 
-      <p className="panel__soon">Detailed view in development</p>
+      {node.groundId && (
+        <button
+          type="button"
+          className="panel__go"
+          onClick={() => onOpenGround(node.groundId)}
+        >
+          See it on the map
+          <span aria-hidden="true">→</span>
+        </button>
+      )}
     </aside>
   )
 }

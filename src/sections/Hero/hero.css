@@ -633,6 +633,33 @@
   color: var(--orange);
 }
 
+/* Was .panel__soon — "Detailed view in development", set in grey and printed
+   on the public page. The deeper view exists now, so the line that apologised
+   for its absence is a way into it. */
+.panel__go {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 30px;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  font: inherit;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--orange);
+  border-bottom: 1px solid transparent;
+  transition: border-color 200ms var(--ease), gap 200ms var(--ease);
+}
+
+.panel__go:hover {
+  border-bottom-color: var(--orange);
+  gap: 11px;
+}
+
 .panel__soon {
   margin-top: 30px;
   font-size: 10px;

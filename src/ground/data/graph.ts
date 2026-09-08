@@ -3,9 +3,10 @@ import type { Confidence, Edge, GroundNode, NodeType, Provenance } from '../type
 /**
  * THE GROUND — the model.
  *
- * A layered directed graph, not a tree. Nodes carry a `column`, which is the
- * architectural layer they belong to, and the layout places columns left to
- * right. Edges are declared separately from nodes, because the real thing is
+ * A layered directed graph, not a tree. Nodes carry a `column`, the
+ * architectural layer they belong to — which the layout no longer reads; see
+ * the note on `column` in types/ground.ts for what it is still for and why it
+ * was not deleted. Edges are declared separately from nodes, because the real thing is
  * a mesh: Service reaches into Parts, Machine Data reaches into both, the
  * dealer is arrived at from two directions, and several entities are written
  * by one system while being referenced by another. A parent/child tree
@@ -25,12 +26,14 @@ import type { Confidence, Edge, GroundNode, NodeType, Provenance } from '../type
  *   17  canonical     the canonical data model groups
  *   18  outcome       Uptime
  *
- * A process chain occupies a RUN of columns rather than one, so a sequence
- * reads left to right like the rest of the map. Stacking a nine-step chain
- * in a single column forced every consecutive step to connect with a
- * backward loop, which read as a mess rather than as an order. Columns with
- * nothing revealed in them collapse at layout time, so the early views stay
- * tight despite the wide numbering.
+ * A process chain occupies a RUN of these numbers rather than one, so that a
+ * sequence could read left to right. That was the intent when they were
+ * authored and it is still the right intent — but no layout reads them
+ * today, so the paragraph that used to stand here describing how columns
+ * collapse at layout time was describing a mechanism that no longer exists.
+ * The current layout ranks by relationship and draws a chain DOWN the page,
+ * one step per row, which is why a process drill uses about a third of the
+ * width of the screen. Reviving these numbers is the way out of that.
  *
  * PROGRESSIVE DISCLOSURE
  * ----------------------

@@ -71,7 +71,11 @@ export function Hero({ onOpenGround, onOpenOrdering }) {
         <main id="top">
           <StaticStory onOpenNode={setOpenNodeId} onExplore={explore} />
           {openNode && (
-            <NodePanel node={openNode} onClose={() => setOpenNodeId(null)} />
+            <NodePanel
+              node={openNode}
+              onClose={() => setOpenNodeId(null)}
+              onOpenGround={onOpenGround}
+            />
           )}
         </main>
       ) : (
@@ -103,7 +107,11 @@ export function Hero({ onOpenGround, onOpenOrdering }) {
               <ScrollHint />
               <StoryProgress />
               {openNode && (
-                <NodePanel node={openNode} onClose={() => setOpenNodeId(null)} />
+                <NodePanel
+              node={openNode}
+              onClose={() => setOpenNodeId(null)}
+              onOpenGround={onOpenGround}
+            />
               )}
             </div>
           </div>

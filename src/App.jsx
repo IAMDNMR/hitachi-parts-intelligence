@@ -31,8 +31,12 @@ export default function App() {
     return () => window.removeEventListener('hashchange', onHash)
   }, [])
 
-  const openGround = useCallback(() => {
-    window.location.hash = GROUND
+  /* Optionally onto a specific node — the hero's domain panels open the map
+     already standing on the thing the reader was reading about. Called with
+     no argument (or with a click event, from the header links) it opens the
+     map where it always did. */
+  const openGround = useCallback((nodeId) => {
+    window.location.hash = typeof nodeId === 'string' ? `${GROUND}/${nodeId}` : GROUND
     window.scrollTo(0, 0)
   }, [])
 
@@ -72,7 +76,9 @@ export default function App() {
 
       <ServiceExperience />
 
-      <UptimeClose />
+      {/* The footer offers the two applications. By this point the header
+          that also offers them is five sections of scrolling away. */}
+      <UptimeClose onOpenGround={openGround} onOpenOrdering={openOrdering} />
     </>
   )
 }

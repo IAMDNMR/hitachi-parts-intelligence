@@ -76,7 +76,22 @@ export interface RecordFact {
 export interface GroundNode {
   id: string
   type: NodeType
-  /** Architectural layer, 0 = leftmost. Drives horizontal placement. */
+  /**
+   * The architectural layer this node belongs to — origin, pillar, process,
+   * system, hub, third party, entity, canonical, outcome.
+   *
+   * NOT READ BY THE LAYOUT. It used to say "drives horizontal placement",
+   * and that stopped being true when layout.ts began computing rank from the
+   * relationships instead: the authored columns did not describe a hierarchy
+   * — the whole sales spine sat in column 0 and all twenty-seven business
+   * processes sat in column 4, which is a row no screen can hold.
+   *
+   * It is kept rather than deleted because it is the one thing in the model
+   * that states the intended ARCHITECTURAL layering, as opposed to the flow
+   * order the ranking derives. A layout that lays a process chain out
+   * left-to-right instead of down the page — which is what the current
+   * one-node-wide ribbon needs — would be built on this.
+   */
   column: number
   label: string
   summary: string

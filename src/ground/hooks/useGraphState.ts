@@ -45,8 +45,6 @@ export interface GraphState {
   litEdges: Set<number>
   /** Selects a node and brings what it connects to onto the canvas. */
   activate: (id: string) => void
-  /** Steps back one along the path the reader walked. */
-  collapse: () => void
   reset: () => void
   /** True when this node touches something not currently drawn. */
   isExpandable: (id: string) => boolean
@@ -373,11 +371,6 @@ export function useGraphState(
     [routeTo, neighbours, rootId, openingId],
   )
 
-  /** Steps back one along the path the reader walked. */
-  const collapse = useCallback(() => {
-    setPath((prev) => (prev.length > 1 ? prev.slice(0, -1) : prev))
-  }, [])
-
   const reset = useCallback(() => {
     setPath(routeTo(openingId))
   }, [routeTo, openingId])
@@ -398,7 +391,6 @@ export function useGraphState(
     litNodes,
     litEdges,
     activate,
-    collapse,
     reset,
     isExpandable,
     revealCount,

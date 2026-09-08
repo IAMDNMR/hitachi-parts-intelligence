@@ -17,10 +17,19 @@
  * `reveal` is the progress value at which the component has visibly separated
  * enough for its label to make sense — the labels arrive with the machine
  * coming apart, not on a timer of their own.
+ *
+ * `groundId` is the node in src/ground/data/graph.ts this domain becomes once
+ * the reader wants the architecture behind it. The panel used to end with
+ * "Detailed view in development", which was true when it was written and
+ * stopped being true when The Ground was built — the deeper view exists, and
+ * every one of these six has a node waiting for it. Written here rather than
+ * mapped in the component so the pairing is data someone can check against
+ * the graph, and so a renamed node breaks in one obvious place.
  */
 export const ecosystemNodes = [
   {
     id: 'service',
+    groundId: 'service',
     label: 'SERVICE',
     component: 'Operator cab',
     icon: 'service',
@@ -39,6 +48,7 @@ export const ecosystemNodes = [
   },
   {
     id: 'parts',
+    groundId: 'parts',
     label: 'PARTS',
     component: 'Boom and arm',
     icon: 'parts',
@@ -57,6 +67,7 @@ export const ecosystemNodes = [
   },
   {
     id: 'dealer-network',
+    groundId: 'network',
     label: 'DEALER NETWORK',
     component: 'Undercarriage',
     icon: 'network',
@@ -75,6 +86,7 @@ export const ecosystemNodes = [
   },
   {
     id: 'machine-data',
+    groundId: 'machine-data',
     label: 'MACHINE DATA',
     component: 'Hydraulic pump',
     icon: 'data',
@@ -93,6 +105,7 @@ export const ecosystemNodes = [
   },
   {
     id: 'warranty',
+    groundId: 'warranty',
     label: 'WARRANTY',
     component: 'Upper structure',
     icon: 'warranty',
@@ -111,6 +124,7 @@ export const ecosystemNodes = [
   },
   {
     id: 'logistics',
+    groundId: 'n-warehouses',
     label: 'LOGISTICS',
     component: 'Final drive',
     icon: 'logistics',
