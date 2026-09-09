@@ -14,6 +14,17 @@
  * There are no figures here — no response times, no uptime percentages, no
  * fault counts — because the project holds no service data to support them.
  *
+ * This is dealership after-sales service, not a machine's trip to a
+ * building. The dealer service team follows the machine — a technician
+ * diagnoses it where it is, and only where the job needs a workshop does the
+ * machine come to one. Stage 01 carries that: a service need is raised and
+ * reaches the dealer before anything is touched. It is folded into Inspect
+ * rather than given a stage of its own, because the section's five stages
+ * are cut to five ranges of footage (service-frame-map.json) and a sixth
+ * stage has no footage to draw from yet — the model is correct here even
+ * though the frame count is not, and expanding it is future work, not a
+ * rewrite this pass is scoped to do.
+ *
  * The stage's own frames come from assets/source/section-04/, keyed by
  * service-frame-map.json rather than by anything written here — `id` matches
  * the map's stage keys, so the two cannot drift apart.
@@ -28,10 +39,11 @@ export const serviceSteps = [
     title: 'Inspect',
     headline: ['The machine needs', 'more than parts.'],
     headlineAccent: 'It needs support.',
-    statement: 'Service begins by understanding machine condition, before anything is touched.',
+    statement:
+      'A machine needs attention. The dealer service team receives the need, and inspection begins before anything is touched.',
     systems: {
       consite: 'Condition reported by the machine as it works.',
-      globalService: 'Inspection history, wherever the machine is.',
+      globalService: 'Service history, wherever the machine is.',
     },
   },
   {
@@ -41,7 +53,8 @@ export const serviceSteps = [
     title: 'Diagnose',
     headline: ['Find the cause,', 'not the symptom.'],
     headlineAccent: 'The machine tells us.',
-    statement: 'Machine information identifies what actually needs attention, and what does not.',
+    statement:
+      'A technician diagnoses the machine where it is — or the machine is brought to a dealer workshop, when the job requires it.',
     systems: {
       consite: 'Operating data that points at the fault.',
       globalService: 'Technical information behind the diagnosis.',
@@ -67,10 +80,11 @@ export const serviceSteps = [
     title: 'Repair',
     headline: ['The right part,', 'fitted right.'],
     headlineAccent: 'First time.',
-    statement: 'Genuine parts and trained expertise, combined into one service action.',
+    statement:
+      'Required parts are identified and fulfilled, and the technician completes the repair.',
     systems: {
       consite: 'The record the machine kept, informing the repair.',
-      globalService: 'Parts identification and dealer support.',
+      globalService: 'Technical reference data behind parts identification.',
     },
   },
   {
@@ -80,10 +94,10 @@ export const serviceSteps = [
     title: 'Back to work',
     headline: ['Downtime ends.', 'The machine'],
     headlineAccent: 'goes back to work.',
-    statement: 'The machine is returned to productive operation, ready for the next shift.',
+    statement: 'The machine is back at work, ready for the next shift.',
     systems: {
       consite: 'Monitoring continues once it is working again.',
-      globalService: 'Support that carries on through its life.',
+      globalService: 'Machine information that carries on through its life.',
     },
   },
 ]
@@ -96,6 +110,12 @@ export const serviceSteps = [
  * step's `systems` rather than from here. Two constant sentences sitting
  * under five changing stages read as a footer nobody had updated.
  *
+ * Both are information capabilities, not the operational actor. The dealer
+ * service team and its technicians do the work; ConSite and Global e-Service
+ * are what informs them while they do it, which is why every `systems` line
+ * above is written as data, history or reference — never as an action the
+ * platform itself is taking.
+ *
  * `key` is the field read off the step; `id` is only the React key.
  */
 export const serviceSystems = [
@@ -104,6 +124,6 @@ export const serviceSystems = [
     id: 'global-e-service',
     key: 'globalService',
     icon: 'globalservice',
-    name: 'Global Service',
+    name: 'Global e-Service',
   },
 ]

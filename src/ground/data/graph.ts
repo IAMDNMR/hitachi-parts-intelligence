@@ -291,7 +291,7 @@ export const groundNodes: GroundNode[] = [
     label: 'Dealer',
     summary: 'The dealer holding the customer relationship and doing the work.',
     role:
-      'Arrived at from both directions — the parts chain delivers to the dealer, and the service network staffs it.',
+      'Arrived at from several directions — the parts chain delivers to the dealer, a raised service need reaches the dealer alongside the technician it is assigned to, and the service network staffs it. The dealer, not a service centre, is the organisation the model hangs the work on.',
     provenance: fromSite('project data: ecosystemNodes.js'),
   },
   {
@@ -395,20 +395,24 @@ export const groundNodes: GroundNode[] = [
     provenance: fromSite('project data: serviceSteps.js'),
   },
   {
-    id: 's-engineer',
+    id: 's-need',
     type: 'process',
     column: 4,
-    label: 'Service Engineer',
-    summary: 'The person who carries out the work.',
-    provenance: fromSite('project data: ecosystemNodes.js — Service'),
+    label: 'Service Need',
+    summary: 'A machine issue or maintenance requirement is raised.',
+    role:
+      'The step this model was missing: where the journey actually starts. It is raised against the machine, not against a building, and it reaches both the dealer and the technician who is assigned — deciding where the work happens comes after this, not before it.',
+    provenance: fromSite('project data: serviceSteps.js'),
   },
   {
-    id: 's-centre',
+    id: 's-technician',
     type: 'process',
     column: 4,
-    label: 'Service Center',
-    summary: 'Where workshop-level work is carried out.',
-    provenance: fromSite('project data: ecosystemNodes.js — Network'),
+    label: 'Technician',
+    summary: 'The dealer’s technician who diagnoses and carries out the work.',
+    role:
+      'Assigned by the dealer, not fielded by a building — the technician goes to the machine, or the machine comes to a dealer workshop, depending on what the job needs. Either way the technician, not a location, is the acting party.',
+    provenance: fromSite('project data: ecosystemNodes.js — Service'),
   },
 
   /* ========================================= column 4 — machine data flow */
@@ -461,7 +465,7 @@ export const groundNodes: GroundNode[] = [
     label: 'Global e-Service',
     summary: 'The platform machine information is reported through.',
     detail: ['Named in this project’s service section; its internal architecture is not supplied'],
-    provenance: fromSite('project data: serviceSteps.js — Global Service'),
+    provenance: fromSite('project data: serviceSteps.js — Global e-Service'),
   },
 
   /* =============================================== column 4 — the network */
@@ -1028,13 +1032,15 @@ export const groundEdges: Edge[] = [
   e('p-reman', 'p-inventory', 'back to sellable stock', 'flow', 'inferred'),
 
   /* service process */
+  e('service', 's-need'),
+  e('s-need', 'dealer', 'raised to'),
+  e('s-need', 's-technician', 'assigned to'),
   e('service', 's-maintenance'),
   e('service', 's-support'),
   e('s-maintenance', 's-preventive'),
   e('s-maintenance', 's-repair'),
   e('s-support', 's-repair'),
-  e('s-engineer', 's-repair', 'carries out'),
-  e('s-centre', 's-engineer', 'fields'),
+  e('s-technician', 's-repair', 'carries out'),
   e('s-repair', 'p-requirement', 'parts required'),
   e('s-preventive', 'uptime'),
   e('dealer', 'uptime'),
@@ -1055,12 +1061,11 @@ export const groundEdges: Edge[] = [
   e('warranty', 's-repair', 'coverage', 'flow', 'assumed'),
   e('warranty', 'p-ordering', 'coverage', 'flow', 'assumed'),
   e('network', 'dealer'),
-  e('network', 's-engineer'),
-  e('network', 's-centre'),
+  e('network', 's-technician'),
   e('network', 'n-warehouses'),
   e('network', 'n-regional'),
   e('n-warehouses', 'p-inventory', 'stock held'),
-  e('n-regional', 's-centre', 'regional capability', 'flow', 'assumed'),
+  e('n-regional', 'dealer', 'regional capability', 'flow', 'assumed'),
 
   /* process → system */
   e('p-identification', 'sys-d365', 'part master', 'system'),
@@ -1126,7 +1131,6 @@ export const groundEdges: Edge[] = [
   e('e-payment', 'cdm-finance', undefined, 'data'),
   /* service reaches the dealer system it is recorded in */
   e('s-repair', 'sys-annata', 'job recorded in', 'system', 'assumed'),
-  e('s-centre', 'sys-annata', 'operates on', 'system', 'assumed'),
 
 
 

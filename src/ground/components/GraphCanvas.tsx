@@ -214,8 +214,8 @@ export function GraphCanvas({ nodes, edges, state }: Props) {
    * record of not arriving. The bar changes height whenever the caption
    * appears or wraps, which changes the canvas height under the graph; when
    * the observer did not fire, the camera went on fitting against the height
-   * it last knew. That is how selecting Service Engineer came to be drawn at
-   * a scale meant for a canvas 130px taller than the real one, with Repair
+   * it last knew. That is how selecting Technician came to be drawn at a
+   * scale meant for a canvas 130px taller than the real one, with Repair
    * laid out below the bottom of the frame.
    *
    * A bounding rect is cheap and this is the value everything else depends

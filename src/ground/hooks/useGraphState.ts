@@ -231,8 +231,8 @@ export function useGraphState(
                route from the start of the story wins — not the one fewest
                steps from the orphan. Those differ: the dealer network feeds
                the Dealer directly, but the Dealer is twelve steps down the
-               parts chain, while the Service Engineer it also feeds reaches
-               Repair in six. Both are true relationships, and six steps is a
+               parts chain, while the Technician it also feeds reaches Repair
+               in six. Both are true relationships, and six steps is a
                breadcrumb somebody can read. */
             const via = trace(at)
             if (!best || via.length < best.length) best = via
