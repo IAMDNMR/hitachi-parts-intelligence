@@ -7,12 +7,14 @@ stage but forgets to log a StatusEvent, or advertises the wrong next action,
 would still pass a test that only checked one of the three.
 """
 
+from .conftest import A_MACHINE
 
-def create_requirement(client, part_id="filters", quantity=3, machine="ZX350-4521"):
+
+def create_requirement(client, part_id="filters", quantity=3, machine=A_MACHINE):
     r = client.post(
         "/api/requirements",
         json={
-            "machine_serial": machine,
+            "machine_id": machine,
             "part_id": part_id,
             "quantity": quantity,
             "reason": "Scheduled 500-hour service",
@@ -33,7 +35,7 @@ def test_creating_a_requirement_raises_and_identifies_in_one_call(client):
 def test_creating_against_an_unknown_part_is_404(client):
     r = client.post(
         "/api/requirements",
-        json={"machine_serial": "X", "part_id": "not-a-part", "quantity": 1, "reason": "x"},
+        json={"machine_id": A_MACHINE, "part_id": "not-a-part", "quantity": 1, "reason": "x"},
     )
     assert r.status_code == 404
 
@@ -41,7 +43,7 @@ def test_creating_against_an_unknown_part_is_404(client):
 def test_quantity_must_be_positive(client):
     r = client.post(
         "/api/requirements",
-        json={"machine_serial": "X", "part_id": "filters", "quantity": 0, "reason": "x"},
+        json={"machine_id": A_MACHINE, "part_id": "filters", "quantity": 0, "reason": "x"},
     )
     assert r.status_code == 422
 

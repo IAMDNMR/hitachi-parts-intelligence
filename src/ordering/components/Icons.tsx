@@ -25,6 +25,19 @@ export const IconList = () => (
   </svg>
 )
 
+/** An excavator, reduced to the silhouette that reads at 16px: tracks, a
+ *  body and a boom. The machine is the anchor of this application, so it
+ *  gets a shape of its own rather than a generic box. */
+export const IconMachine = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6"
+    strokeLinecap="round" strokeLinejoin="round" width="18" height="18" aria-hidden="true">
+    <rect x="3" y="14" width="12" height="4" rx="2" />
+    <rect x="6" y="9" width="7" height="5" rx="1" />
+    <path d="M13 10 L18 5 L21 8" />
+    <path d="M21 8 L20 12" />
+  </svg>
+)
+
 export const IconParts = () => (
   <svg {...base}>
     <path d="M8 1.8 14 5v6l-6 3.2L2 11V5z" />

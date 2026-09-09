@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { api, ApiError } from '../api'
-import type { PartRow } from '../types'
+import type { MachineDetail, PartRow } from '../types'
 import { thumbnailFor } from '../thumbnails'
 import {
   IconCart,
@@ -16,6 +16,10 @@ import {
 const PAGE_SIZE = 8
 
 interface Props {
+  /** When set, the catalogue is standing on a machine: it shows only the
+   *  parts that fit it, and says so. */
+  machineId?: string
+  onClearMachine: () => void
   onOpen: (partId: string) => void
   /** Undefined raises a blank requirement; a part id pre-picks that part. */
   onRaise: (partId?: string) => void
@@ -228,13 +232,18 @@ function RowMenu({ part, onOpen, onRaise }: { part: PartRow; onOpen: () => void;
  * Every number on that line is counted from the rows in hand — not a stored
  * total that can drift from what the table underneath it shows.
  */
-export function PartsCatalogue({ onOpen, onRaise }: Props) {
+export function PartsCatalogue({ machineId, onClearMachine, onOpen, onRaise }: Props) {
+  /* The machine the catalogue is standing on, and the ids of the parts that
+     fit it. Null until asked for, so the ordinary catalogue costs nothing
+     extra. */
+  const [machine, setMachine] = useState<MachineDetail | null>(null)
+  const [fits, setFits] = useState<Set<string> | null>(null)
   const [search, setSearch] = useState('')
   const [parts, setParts] = useState<PartRow[] | null>(null)
   const [error, setError] = useState<string | null>(null)
 
   const [category, setCategory] = useState('any')
-  const [machine, setMachine] = useState('any')
+  const [machineFilter, setMachineFilter] = useState('any')
   const [availability, setAvailability] = useState('any')
   const [lead, setLead] = useState('any')
   const [openPicker, setOpenPicker] = useState<string | null>(null)
@@ -302,7 +311,40 @@ export function PartsCatalogue({ onOpen, onRaise }: Props) {
     }
   }, [])
 
+  useEffect(() => {
+    if (!machineId) {
+      setMachine(null)
+      setFits(null)
+      return undefined
+    }
+    let cancelled = false
+    Promise.all([api.getMachine(machineId), api.getMachineParts(machineId)])
+      .then(([m, list]) => {
+        if (cancelled) return
+        setMachine(m)
+        setFits(new Set(list.map((x) => x.id)))
+      })
+      .catch((err: unknown) => {
+        if (cancelled) return
+        setError(err instanceof ApiError ? err.message : 'Could not load that machine.')
+      })
+    return () => {
+      cancelled = true
+    }
+  }, [machineId])
+
+  /* Everything the server returned, before the machine narrows it. The
+     facets are still built from this, so standing on a machine does not
+     empty the category menu down to the categories that happen to fit. */
   const all = useMemo(() => parts ?? [], [parts])
+
+  /* The rows the machine allows. A separate step from the facets below on
+     purpose: this one is a RULE, not a preference, and the reader is told
+     which of the two is hiding things from them. */
+  const inScope = useMemo(
+    () => (fits ? all.filter((p) => fits.has(p.id)) : all),
+    [all, fits],
+  )
   const everything = useMemo(() => catalogue ?? all, [catalogue, all])
 
   /** Every category the catalogue holds, largest first. */
@@ -321,9 +363,10 @@ export function PartsCatalogue({ onOpen, onRaise }: Props) {
   }, [everything])
 
   const shown = useMemo(() => {
-    let list = all
+    let list = inScope
     if (category !== 'any') list = list.filter((p) => p.category === category)
-    if (machine !== 'any') list = list.filter((p) => p.machines.includes(machine))
+    if (machineFilter !== 'any')
+      list = list.filter((p) => p.machines.includes(machineFilter))
     if (availability !== 'any') list = list.filter((p) => availabilityOf(p) === availability)
     if (lead !== 'any') list = list.filter((p) => p.lead_time_days <= Number(lead))
     return [...list].sort((a, b) => {
@@ -345,7 +388,7 @@ export function PartsCatalogue({ onOpen, onRaise }: Props) {
       // stable and readable inside each group rather than in seed order.
       return (sort.asc ? d : -d) || a.name.localeCompare(b.name)
     })
-  }, [all, category, machine, availability, lead, sort])
+  }, [inScope, category, machineFilter, availability, lead, sort])
 
   // A filter change can leave the reader on a page that no longer exists.
   useEffect(() => {
@@ -360,7 +403,7 @@ export function PartsCatalogue({ onOpen, onRaise }: Props) {
      whole catalogue must be able to see the control that does it. */
   const narrowed =
     category !== 'any' ||
-    machine !== 'any' ||
+    machineFilter !== 'any' ||
     availability !== 'any' ||
     lead !== 'any' ||
     search.trim() !== ''
@@ -410,7 +453,7 @@ export function PartsCatalogue({ onOpen, onRaise }: Props) {
 
   const clearAll = () => {
     setCategory('any')
-    setMachine('any')
+    setMachineFilter('any')
     setAvailability('any')
     setLead('any')
     setSearch('')
@@ -450,10 +493,12 @@ export function PartsCatalogue({ onOpen, onRaise }: Props) {
             ]}
           />
 
+          {/* The model facet, which is a preference. Distinct from standing on
+              a machine, which is a rule — see the scope bar above. */}
           <Picker
             label="Machine"
-            value={machine}
-            onChange={setMachine}
+            value={machineFilter}
+            onChange={setMachineFilter}
             open={openPicker === 'machine'}
             setOpen={(v) => setOpenPicker(v ? 'machine' : null)}
             options={[
@@ -505,6 +550,22 @@ export function PartsCatalogue({ onOpen, onRaise }: Props) {
         </div>
       </section>
 
+      {/* ALL PARTS, or PARTS THAT FIT THIS MACHINE. The distinction is the
+          whole point of the machine-aware catalogue, so it is stated rather
+          than left to be inferred from a shorter list. */}
+      {machine && (
+        <div className="ord__scope">
+          <span className="ord__scope-label">Parts that fit</span>
+          <span className="ord__scope-machine">
+            {machine.serial_number}
+            <span className="ord__scope-model">{machine.model}</span>
+          </span>
+          <button type="button" className="ord__scope-clear" onClick={onClearMachine}>
+            Show all parts
+          </button>
+        </div>
+      )}
+
       {parts === null ? (
         <p className="ord__muted">Loading…</p>
       ) : (
@@ -532,9 +593,11 @@ export function PartsCatalogue({ onOpen, onRaise }: Props) {
             </p>
 
             <p className="ord__cat-result" role="status">
-              {shown.length === total
-                ? `Showing all ${total}`
-                : `${shown.length} of ${total} shown`}
+              {machine
+                ? `${shown.length} of ${total} fit this machine`
+                : shown.length === total
+                  ? `Showing all ${total}`
+                  : `${shown.length} of ${total} shown`}
             </p>
           </div>
 
@@ -571,9 +634,11 @@ export function PartsCatalogue({ onOpen, onRaise }: Props) {
             <div className="ord__empty">
               <p className="ord__empty-title">Nothing here</p>
               <p className="ord__empty-body">
-                {search.trim()
-                  ? `No part matches “${search.trim()}”.`
-                  : 'No part matches those filters.'}{' '}
+                {machine && inScope.length === 0
+                  ? `No part in this catalogue is listed as fitting a ${machine.model}.`
+                  : search.trim()
+                    ? `No part matches “${search.trim()}”.`
+                    : 'No part matches those filters.'}{' '}
                 {narrowed ? 'Clearing them will bring the rest back.' : ''}
               </p>
             </div>

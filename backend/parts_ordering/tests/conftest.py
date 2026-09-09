@@ -42,3 +42,14 @@ def client():
         yield test_client
     app.dependency_overrides.clear()
     Base.metadata.drop_all(bind=engine)
+
+
+# The seeded machines these tests build on. A requirement now names a machine
+# rather than a string, so the fixtures that used to pass "ZX350-4521" or "X"
+# pass an id — and the model matters, because fitment is validated against it.
+#
+#   zx350-4521   ZX350LC-7   the serial carried over from the free-text era
+#   zx210-0087   ZX210-7     the smallest machine; fewer parts fit it
+#   zx490-0031   ZX490LCH-7  in the workshop
+A_MACHINE = "zx350-4521"
+A_SMALL_MACHINE = "zx210-0087"

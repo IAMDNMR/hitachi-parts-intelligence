@@ -201,6 +201,9 @@ def seed(db: Session) -> None:
         _seed_fitment(db)
     if db.query(PartDocument).first() is None:
         _seed_documents(db)
+    # Row by row, like parts: this file has a history of adding seed data that
+    # databases already in the wild never received.
+    _seed_context(db)
     db.commit()
 
 
@@ -255,3 +258,88 @@ def _seed_documents(db: Session) -> None:
             db.add(
                 PartDocument(part_id=part_id, title=title, doc_type=doc_type, reference=reference)
             )
+
+
+# ------------------------------------------------------- customers, dealers
+#
+# Invented, like everything else seeded here, and kept to three fields each.
+# They exist so a machine has an owner and a supporter and so a fleet can be
+# filtered — not so anyone can manage a customer. See the docstrings on the
+# Customer and Dealer models.
+CUSTOMERS: list[tuple[str, str, str]] = [
+    ("nordvik", "Nordvik Anlegg", "Norway"),
+    ("terra-bouw", "Terra Bouw", "Netherlands"),
+    ("kesler", "Kesler Erdbau", "Germany"),
+]
+
+DEALERS: list[tuple[str, str, str]] = [
+    ("hcme-benelux", "HCME Benelux", "Netherlands"),
+    ("hcme-nordics", "HCME Nordics", "Norway"),
+    ("hcme-dach", "HCME DACH", "Germany"),
+]
+
+# ------------------------------------------------------------------ machines
+#
+# serial, model, customer, dealer, commissioned (months ago), warranty (months
+# from commissioning), status
+#
+# THE FIRST TWO ARE NOT INVENTED FREELY.
+# ZX350-4521 and AXZ120 are the serials already typed into the free-text field
+# this release replaces — the requirements in the database point at them, and
+# they have to keep working. AXZ120 in particular is why the Machine entity
+# exists: it is not a Hitachi model, it matches no fitment record, and nothing
+# ever questioned it. See the note in seed_machines() for the model assigned
+# to it and why.
+#
+# Every model below is one the catalogue holds real fitment records against.
+# Nothing else would be orderable.
+MACHINES: list[tuple[str, str, str, str, int, int, str]] = [
+    # the two carried over from the free-text era
+    ("ZX350-4521", "ZX350LC-7", "terra-bouw", "hcme-benelux", 20, 24, "working"),
+    ("AXZ120", "ZX350LC-7", "kesler", "hcme-dach", 40, 24, "working"),
+    # a fleet large enough for the list's filters to mean something
+    ("ZX210-0087", "ZX210-7", "terra-bouw", "hcme-benelux", 8, 24, "working"),
+    ("ZX250-1140", "ZX250LC-7", "nordvik", "hcme-nordics", 14, 24, "working"),
+    ("ZX350-4522", "ZX350LC-7", "terra-bouw", "hcme-benelux", 20, 24, "down"),
+    ("ZX490-0031", "ZX490LCH-7", "nordvik", "hcme-nordics", 31, 24, "in_workshop"),
+    ("ZX490-0032", "ZX490LCH-7", "kesler", "hcme-dach", 3, 24, "working"),
+    ("ZX250-1141", "ZX250LC-7", "kesler", "hcme-dach", 46, 24, "working"),
+]
+
+
+def _seed_context(db: Session) -> None:
+    """Customers, dealers and machines. Row by row, like parts — this file has
+    a history of adding seed data that existing databases never received."""
+    from datetime import timedelta
+
+    from .models import Customer, Dealer, Machine, MachineStatus, utcnow
+
+    have_c = {c for (c,) in db.query(Customer.id)}
+    for cid, name, region in CUSTOMERS:
+        if cid not in have_c:
+            db.add(Customer(id=cid, name=name, region=region))
+
+    have_d = {d for (d,) in db.query(Dealer.id)}
+    for did, name, region in DEALERS:
+        if did not in have_d:
+            db.add(Dealer(id=did, name=name, region=region))
+    db.flush()
+
+    have_m = {s for (s,) in db.query(Machine.serial_number)}
+    now = utcnow().replace(tzinfo=None)
+    for serial, model, cust, dealer, months_old, warranty_months, status in MACHINES:
+        if serial in have_m:
+            continue
+        commissioned = now - timedelta(days=months_old * 30)
+        db.add(
+            Machine(
+                id=serial.lower().replace(" ", "-"),
+                serial_number=serial,
+                model=model,
+                customer_id=cust,
+                dealer_id=dealer,
+                commissioned_at=commissioned,
+                warranty_end=commissioned + timedelta(days=warranty_months * 30),
+                status=MachineStatus(status),
+            )
+        )

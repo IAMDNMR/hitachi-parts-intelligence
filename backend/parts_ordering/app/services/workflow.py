@@ -12,7 +12,15 @@ from dataclasses import dataclass
 
 from sqlalchemy.orm import Session
 
-from ..models import STAGE_SEQUENCE, Requirement, Stage, StatusEvent, StockLevel
+from ..models import (
+    STAGE_SEQUENCE,
+    Machine,
+    PartFitment,
+    Requirement,
+    Stage,
+    StatusEvent,
+    StockLevel,
+)
 
 
 class WrongStageError(Exception):
@@ -55,20 +63,63 @@ def _advance(db: Session, req: Requirement, to: Stage, note: str | None = None) 
     return req
 
 
+class DoesNotFitError(Exception):
+    """The part is not listed against this machine's model.
+
+    Raised rather than warned about, and never resolved by quietly offering a
+    different part: substituting one component for another on somebody else's
+    machine is the one mistake a parts system must not make on its own
+    initiative. The message names the model and what the part does fit, so the
+    person raising it can see whether they picked the wrong part or the wrong
+    machine.
+    """
+
+    def __init__(self, part_id: str, model: str, fits: list[str]):
+        self.part_id = part_id
+        self.model = model
+        self.fits = fits
+        listed = ", ".join(fits) if fits else "no machine model in this catalogue"
+        super().__init__(
+            f"Part '{part_id}' is not listed as fitting a {model}. It fits: {listed}."
+        )
+
+
+def assert_fits(db: Session, machine: Machine, part_id: str) -> None:
+    """The rule that makes fitment data mean something.
+
+    Fitment has always been stored and has never been enforced — twenty-eight
+    rows used to draw a column and populate a filter. This is the whole of the
+    change: a requirement may only name a part the catalogue lists against the
+    machine's own model.
+    """
+    fits = [
+        m
+        for (m,) in db.query(PartFitment.machine_model)
+        .filter(PartFitment.part_id == part_id)
+        .distinct()
+    ]
+    if machine.model not in fits:
+        raise DoesNotFitError(part_id, machine.model, sorted(fits))
+
+
 @dataclass
 class CreatedRequirement:
     requirement: Requirement
 
 
 def create_requirement(
-    db: Session, machine_serial: str, part_id: str, quantity: int, reason: str
+    db: Session, machine: Machine, part_id: str, quantity: int, reason: str
 ) -> Requirement:
     """Raising a requirement and identifying the part are one action here —
     see the module docstring in models.py for why. Two events are still
     recorded, because the timeline should read the way the graph does, one
-    line per named stage, not one line that skips one of the seven names."""
+    line per named stage, not one line that skips one of the seven names.
+
+    The machine is passed as a record rather than a serial, so there is no
+    path into this function that bypasses the fitment check below."""
+    assert_fits(db, machine, part_id)
     req = Requirement(
-        machine_serial=machine_serial,
+        machine_id=machine.id,
         part_id=part_id,
         quantity=quantity,
         reason=reason,
@@ -152,17 +203,27 @@ EDITABLE_STAGES = {Stage.IDENTIFIED, Stage.AVAILABILITY_CHECKED, Stage.ORDERED}
 def update_requirement(
     db: Session,
     req: Requirement,
-    machine_serial: str | None,
+    machine: Machine | None,
     quantity: int | None,
     reason: str | None,
 ) -> Requirement:
+    """Moving a requirement to a different machine is a machine change, not a
+    text edit.
+
+    The serial used to be editable as a string, which meant a requirement
+    could be pointed at a machine that did not exist and — once fitment became
+    a rule — at a machine the part does not fit. Re-pointing it now takes a
+    real machine and is re-validated against it, so there is no way to edit
+    around the check that creation enforces."""
     if req.stage not in EDITABLE_STAGES:
         raise TooLateError(req.id, req.stage)
 
     changed: list[str] = []
-    if machine_serial is not None and machine_serial != req.machine_serial:
-        changed.append(f"machine {req.machine_serial} → {machine_serial}")
-        req.machine_serial = machine_serial
+    if machine is not None and machine.id != req.machine_id:
+        assert_fits(db, machine, req.part_id)
+        changed.append(f"machine {req.machine.serial_number} → {machine.serial_number}")
+        req.machine_id = machine.id
+        req.machine = machine
     if quantity is not None and quantity != req.quantity:
         changed.append(f"quantity {req.quantity} → {quantity}")
         req.quantity = quantity

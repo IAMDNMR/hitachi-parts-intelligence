@@ -98,6 +98,7 @@ def get_usage(part_id: str, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail=f"No part '{part_id}'.")
     rows = (
         db.query(Requirement)
+        .options(selectinload(Requirement.machine))
         .filter(Requirement.part_id == part_id)
         .order_by(Requirement.created_at.desc())
         .all()
@@ -105,7 +106,9 @@ def get_usage(part_id: str, db: Session = Depends(get_db)):
     return [
         PartUsageOut(
             requirement_id=r.id,
+            machine_id=r.machine_id,
             machine_serial=r.machine_serial,
+            machine_model=r.machine_model,
             quantity=r.quantity,
             stage=r.stage,
             created_at=r.created_at,

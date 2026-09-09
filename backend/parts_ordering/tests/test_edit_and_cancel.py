@@ -2,12 +2,14 @@
 "create and advance" alone does not give you, and the two most dangerous to
 get wrong, because both can silently disagree with a physical shelf."""
 
+from .conftest import A_MACHINE, A_SMALL_MACHINE
+
 
 def make(client, part_id="filters", quantity=3):
     return client.post(
         "/api/requirements",
         json={
-            "machine_serial": "ZX350-4521",
+            "machine_id": A_MACHINE,
             "part_id": part_id,
             "quantity": quantity,
             "reason": "Scheduled service",
@@ -20,14 +22,18 @@ def stock(client, part_id="filters"):
 
 
 def test_edit_changes_the_fields_and_records_what_changed(client):
+    """Re-pointing at a different machine is now a machine change, not a text
+    edit — the serial used to be an editable string, which meant a requirement
+    could be moved to a machine that did not exist."""
     req = make(client)
     r = client.patch(
         f"/api/requirements/{req['id']}",
-        json={"machine_serial": "ZX490-0002", "reason": "Revised after inspection"},
+        json={"machine_id": A_SMALL_MACHINE, "reason": "Revised after inspection"},
     )
     assert r.status_code == 200
     body = r.json()
-    assert body["machine_serial"] == "ZX490-0002"
+    assert body["machine_id"] == A_SMALL_MACHINE
+    assert body["machine_serial"] == "ZX210-0087"
     assert body["reason"] == "Revised after inspection"
     assert any("Edited" in (e["note"] or "") for e in body["events"])
 

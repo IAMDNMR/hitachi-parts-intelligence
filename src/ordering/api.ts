@@ -1,4 +1,8 @@
 import type {
+  Machine,
+  MachineDetail,
+  MachinePart,
+  MachineRequirement,
   PartDetail,
   PartRow,
   PartUsage,
@@ -85,11 +89,34 @@ export const api = {
     request<PartUsage[]>(`/api/parts/${encodeURIComponent(partId)}/usage`),
   getStock: (partId: string) => request<Stock>(`/api/parts/${encodeURIComponent(partId)}/stock`),
 
+  /** The fleet. Every filter is optional and composes with the others. */
+  listMachines: (q?: {
+    search?: string
+    model?: string
+    status?: string
+    dealer_id?: string
+    warranty?: 'in' | 'out'
+  }) => {
+    const p = new URLSearchParams()
+    Object.entries(q ?? {}).forEach(([k, v]) => {
+      if (v) p.set(k, v)
+    })
+    const qs = p.toString()
+    return request<Machine[]>(`/api/machines${qs ? `?${qs}` : ''}`)
+  },
+  getMachine: (id: string) => request<MachineDetail>(`/api/machines/${encodeURIComponent(id)}`),
+  /** What this machine has needed — its parts history. */
+  getMachineRequirements: (id: string) =>
+    request<MachineRequirement[]>(`/api/machines/${encodeURIComponent(id)}/requirements`),
+  /** What fits it. The first read of the fitment data as an answer. */
+  getMachineParts: (id: string) =>
+    request<MachinePart[]>(`/api/machines/${encodeURIComponent(id)}/parts`),
+
   listRequirements: (stage?: string) =>
     request<Requirement[]>(`/api/requirements${stage ? `?stage=${stage}` : ''}`),
   getRequirement: (id: number) => request<RequirementDetail>(`/api/requirements/${id}`),
   createRequirement: (body: {
-    machine_serial: string
+    machine_id: string
     part_id: string
     quantity: number
     reason: string
@@ -97,7 +124,7 @@ export const api = {
 
   updateRequirement: (
     id: number,
-    body: { machine_serial?: string; quantity?: number; reason?: string },
+    body: { machine_id?: string; quantity?: number; reason?: string },
   ) => request<RequirementDetail>(`/api/requirements/${id}`, {
     method: 'PATCH',
     body: JSON.stringify(body),

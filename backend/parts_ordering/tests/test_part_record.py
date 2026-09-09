@@ -2,6 +2,8 @@
 number, what it fits, what it replaced, what documents cover it, and which
 machines have actually needed it."""
 
+from .conftest import A_MACHINE
+
 
 def test_part_detail_carries_number_lead_time_and_stock(client):
     r = client.get("/api/parts/swing-bearing")
@@ -54,7 +56,7 @@ def test_usage_reports_the_machines_that_have_needed_the_part(client):
     client.post(
         "/api/requirements",
         json={
-            "machine_serial": "ZX350-0001",
+            "machine_id": A_MACHINE,
             "part_id": "filters",
             "quantity": 2,
             "reason": "500-hour service",
@@ -62,7 +64,10 @@ def test_usage_reports_the_machines_that_have_needed_the_part(client):
     )
     usage = client.get("/api/parts/filters/usage").json()
     assert len(usage) == 1
-    assert usage[0]["machine_serial"] == "ZX350-0001"
+    assert usage[0]["machine_serial"] == "ZX350-4521"
+    # The machine as a record, so the part record can link back to Machine 360
+    assert usage[0]["machine_id"] == A_MACHINE
+    assert usage[0]["machine_model"] == "ZX350LC-7"
     assert usage[0]["quantity"] == 2
     assert usage[0]["stage"] == "identified"
 

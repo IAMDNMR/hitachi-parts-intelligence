@@ -138,13 +138,120 @@ class StockLevel(Base):
     part: Mapped["Part"] = relationship(back_populates="stock")
 
 
+class Customer(Base):
+    """The party a machine belongs to.
+
+    Deliberately three fields. A customer here exists so a machine has an
+    owner and a fleet can be filtered — not so anyone can manage a customer.
+    Contacts, addresses, opportunities and activities are the beginning of a
+    CRM, and this is not one.
+    """
+
+    __tablename__ = "customers"
+
+    id: Mapped[str] = mapped_column(String, primary_key=True)
+    name: Mapped[str] = mapped_column(String, nullable=False)
+    region: Mapped[str] = mapped_column(String, nullable=False)
+
+    machines: Mapped[list["Machine"]] = relationship(back_populates="customer")
+
+
+class Dealer(Base):
+    """Who supports the machine and does the work.
+
+    Same discipline as Customer: enough to attribute a machine and filter a
+    list, and no more. The dealer is arrived at from both directions in the
+    business — the parts chain delivers to it, the service network staffs it —
+    but neither of those needs anything beyond a name today.
+    """
+
+    __tablename__ = "dealers"
+
+    id: Mapped[str] = mapped_column(String, primary_key=True)
+    name: Mapped[str] = mapped_column(String, nullable=False)
+    region: Mapped[str] = mapped_column(String, nullable=False)
+
+    machines: Mapped[list["Machine"]] = relationship(back_populates="dealer")
+
+
+class MachineStatus(str, enum.Enum):
+    """What the machine is doing. Not telemetry — a state somebody sets.
+
+    Recorded now because uptime is what all of after-sales is for, and a
+    system that cannot say whether a machine is running cannot say anything
+    about it. Nothing in this release changes it automatically.
+    """
+
+    WORKING = "working"
+    DOWN = "down"
+    IN_WORKSHOP = "in_workshop"
+
+
+class Machine(Base):
+    """A machine in the field. The central operational context.
+
+    THE POINT OF THIS ENTITY
+    ------------------------
+    A requirement used to carry `machine_serial` as free text, and nothing
+    validated it. The database still contains "AXZ120", which is not a
+    Hitachi model and matches nothing — typed once and never questioned. That
+    is the failure this table exists to end.
+
+    `model` is the field that earns it. Part fitment has always been stored
+    against a machine model and used only to draw a column; matching
+    `Machine.model` to `PartFitment.machine_model` turns twenty-eight rows of
+    reference data into a rule the software enforces.
+
+    WHAT IS DELIBERATELY ABSENT
+    ---------------------------
+    Operating hours, site, configuration, fleet grouping. Hours in particular
+    would be the obvious next field and it is not here: it exists to schedule
+    preventive maintenance, and no service capability exists yet to schedule.
+    A field with nothing reading it is a promise, not a feature.
+    """
+
+    __tablename__ = "machines"
+
+    id: Mapped[str] = mapped_column(String, primary_key=True)
+    # What is stencilled on the machine, and what a dealer quotes. Unique
+    # because two machines with one serial is not a data problem, it is two
+    # machines nobody can tell apart.
+    serial_number: Mapped[str] = mapped_column(String, nullable=False, unique=True, index=True)
+    # Matches PartFitment.machine_model. The authority for fitment.
+    model: Mapped[str] = mapped_column(String, nullable=False, index=True)
+
+    customer_id: Mapped[str] = mapped_column(ForeignKey("customers.id"), nullable=False)
+    dealer_id: Mapped[str] = mapped_column(ForeignKey("dealers.id"), nullable=False)
+
+    # Handover. Where the after-sales relationship starts and warranty runs
+    # from.
+    commissioned_at: Mapped[datetime] = mapped_column(DateTime, nullable=False)
+    status: Mapped[MachineStatus] = mapped_column(
+        Enum(MachineStatus, native_enum=False), nullable=False, default=MachineStatus.WORKING
+    )
+    # One date, not a warranty module. It answers "who pays", which is the
+    # only question warranty asks of a parts operation.
+    warranty_end: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+
+    customer: Mapped["Customer"] = relationship(back_populates="machines")
+    dealer: Mapped["Dealer"] = relationship(back_populates="machines")
+    requirements: Mapped[list["Requirement"]] = relationship(back_populates="machine")
+
+
 class Requirement(Base):
     """One parts requirement, from being raised to goods receipt."""
 
     __tablename__ = "requirements"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
-    machine_serial: Mapped[str] = mapped_column(String, nullable=False)
+    # ONE authoritative relationship to the machine.
+    #
+    # This was `machine_serial`, a free-text column that nothing validated and
+    # nothing joined on. It is gone rather than kept alongside this, because
+    # two sources of truth for "which machine" is how a serial and a machine
+    # record drift apart — and the serial is still available, derived, through
+    # the `machine_serial` property below.
+    machine_id: Mapped[str] = mapped_column(ForeignKey("machines.id"), nullable=False, index=True)
     part_id: Mapped[str] = mapped_column(ForeignKey("parts.id"), nullable=False)
     quantity: Mapped[int] = mapped_column(Integer, nullable=False)
     reason: Mapped[str] = mapped_column(Text, nullable=False)
@@ -161,6 +268,21 @@ class Requirement(Base):
     carrier: Mapped[str | None] = mapped_column(String, nullable=True)
 
     part: Mapped["Part"] = relationship()
+    machine: Mapped["Machine"] = relationship(back_populates="requirements")
+
+    @property
+    def machine_serial(self) -> str:
+        """The serial, read from the machine rather than stored beside it.
+
+        Kept because the interface reads it in five places and a requirement
+        without a serial on screen is unrecognisable. Derived, so it cannot
+        disagree with the machine it belongs to."""
+        return self.machine.serial_number
+
+    @property
+    def machine_model(self) -> str:
+        return self.machine.model
+
     events: Mapped[list["StatusEvent"]] = relationship(
         back_populates="requirement", order_by="StatusEvent.at", cascade="all, delete-orphan"
     )

@@ -14,6 +14,7 @@ import {
   IconHome,
   IconHourglass,
   IconList,
+  IconMachine,
   IconParts,
   IconPlus,
   IconSearch,
@@ -25,6 +26,7 @@ import { PartsCatalogue } from './PartsCatalogue'
 import { PartsInsights } from './PartsInsights'
 import { RequirementDetail } from './RequirementDetail'
 import { RequirementsTable } from './RequirementsTable'
+import { Machine360, MachineList } from './Machines'
 
 /**
  * PARTS ORDERING.
@@ -56,16 +58,21 @@ interface Props {
   onOpenGround: () => void
 }
 
+/** Just enough of a machine for the two pickers in this file. */
+type MachineOption = { id: string; serial_number: string; model: string }
+
 type View =
   | { kind: 'list' }
-  | { kind: 'new'; partId?: string }
+  | { kind: 'new'; partId?: string; machineId?: string }
   | { kind: 'edit'; id: number }
   | { kind: 'detail'; id: number }
-  | { kind: 'catalogue' }
+  | { kind: 'catalogue'; machineId?: string }
   | { kind: 'part'; partId: string }
   | { kind: 'insights' }
+  | { kind: 'machines' }
+  | { kind: 'machine'; machineId: string }
 
-const SECTION_OF: Record<View['kind'], 'requirements' | 'parts'> = {
+const SECTION_OF: Record<View['kind'], 'requirements' | 'parts' | 'machines'> = {
   list: 'requirements',
   new: 'requirements',
   edit: 'requirements',
@@ -73,6 +80,8 @@ const SECTION_OF: Record<View['kind'], 'requirements' | 'parts'> = {
   catalogue: 'parts',
   part: 'parts',
   insights: 'requirements',
+  machines: 'machines',
+  machine: 'machines',
 }
 
 export function PartsOrdering({ onHome, onOpenGround }: Props) {
@@ -271,6 +280,17 @@ export function PartsOrdering({ onHome, onOpenGround }: Props) {
       title: 'Part record',
       strap: 'What it fits, what it supersedes, how long it takes to get, and who has needed one.',
     },
+    machines: {
+      crumb: 'Machines',
+      title: 'Machines',
+      strap:
+        'The installed base. Every machine this operation supports, and what each one is waiting on.',
+    },
+    machine: {
+      crumb: 'Machine',
+      title: 'Machine',
+      strap: 'What is going on with this machine — what it has needed, and what fits it.',
+    },
     insights: {
       crumb: 'Insights',
       title: 'Parts insights',
@@ -285,7 +305,9 @@ export function PartsOrdering({ onHome, onOpenGround }: Props) {
   const sectionRoot: { crumb: string; view: View } =
     section === 'parts'
       ? { crumb: PAGE.catalogue.crumb, view: { kind: 'catalogue' } }
-      : { crumb: PAGE.list.crumb, view: { kind: 'list' } }
+      : section === 'machines'
+        ? { crumb: PAGE.machines.crumb, view: { kind: 'machines' } }
+        : { crumb: PAGE.list.crumb, view: { kind: 'list' } }
 
   return (
     <div className="ord">
@@ -296,6 +318,21 @@ export function PartsOrdering({ onHome, onOpenGround }: Props) {
         </a>
 
         <nav className="ord__rail-nav" aria-label="Sections">
+          {/* Machines first. It is the entry point that makes the other two
+              cohere: somebody who starts at a machine can reach everything,
+              and somebody who starts at a part cannot get back to a machine
+              without one. */}
+          <button
+            type="button"
+            className={`ord__rail-link${section === 'machines' ? ' is-current' : ''}`}
+            aria-current={section === 'machines' ? 'page' : undefined}
+            onClick={() => setView({ kind: 'machines' })}
+          >
+            <span className="ord__rail-label">
+              <IconMachine />
+              Machines
+            </span>
+          </button>
           <button
             type="button"
             className={`ord__rail-link${section === 'requirements' ? ' is-current' : ''}`}
@@ -346,7 +383,16 @@ export function PartsOrdering({ onHome, onOpenGround }: Props) {
           <span aria-hidden>/</span>
           <button
             type="button"
-            onClick={() => setView({ kind: section === 'parts' ? 'catalogue' : 'list' })}
+            onClick={() =>
+              setView({
+                kind:
+                  section === 'parts'
+                    ? 'catalogue'
+                    : section === 'machines'
+                      ? 'machines'
+                      : 'list',
+              })
+            }
           >
             Parts
           </button>
@@ -424,8 +470,12 @@ export function PartsOrdering({ onHome, onOpenGround }: Props) {
 
         {view.kind === 'catalogue' && (
           <PartsCatalogue
+            machineId={view.machineId}
+            onClearMachine={() => setView({ kind: 'catalogue' })}
             onOpen={(partId) => setView({ kind: 'part', partId })}
-            onRaise={(partId) => setView({ kind: 'new', partId })}
+            onRaise={(partId) =>
+              setView({ kind: 'new', partId, machineId: view.machineId })
+            }
           />
         )}
 
@@ -436,6 +486,7 @@ export function PartsOrdering({ onHome, onOpenGround }: Props) {
             onBack={() => setView({ kind: 'catalogue' })}
             onRaise={(partId) => setView({ kind: 'new', partId })}
             onOpenPart={(partId) => setView({ kind: 'part', partId })}
+            onOpenMachine={(machineId) => setView({ kind: 'machine', machineId })}
           />
         )}
 
@@ -450,6 +501,7 @@ export function PartsOrdering({ onHome, onOpenGround }: Props) {
         {view.kind === 'new' && (
           <NewRequirementForm
             initialPartId={view.partId}
+            initialMachineId={view.machineId}
             onCancel={() => setView({ kind: 'list' })}
             onCreated={(req) => {
               setDetail(req)
@@ -545,6 +597,25 @@ export function PartsOrdering({ onHome, onOpenGround }: Props) {
               </div>
             </div>
           </div>
+        )}
+
+        {view.kind === 'machines' && (
+          <MachineList onOpen={(machineId) => setView({ kind: 'machine', machineId })} />
+        )}
+
+        {view.kind === 'machine' && (
+          <Machine360
+            key={view.machineId}
+            machineId={view.machineId}
+            onBack={() => setView({ kind: 'machines' })}
+            onOpenPart={(partId) => setView({ kind: 'part', partId })}
+            onRaise={(machineId, partId) =>
+              setView({ kind: 'new', partId, machineId })
+            }
+            /* The catalogue, narrowed to what fits — the same list, entered
+               from the machine rather than from the parts side. */
+            onBrowseFitting={(machineId) => setView({ kind: 'catalogue', machineId })}
+          />
         )}
 
         {view.kind === 'insights' && <PartsInsights onBack={() => setView({ kind: 'list' })} />}
@@ -647,7 +718,8 @@ function EditRequirementForm({
   onCancel: () => void
 }) {
   const [req, setReq] = useState<Detail | null>(null)
-  const [machineSerial, setMachineSerial] = useState('')
+  const [machineId, setMachineId] = useState('')
+  const [machines, setMachines] = useState<MachineOption[] | null>(null)
   const [quantity, setQuantity] = useState(1)
   const [reason, setReason] = useState('')
   const [busy, setBusy] = useState(false)
@@ -656,11 +728,24 @@ function EditRequirementForm({
   useEffect(() => {
     let cancelled = false
     api
+      .listMachines()
+      .then((list) => !cancelled && setMachines(list))
+      .catch(() => {
+        /* the record fetch below reports any failure */
+      })
+    return () => {
+      cancelled = true
+    }
+  }, [])
+
+  useEffect(() => {
+    let cancelled = false
+    api
       .getRequirement(id)
       .then((d) => {
         if (cancelled) return
         setReq(d)
-        setMachineSerial(d.machine_serial)
+        setMachineId(d.machine_id)
         setQuantity(d.quantity)
         setReason(d.reason)
       })
@@ -682,7 +767,7 @@ function EditRequirementForm({
     setError(null)
     try {
       await api.updateRequirement(id, {
-        machine_serial: machineSerial.trim(),
+        machine_id: machineId,
         quantity,
         reason: reason.trim(),
       })
@@ -702,15 +787,25 @@ function EditRequirementForm({
         Edit #{req.id} · {req.part.name}
       </h2>
 
+      {/* A machine, not a serial. Re-pointing a requirement is a machine
+          change and is re-validated against fitment — the serial used to be an
+          editable string, which meant a requirement could be moved onto a
+          machine that did not exist, or one the part does not fit. */}
       <label className="ord__field">
-        <span>Machine serial</span>
-        <input
-          type="text"
-          value={machineSerial}
-          onChange={(e) => setMachineSerial(e.target.value)}
-          maxLength={64}
+        <span>Machine</span>
+        <select
+          value={machineId}
+          onChange={(e) => setMachineId(e.target.value)}
+          disabled={!machines}
           required
-        />
+        >
+          {!machines && <option>Loading…</option>}
+          {machines?.map((m) => (
+            <option key={m.id} value={m.id}>
+              {m.serial_number} — {m.model}
+            </option>
+          ))}
+        </select>
       </label>
 
       <label className="ord__field">

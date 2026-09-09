@@ -44,16 +44,10 @@ function relativeTime(iso: string): string {
   return months === 1 ? '1 month ago' : `${months} months ago`
 }
 
-/**
- * Machine class from the serial.
- *
- * Every machine in this model is a Hitachi Zaxis, which is an excavator —
- * but that is read off the serial rather than assumed, so a serial from
- * some other range does not get silently labelled as something it is not.
- */
-function machineClass(serial: string): string | null {
-  return /^ZX/i.test(serial) ? 'Excavator' : null
-}
+/* machineClass() is gone. It guessed "Excavator" from a ZX prefix on a
+   free-text serial, which was the best available answer when nothing knew
+   what the machine was. The requirement now carries its machine's real
+   model, so the row prints a fact instead of an inference. */
 
 function RowMenu({
   requirement,
@@ -204,7 +198,7 @@ export function RequirementsTable({
               r.stage === 'availability_checked' ||
               r.stage === 'ordered'
             const thumb = thumbnailFor(r.part.id)
-            const klass = machineClass(r.machine_serial)
+            const model = r.machine_model
             return (
               <tr
                 key={r.id}
@@ -232,7 +226,7 @@ export function RequirementsTable({
                 <td>{r.quantity}</td>
                 <td>
                   <span className="ord__cell-main">{r.machine_serial}</span>
-                  {klass && <span className="ord__cell-sub">{klass}</span>}
+                  {model && <span className="ord__cell-sub">{model}</span>}
                 </td>
                 <td>
                   <span className={`ord__stage-pill is-${r.stage}`}>

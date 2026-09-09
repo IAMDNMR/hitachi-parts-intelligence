@@ -12,6 +12,9 @@ interface Props {
   /** Opens another part's record — used by the supersession link, which is
    *  the one place a part record points at a different part. */
   onOpenPart: (partId: string) => void
+  /** The other half of the first real bidirectional relationship in this
+   *  product: Machine → Parts, and now Part → Machines. */
+  onOpenMachine: (machineId: string) => void
 }
 
 type Tab = 'overview' | 'fitment' | 'documents' | 'usage'
@@ -34,7 +37,13 @@ const TABS: { id: Tab; label: string }[] = [
  * SUPERSEDES, how long it takes to GET, and which machines have actually
  * needed one.
  */
-export function PartRecord({ partId, onBack, onRaise, onOpenPart }: Props) {
+export function PartRecord({
+  partId,
+  onBack,
+  onRaise,
+  onOpenPart,
+  onOpenMachine,
+}: Props) {
   const [part, setPart] = useState<PartDetail | null>(null)
   const [usage, setUsage] = useState<PartUsage[] | null>(null)
   const [error, setError] = useState<string | null>(null)
@@ -309,7 +318,16 @@ export function PartRecord({ partId, onBack, onRaise, onOpenPart }: Props) {
               {usage.map((u) => (
                 <tr key={u.requirement_id}>
                   <td>{u.requirement_id}</td>
-                  <td>{u.machine_serial}</td>
+                  <td>
+                    <button
+                      type="button"
+                      className="ord__link"
+                      onClick={() => onOpenMachine(u.machine_id)}
+                    >
+                      {u.machine_serial}
+                    </button>
+                    <span className="ord__cell-sub">{u.machine_model}</span>
+                  </td>
                   <td>{u.quantity}</td>
                   <td>
                     <span className={`ord__stage-pill is-${u.stage}`}>

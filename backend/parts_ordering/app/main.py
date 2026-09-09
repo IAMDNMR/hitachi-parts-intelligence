@@ -15,7 +15,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from .config import get_settings
 from .database import SessionLocal
-from .routers import parts, requirements
+from .routers import machines, parts, requirements
 from .seed import seed
 
 
@@ -51,6 +51,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+app.include_router(machines.router)
 app.include_router(parts.router)
 app.include_router(requirements.router)
 

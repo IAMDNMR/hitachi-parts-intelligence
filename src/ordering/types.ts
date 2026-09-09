@@ -83,7 +83,11 @@ export interface PartDetail extends Part {
 /** "Where used", the way after-sales means it: machines that needed it. */
 export interface PartUsage {
   requirement_id: number
+  /** The machine as a record, so "machines that needed it" links back to
+   *  Machine 360 rather than printing a serial as text. */
+  machine_id: string
   machine_serial: string
+  machine_model: string
   quantity: number
   stage: Stage
   created_at: string
@@ -103,7 +107,11 @@ export interface StatusEvent {
 
 export interface Requirement {
   id: number
+  machine_id: string
+  /** Read off the machine, not stored beside it — see the property on the
+   *  Requirement model. */
   machine_serial: string
+  machine_model: string
   part: Part
   quantity: number
   reason: string
@@ -117,4 +125,61 @@ export interface Requirement {
 export interface RequirementDetail extends Requirement {
   events: StatusEvent[]
   next_stage: Stage | null
+}
+
+
+/* ------------------------------------------------------------- machines */
+
+export type MachineStatus = 'working' | 'down' | 'in_workshop'
+
+/** Context, not a customer record — three fields on purpose. */
+export interface Party {
+  id: string
+  name: string
+  region: string
+}
+
+/** A machine in the field. The central operational context. */
+export interface Machine {
+  id: string
+  serial_number: string
+  /** Matches PartFitment.machine_model. The authority for fitment. */
+  model: string
+  status: MachineStatus
+  commissioned_at: string
+  warranty_end: string | null
+  customer: Party
+  dealer: Party
+  /** Requirements not yet received — what the machine is waiting on. */
+  open_requirements: number
+  /** Derived from warranty_end against today, never stored. */
+  in_warranty: boolean
+}
+
+export interface MachineDetail extends Machine {
+  fitting_parts: number
+}
+
+/** A part the catalogue lists against this machine's model. */
+export interface MachinePart extends Part {
+  lead_time_days: number
+  /** Where it sits on the machine. */
+  assembly: string
+  stock: Stock | null
+}
+
+/** One line of a machine's parts history, derived from its requirements. */
+export interface MachineRequirement {
+  id: number
+  part: Part
+  quantity: number
+  stage: Stage
+  reason: string
+  created_at: string
+}
+
+export const MACHINE_STATUS_LABELS: Readonly<Record<MachineStatus, string>> = {
+  working: 'Working',
+  down: 'Down',
+  in_workshop: 'In workshop',
 }
