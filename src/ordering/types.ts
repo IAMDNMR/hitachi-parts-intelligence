@@ -118,3 +118,33 @@ export interface RequirementDetail extends Requirement {
   events: StatusEvent[]
   next_stage: Stage | null
 }
+
+/** One part in a service kit, with what the shelf says about covering it. */
+export interface KitLine {
+  part: Part
+  quantity: number
+  lead_time_days: number
+  stock: Stock | null
+  /** Whether the shelf covers THIS line's quantity, not the part in general. */
+  covered: boolean
+}
+
+/** A service as one orderable thing — mirrors KitRow in schemas.py. */
+export interface Kit {
+  id: string
+  code: string
+  name: string
+  description: string
+  /** Set for scheduled maintenance; null for a repair kit. */
+  interval_hours: number | null
+  machines: string[]
+  line_count: number
+  /** Every line coverable from stock today. */
+  ready: boolean
+  /** The slowest line, not the average — a service lands when its last part does. */
+  longest_lead_days: number
+}
+
+export interface KitDetail extends Kit {
+  lines: KitLine[]
+}

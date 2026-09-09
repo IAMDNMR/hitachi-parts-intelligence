@@ -15,7 +15,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from .config import get_settings
 from .database import SessionLocal
-from .routers import parts, requirements
+from .routers import kits, parts, requirements
 from .seed import seed
 
 
@@ -53,6 +53,7 @@ app.add_middleware(
 
 app.include_router(parts.router)
 app.include_router(requirements.router)
+app.include_router(kits.router)
 
 
 @app.get("/api/health")

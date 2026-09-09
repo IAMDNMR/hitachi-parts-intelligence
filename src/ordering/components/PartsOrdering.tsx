@@ -15,6 +15,7 @@ import {
   IconHourglass,
   IconList,
   IconParts,
+  IconWrench,
   IconPlus,
   IconSearch,
   IconTruck,
@@ -25,6 +26,7 @@ import { PartsCatalogue } from './PartsCatalogue'
 import { PartsInsights } from './PartsInsights'
 import { RequirementDetail } from './RequirementDetail'
 import { RequirementsTable } from './RequirementsTable'
+import { ServiceKits } from './ServiceKits'
 
 /**
  * PARTS ORDERING.
@@ -64,8 +66,9 @@ type View =
   | { kind: 'catalogue' }
   | { kind: 'part'; partId: string }
   | { kind: 'insights' }
+  | { kind: 'kits' }
 
-const SECTION_OF: Record<View['kind'], 'requirements' | 'parts'> = {
+const SECTION_OF: Record<View['kind'], 'requirements' | 'parts' | 'kits'> = {
   list: 'requirements',
   new: 'requirements',
   edit: 'requirements',
@@ -73,6 +76,7 @@ const SECTION_OF: Record<View['kind'], 'requirements' | 'parts'> = {
   catalogue: 'parts',
   part: 'parts',
   insights: 'requirements',
+  kits: 'kits',
 }
 
 export function PartsOrdering({ onHome, onOpenGround }: Props) {
@@ -271,6 +275,12 @@ export function PartsOrdering({ onHome, onOpenGround }: Props) {
       title: 'Part record',
       strap: 'What it fits, what it supersedes, how long it takes to get, and who has needed one.',
     },
+    kits: {
+      crumb: 'Service kits',
+      title: 'Service kits',
+      strap:
+        'A service as one orderable thing — the parts a job consumes, raised together and ahead of the failure.',
+    },
     insights: {
       crumb: 'Insights',
       title: 'Parts insights',
@@ -285,7 +295,9 @@ export function PartsOrdering({ onHome, onOpenGround }: Props) {
   const sectionRoot: { crumb: string; view: View } =
     section === 'parts'
       ? { crumb: PAGE.catalogue.crumb, view: { kind: 'catalogue' } }
-      : { crumb: PAGE.list.crumb, view: { kind: 'list' } }
+      : section === 'kits'
+        ? { crumb: PAGE.kits.crumb, view: { kind: 'kits' } }
+        : { crumb: PAGE.list.crumb, view: { kind: 'list' } }
 
   return (
     <div className="ord">
@@ -309,6 +321,19 @@ export function PartsOrdering({ onHome, onOpenGround }: Props) {
             {requirements && stats.open > 0 && (
               <span className="ord__rail-count">{stats.open}</span>
             )}
+          </button>
+          {/* Planned work sits beside reactive work, not inside it — a kit is
+              raised because a service is due, not because something failed. */}
+          <button
+            type="button"
+            className={`ord__rail-link${section === 'kits' ? ' is-current' : ''}`}
+            aria-current={section === 'kits' ? 'page' : undefined}
+            onClick={() => setView({ kind: 'kits' })}
+          >
+            <span className="ord__rail-label">
+              <IconWrench />
+              Service kits
+            </span>
           </button>
           <button
             type="button"
@@ -346,7 +371,12 @@ export function PartsOrdering({ onHome, onOpenGround }: Props) {
           <span aria-hidden>/</span>
           <button
             type="button"
-            onClick={() => setView({ kind: section === 'parts' ? 'catalogue' : 'list' })}
+            onClick={() =>
+              setView({
+                kind:
+                  section === 'parts' ? 'catalogue' : section === 'kits' ? 'kits' : 'list',
+              })
+            }
           >
             Parts
           </button>
@@ -545,6 +575,22 @@ export function PartsOrdering({ onHome, onOpenGround }: Props) {
               </div>
             </div>
           </div>
+        )}
+
+        {view.kind === 'kits' && (
+          <ServiceKits
+            onRaised={(machineSerial, count) => {
+              /* Straight to the requirements they just created, filtered to
+                 the machine — a kit that raises five lines and leaves the
+                 reader on the kit screen has not told them it worked. */
+              setQuery(machineSerial)
+              setFilter('all')
+              setStageFilter('any')
+              setView({ kind: 'list' })
+              setError(null)
+              void count
+            }}
+          />
         )}
 
         {view.kind === 'insights' && <PartsInsights onBack={() => setView({ kind: 'list' })} />}
