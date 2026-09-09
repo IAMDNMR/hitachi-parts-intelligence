@@ -160,14 +160,6 @@ class Requirement(Base):
     supplier: Mapped[str | None] = mapped_column(String, nullable=True)
     carrier: Mapped[str | None] = mapped_column(String, nullable=True)
 
-    # Set when this line came from a service kit rather than from someone
-    # noticing a failure. Worth recording because it is the difference between
-    # planned and reactive demand — and because five requirements raised from
-    # one service belong to each other and should be able to say so.
-    kit_id: Mapped[str | None] = mapped_column(
-        ForeignKey("service_kits.id"), nullable=True
-    )
-
     part: Mapped["Part"] = relationship()
     events: Mapped[list["StatusEvent"]] = relationship(
         back_populates="requirement", order_by="StatusEvent.at", cascade="all, delete-orphan"
@@ -190,76 +182,3 @@ class StatusEvent(Base):
     note: Mapped[str | None] = mapped_column(Text, nullable=True)
 
     requirement: Mapped["Requirement"] = relationship(back_populates="events")
-
-
-class ServiceKit(Base):
-    """A service as one orderable thing.
-
-    A five-hundred-hour service is not a part, it is a job — and the parts it
-    consumes are ordered together, against a schedule, before anything has
-    failed. Ordering them one at a time is how the tool worked until now, and
-    it is both slower and wrong: the five lines of a service belong to each
-    other, and a service that arrives four-fifths complete has not arrived.
-
-    This is also the difference between the two halves of a parts operation.
-    Everything else in this database is reactive — something broke, someone
-    raised a requirement. A kit is planned demand: it is known in advance,
-    it can be forecast, and it is most of what a healthy after-sales parts
-    business actually sells.
-
-    `interval_hours` is what separates the two kinds. A kit with one is
-    scheduled maintenance and recurs for the life of the machine; a kit
-    without one is a repair — the parts a particular job needs, gathered so
-    nobody has to remember the list.
-    """
-
-    __tablename__ = "service_kits"
-
-    id: Mapped[str] = mapped_column(String, primary_key=True)
-    code: Mapped[str] = mapped_column(String, nullable=False, unique=True)
-    name: Mapped[str] = mapped_column(String, nullable=False)
-    description: Mapped[str] = mapped_column(Text, nullable=False)
-
-    # Set for scheduled maintenance, null for a repair kit. Machine hours are
-    # what a service interval is counted in — not dates — because a machine
-    # that works two shifts reaches its service twice as fast.
-    interval_hours: Mapped[int | None] = mapped_column(Integer, nullable=True)
-
-    lines: Mapped[list["ServiceKitLine"]] = relationship(
-        back_populates="kit", cascade="all, delete-orphan"
-    )
-    models: Mapped[list["ServiceKitModel"]] = relationship(
-        back_populates="kit", cascade="all, delete-orphan"
-    )
-
-
-class ServiceKitLine(Base):
-    """One part, and how many of it the service needs."""
-
-    __tablename__ = "service_kit_lines"
-
-    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
-    kit_id: Mapped[str] = mapped_column(ForeignKey("service_kits.id"), nullable=False)
-    part_id: Mapped[str] = mapped_column(ForeignKey("parts.id"), nullable=False)
-    quantity: Mapped[int] = mapped_column(Integer, nullable=False, default=1)
-
-    kit: Mapped["ServiceKit"] = relationship(back_populates="lines")
-    part: Mapped["Part"] = relationship()
-
-
-class ServiceKitModel(Base):
-    """Which machines a kit is for.
-
-    Kept separate from the parts' own fitment records on purpose. A part can
-    fit a machine without the machine's service calling for it — the kit says
-    what the SERVICE needs, which is a different statement from what the part
-    will bolt on to.
-    """
-
-    __tablename__ = "service_kit_models"
-
-    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
-    kit_id: Mapped[str] = mapped_column(ForeignKey("service_kits.id"), nullable=False)
-    machine_model: Mapped[str] = mapped_column(String, nullable=False)
-
-    kit: Mapped["ServiceKit"] = relationship(back_populates="models")

@@ -201,9 +201,6 @@ def seed(db: Session) -> None:
         _seed_fitment(db)
     if db.query(PartDocument).first() is None:
         _seed_documents(db)
-    # Row by row, for the same reason parts are — kits were added to this file
-    # long after databases existed in the wild.
-    _seed_kits(db)
     db.commit()
 
 
@@ -258,95 +255,3 @@ def _seed_documents(db: Session) -> None:
             db.add(
                 PartDocument(part_id=part_id, title=title, doc_type=doc_type, reference=reference)
             )
-
-
-# ---------------------------------------------------------------- service kits
-#
-# id, code, name, interval_hours, description
-#
-# INVENTED, like the stock levels and the part numbers above — this project
-# has no access to Hitachi's real service schedules. What is NOT invented is
-# what each one is built from: every kit below is composed only of parts this
-# catalogue actually holds, fits only models those parts have real fitment
-# records against, and is anchored on a fitting instruction or service
-# bulletin already attached to one of its own lines. A kit calling for a part
-# nobody stocks, or for a machine the part does not fit, would be a lie the
-# rest of the system could not catch.
-#
-# One is scheduled and three are repairs. That mix is the honest shape of a
-# parts operation: the interval work is what can be forecast, and the job
-# kits are what stops an engineer ordering four things one at a time and
-# discovering the fifth on the day.
-KITS: list[tuple[str, str, str, int | None, str]] = [
-    (
-        "svc-500h",
-        "SVC-500",
-        "500-hour service",
-        500,
-        "Scheduled filtration change. The interval service every machine in the "
-        "range reaches first, and the one most often let slip.",
-    ),
-    (
-        "kit-swing-bearing",
-        "KIT-913-507",
-        "Swing bearing overhaul",
-        None,
-        "Replacing the ring the upper structure turns on. Carries a filter change "
-        "because the swing circuit is opened during the work.",
-    ),
-    (
-        "kit-hydraulic-pump",
-        "KIT-911-118",
-        "Hydraulic pump replacement",
-        None,
-        "Main pump replacement and recommissioning. Twice the filtration, because "
-        "the system is drained and bled on refit.",
-    ),
-    (
-        "kit-undercarriage",
-        "KIT-918-644",
-        "Undercarriage rebuild",
-        None,
-        "Both track assemblies together — replacing one side alone leaves the "
-        "machine tracking unevenly and wears the new side early.",
-    ),
-]
-
-# kit_id -> [(part_id, quantity)]
-KIT_LINES: dict[str, list[tuple[str, int]]] = {
-    "svc-500h": [("filters", 1)],
-    "kit-swing-bearing": [("swing-bearing", 1), ("filters", 1)],
-    "kit-hydraulic-pump": [("hydraulic-pump", 1), ("filters", 2)],
-    "kit-undercarriage": [("track-assembly", 2), ("filters", 1)],
-}
-
-# kit_id -> the models it applies to. Every one of these is a model the kit's
-# own parts carry a real fitment record against — see FITMENT above.
-KIT_MODELS: dict[str, list[str]] = {
-    "svc-500h": MODELS,
-    "kit-swing-bearing": ["ZX350LC-7", "ZX490LCH-7"],
-    "kit-hydraulic-pump": MODELS,
-    "kit-undercarriage": ["ZX250LC-7", "ZX350LC-7", "ZX490LCH-7"],
-}
-
-
-def _seed_kits(db: Session) -> None:
-    from .models import ServiceKit, ServiceKitLine, ServiceKitModel
-
-    existing = {kid for (kid,) in db.query(ServiceKit.id)}
-    for kit_id, code, name, interval, description in KITS:
-        if kit_id in existing:
-            continue
-        db.add(
-            ServiceKit(
-                id=kit_id,
-                code=code,
-                name=name,
-                description=description,
-                interval_hours=interval,
-            )
-        )
-        for part_id, qty in KIT_LINES[kit_id]:
-            db.add(ServiceKitLine(kit_id=kit_id, part_id=part_id, quantity=qty))
-        for model in KIT_MODELS[kit_id]:
-            db.add(ServiceKitModel(kit_id=kit_id, machine_model=model))

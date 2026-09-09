@@ -1,6 +1,4 @@
 import type {
-  Kit,
-  KitDetail,
   PartDetail,
   PartRow,
   PartUsage,
@@ -86,15 +84,6 @@ export const api = {
   getPartUsage: (partId: string) =>
     request<PartUsage[]>(`/api/parts/${encodeURIComponent(partId)}/usage`),
   getStock: (partId: string) => request<Stock>(`/api/parts/${encodeURIComponent(partId)}/stock`),
-
-  listKits: () => request<Kit[]>('/api/kits'),
-  getKit: (kitId: string) => request<KitDetail>(`/api/kits/${encodeURIComponent(kitId)}`),
-  /** Raises the whole kit against one machine — one requirement per line. */
-  raiseKit: (kitId: string, machine_serial: string) =>
-    request<Requirement[]>(`/api/kits/${encodeURIComponent(kitId)}/raise`, {
-      method: 'POST',
-      body: JSON.stringify({ machine_serial }),
-    }),
 
   listRequirements: (stage?: string) =>
     request<Requirement[]>(`/api/requirements${stage ? `?stage=${stage}` : ''}`),
