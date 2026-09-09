@@ -7,16 +7,18 @@ import { ServiceExperience } from './sections/ServiceExperience/ServiceExperienc
 import { UptimeClose } from './sections/UptimeClose/UptimeClose'
 import { TheGround } from './ground/components/TheGround'
 import { PartsOrdering } from './ordering/components/PartsOrdering'
+import { Findings } from './ground/components/Findings'
 
 const GROUND = '#/the-ground'
 const ORDERING = '#/parts-ordering'
+const FINDINGS = '#/findings'
 
 /**
  * Routing, such as it is.
  *
- * The project has no router and needs two routes, so this is the whole of
+ * The project has no router and needs four routes, so this is the whole of
  * it: a hash the header sets and the page reads. A real router would be four
- * dependencies and a build change to serve three views, one of which is the
+ * dependencies and a build change to serve four views, one of which is the
  * scrolling home page.
  *
  * The hash is the source of truth rather than component state, so the back
@@ -63,6 +65,11 @@ export default function App() {
   if (on(GROUND)) return <TheGround onHome={goHome} onOpenOrdering={openOrdering} />
 
   if (on(ORDERING)) return <PartsOrdering onHome={goHome} onOpenGround={openGround} />
+
+  /* The map read as a document: every claim the supplied material does not
+     confirm, in one list. Derived from the same provenance the graph draws
+     its marks from — see ground/data/findings.ts. */
+  if (on(FINDINGS)) return <Findings onHome={goHome} onOpenGround={openGround} />
 
   return (
     <>

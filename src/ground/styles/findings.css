@@ -1,0 +1,395 @@
+/* ---------------------------------------------------------------------------
+   ARCHITECTURE FINDINGS
+
+   A document, not an application screen. The rest of this project is laid out
+   to be operated; this is laid out to be read and then printed, so it takes a
+   single measured column on the page's own paper ground rather than cards on
+   a working surface.
+
+   Same tokens as everywhere else. The confidence colours are the ones the map
+   uses for the same grades, so a mark on a box and a mark in this list are
+   plainly the same statement.
+--------------------------------------------------------------------------- */
+
+.fnd {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: calc(var(--header-h) + 44px) 30px 100px;
+}
+
+/* Head ---------------------------------------------------------------------- */
+.fnd__head {
+  padding-bottom: 30px;
+  border-bottom: 2px solid var(--charcoal);
+}
+
+.fnd__eyebrow {
+  margin: 0 0 14px;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--orange);
+}
+
+.fnd__title {
+  margin: 0;
+  max-width: 20ch;
+  font-size: clamp(28px, 3.6vw, 40px);
+  font-weight: 700;
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+  color: var(--charcoal);
+  text-wrap: balance;
+}
+
+.fnd__standfirst {
+  margin: 18px 0 0;
+  max-width: 62ch;
+  font-size: 15.5px;
+  line-height: 1.6;
+  color: var(--ink-2);
+}
+
+/* The tally ------------------------------------------------------------------
+   Three numbers, and the third is the point of the document — so it is the
+   only one that takes the accent. */
+.fnd__tally {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px 44px;
+  margin-top: 30px;
+}
+
+.fnd__tally > div {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.fnd__tally dt {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+}
+
+.fnd__tally dd {
+  display: flex;
+  align-items: baseline;
+  gap: 9px;
+  margin: 0;
+  font-size: 30px;
+  font-weight: 700;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  color: var(--charcoal);
+}
+
+.fnd__tally .is-open dd {
+  color: var(--orange);
+}
+
+.fnd__tally-sub {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink-2);
+}
+
+.fnd__print {
+  margin-top: 26px;
+  padding: 10px 18px;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  background: none;
+  cursor: pointer;
+  font: inherit;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+  transition: border-color 0.16s var(--ease), color 0.16s var(--ease);
+}
+
+.fnd__print:hover {
+  border-color: var(--orange);
+  color: var(--orange);
+}
+
+/* Method --------------------------------------------------------------------- */
+.fnd__method {
+  margin-top: 44px;
+}
+
+.fnd__h2 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--charcoal);
+}
+
+.fnd__method p {
+  margin: 14px 0 0;
+  max-width: 66ch;
+  font-size: 14.5px;
+  line-height: 1.65;
+  color: var(--ink-2);
+}
+
+.fnd__grades {
+  margin: 26px 0 0;
+  display: grid;
+  gap: 1px;
+  background: var(--grey-100);
+  border: 1px solid var(--grey-100);
+}
+
+.fnd__grades > div {
+  background: var(--white);
+  padding: 14px 16px;
+}
+
+.fnd__grades dt {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--charcoal);
+}
+
+.fnd__grades dd {
+  margin: 6px 0 0 19px;
+  font-size: 13.5px;
+  line-height: 1.55;
+  color: var(--ink-2);
+}
+
+/* The grade marks, in the map's own vocabulary ------------------------------- */
+.fnd__dot {
+  flex: none;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 1.5px solid var(--ink-2);
+  background: none;
+}
+
+.fnd__dot.is-not-supplied {
+  border-style: dashed;
+}
+
+.fnd__dot.is-source-unsure {
+  border-color: var(--orange);
+}
+
+.fnd__dot.is-inferred {
+  border-color: transparent;
+  background: var(--ink-2);
+  opacity: 0.6;
+}
+
+.fnd__dot.is-assumed {
+  border-color: transparent;
+  background: var(--ink-2);
+  opacity: 0.32;
+}
+
+.fnd__dot.is-demo {
+  border-color: var(--border);
+}
+
+/* Groups --------------------------------------------------------------------- */
+.fnd__group {
+  margin-top: 52px;
+}
+
+.fnd__group-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--charcoal);
+}
+
+.fnd__group-count {
+  flex: none;
+  font-size: 11px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink-2);
+}
+
+/* Findings ------------------------------------------------------------------
+   Numbered, because a findings list is one — the reader refers to them by
+   number in a meeting, and the count is itself the message. */
+.fnd__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  counter-reset: finding;
+}
+
+.fnd__item {
+  counter-increment: finding;
+  position: relative;
+  padding: 22px 0 22px 46px;
+  border-bottom: 1px solid var(--grey-100);
+}
+
+.fnd__item::before {
+  content: counter(finding, decimal-leading-zero);
+  position: absolute;
+  left: 0;
+  top: 24px;
+  font-size: 11.5px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--orange);
+}
+
+.fnd__item-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.fnd__item-title {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--charcoal);
+}
+
+.fnd__item-about {
+  flex: none;
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+}
+
+.fnd__claim {
+  margin: 8px 0 0;
+  max-width: 64ch;
+  font-size: 14.5px;
+  line-height: 1.6;
+  color: var(--ink);
+}
+
+.fnd__basis {
+  margin: 9px 0 0;
+  max-width: 64ch;
+  font-size: 13.5px;
+  line-height: 1.55;
+  color: var(--ink-2);
+}
+
+.fnd__ref {
+  margin: 6px 0 0;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--ink-2);
+  opacity: 0.8;
+}
+
+.fnd__locate {
+  margin-top: 12px;
+  padding: 0;
+  border: 0;
+  border-bottom: 1px solid transparent;
+  background: none;
+  cursor: pointer;
+  font: inherit;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--orange);
+  transition: border-color 0.16s var(--ease);
+}
+
+.fnd__locate:hover {
+  border-bottom-color: var(--orange);
+}
+
+.fnd__foot {
+  margin-top: 56px;
+  padding-top: 22px;
+  border-top: 1px solid var(--grey-100);
+}
+
+.fnd__foot p {
+  margin: 0;
+  max-width: 66ch;
+  font-size: 12.5px;
+  line-height: 1.6;
+  color: var(--ink-2);
+}
+
+@media (max-width: 700px) {
+  .fnd {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+
+  .fnd__item {
+    padding-left: 34px;
+  }
+}
+
+/* PRINT ----------------------------------------------------------------------
+   This is the export. A document laid out for paper becomes a PDF through the
+   browser the client already has — no library to load, no server to render
+   one, and the result carries the same words as the screen.
+
+   What comes off: the site chrome, and every control. A printed page cannot
+   be navigated, so a button on it is ink spent on something the reader cannot
+   press. */
+@media print {
+  .fnd__chrome,
+  .fnd__print,
+  .fnd__locate {
+    display: none !important;
+  }
+
+  .ground {
+    min-height: 0;
+    background: #fff;
+  }
+
+  .fnd {
+    max-width: none;
+    padding: 0;
+  }
+
+  .fnd__group,
+  .fnd__method {
+    /* A grade heading stranded at the foot of a page with its first finding
+       overleaf reads as an empty section. */
+    break-inside: avoid-page;
+    break-after: auto;
+  }
+
+  .fnd__item {
+    break-inside: avoid-page;
+  }
+
+  .fnd__grades > div {
+    border: 1px solid #ddd;
+  }
+
+  a[href]::after {
+    content: none;
+  }
+}
