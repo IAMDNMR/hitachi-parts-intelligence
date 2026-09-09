@@ -28,7 +28,6 @@ mkdirSync(out, { recursive: true })
 const entries = {
   'layout.js': 'src/ground/utils/layout.ts',
   'graph.js': 'src/ground/data/graph.ts',
-  'findings.js': 'src/ground/data/findings.ts',
 }
 
 for (const [name, from] of Object.entries(entries)) {

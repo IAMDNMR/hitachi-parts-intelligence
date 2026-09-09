@@ -157,13 +157,6 @@ export function TheGround({ onHome, onOpenOrdering }: Props) {
           <a className="header__link" href="#/parts-ordering" onClick={ordering}>
             Parts Ordering
           </a>
-          {/* The same model, read as a document — every claim the supplied
-              material does not confirm, gathered into one list. It belongs
-              beside the map rather than inside it: the map is explored, this
-              is read through and printed. */}
-          <a className="header__link" href="#/findings">
-            Findings
-          </a>
         </nav>
       </header>
 
