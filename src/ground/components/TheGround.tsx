@@ -36,31 +36,11 @@ import { NodeSearch } from './NodeSearch'
  * including the points those diagrams themselves mark uncertain. See
  * src/ground/data/graph.ts for what each node and edge claims.
  */
-/**
- * The nodes the parts-ordering service actually implements.
- *
- * Selecting any of them means the reader is looking at a step this project
- * has built a working tool for, so that is where the offer to open it
- * appears — not on every node, which would be an advert rather than a link,
- * and not only on Parts Ordering itself, which is one step of seven.
- */
-const ORDERING_NODES = new Set([
-  'parts',
-  'p-requirement',
-  'p-identification',
-  'p-availability',
-  'p-ordering',
-  'p-inventory',
-  'p-shipment',
-  'p-goods-receipt',
-])
-
 interface Props {
   onHome: () => void
-  onOpenOrdering: () => void
 }
 
-export function TheGround({ onHome, onOpenOrdering }: Props) {
+export function TheGround({ onHome }: Props) {
   const state = useGraphState(groundNodes, groundEdges, ORIGIN_ID, OPENING_ID)
 
   /**
@@ -129,14 +109,6 @@ export function TheGround({ onHome, onOpenOrdering }: Props) {
     [onHome],
   )
 
-  const ordering = useCallback(
-    (event: React.MouseEvent) => {
-      event.preventDefault()
-      onOpenOrdering()
-    },
-    [onOpenOrdering],
-  )
-
   return (
     <div className="ground">
       <header className="header">
@@ -148,15 +120,6 @@ export function TheGround({ onHome, onOpenOrdering }: Props) {
           <span className="header__link is-current" aria-current="page">
             The Ground
           </span>
-          {/* In the header, not only on the Parts branch.
-              The contextual button below appears once a reader has drilled
-              into Parts — which is useless for finding the tool in the first
-              place, because it is invisible until you already know where it
-              is. This is the way in; that one is the shortcut once you are
-              standing on the process it runs. */}
-          <a className="header__link" href="#/parts-ordering" onClick={ordering}>
-            Parts Ordering
-          </a>
         </nav>
       </header>
 
@@ -235,16 +198,6 @@ export function TheGround({ onHome, onOpenOrdering }: Props) {
                 <span className="gr__btn-dot" aria-label="more on this node" />
               )}
             </button>
-            {/* Only where there is something to open — see ORDERING_NODES. */}
-            {state.selectedId && ORDERING_NODES.has(state.selectedId) && (
-              <button
-                type="button"
-                className="gr__btn gr__btn--go"
-                onClick={onOpenOrdering}
-              >
-                Open Parts Ordering →
-              </button>
-            )}
             <a className="gr__btn gr__btn--ghost" href="#" onClick={home}>
               ← Home
             </a>

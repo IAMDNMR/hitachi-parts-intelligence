@@ -26,13 +26,11 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedIndexedAccess": true
   },
-  // Both TypeScript modules are checked: the Ground and the ordering
-  // application. Ordering was left out when it was written and stayed out —
-  // two thousand lines compiled by esbuild, which strips types without ever
-  // looking at them, so nothing checked it at all. It is in now.
+  // The Ground is the only TypeScript in the project now that the ordering
+  // application is gone.
   //
   // Sections 01-05 remain deliberately absent. They are JSX, they are not
   // being migrated, and `allowJs` above is on only so the Ground can import a
   // couple of their hooks.
-  "include": ["src/ground", "src/ordering", "src/vite-env.d.ts"]
+  "include": ["src/ground", "src/vite-env.d.ts"]
 }

@@ -47,11 +47,10 @@ export const chapters = ['The machine', 'Ecosystem', 'Parts', 'Service', 'Uptime
  * by the time they reach here — so the end of the page is exactly where the
  * offer is worth repeating.
  *
- * `to` is read by SiteFooter: 'ground' and 'ordering' open those routes,
- * 'top' returns to the start of the story.
+ * `to` is read by SiteFooter: 'ground' opens that route, 'top' returns to
+ * the start of the story.
  */
 export const footerLinks = [
   { label: 'The Ground', to: 'ground' },
-  { label: 'Parts Ordering', to: 'ordering' },
   { label: 'Back to the top', to: 'top' },
 ]

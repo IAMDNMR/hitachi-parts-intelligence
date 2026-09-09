@@ -58,7 +58,7 @@ function useRevealOnce() {
  * feathered into the page on all four sides, so it never reads as a
  * photograph in a box.
  */
-export function UptimeClose({ onOpenGround, onOpenOrdering }) {
+export function UptimeClose({ onOpenGround }) {
   const [sectionRef, shown] = useRevealOnce()
 
   const explore = useCallback(() => {
@@ -147,11 +147,7 @@ export function UptimeClose({ onOpenGround, onOpenOrdering }) {
         </ul>
       </section>
 
-      <SiteFooter
-        onToTop={toTop}
-        onOpenGround={onOpenGround}
-        onOpenOrdering={onOpenOrdering}
-      />
+      <SiteFooter onToTop={toTop} onOpenGround={onOpenGround} />
     </>
   )
 }
@@ -191,13 +187,12 @@ function Halo() {
   )
 }
 
-function SiteFooter({ onToTop, onOpenGround, onOpenOrdering }) {
+function SiteFooter({ onToTop, onOpenGround }) {
   /* The three destinations named in data/uptimeClose.js. Kept here rather
      than in the data so the data stays declarative — it says where, this
      says how. */
   const go = {
     ground: () => onOpenGround(),
-    ordering: () => onOpenOrdering(),
     top: onToTop,
   }
 

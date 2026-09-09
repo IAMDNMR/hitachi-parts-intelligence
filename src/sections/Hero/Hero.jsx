@@ -21,7 +21,7 @@ import { NodePanel } from './NodePanel'
 import { StaticStory } from './StaticStory'
 import { StoryTranscript } from './StoryTranscript'
 
-export function Hero({ onOpenGround, onOpenOrdering }) {
+export function Hero({ onOpenGround }) {
   const sectionRef = useRef(null)
   const stageRef = useRef(null)
   const stageBoxRef = useRef(null)
@@ -61,11 +61,7 @@ export function Hero({ onOpenGround, onOpenOrdering }) {
 
   return (
     <ProgressContext.Provider value={store}>
-      <HeroNavigation
-        onSeek={seek}
-        onOpenGround={onOpenGround}
-        onOpenOrdering={onOpenOrdering}
-      />
+      <HeroNavigation onSeek={seek} onOpenGround={onOpenGround} />
 
       {reducedMotion ? (
         <main id="top">

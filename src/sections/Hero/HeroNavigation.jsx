@@ -1,13 +1,13 @@
 /**
  * Fixed header. Lives entirely in the DOM, never in the video.
  *
- * The brand mark, and the places the header can take you that scrolling
+ * The brand mark, and the place the header can take you that scrolling
  * cannot. The story itself is navigated by scrolling, so a section menu here
  * would only duplicate the scrollbar with a second, competing way through
- * the same timeline — but the two applications are not on that timeline at
- * all, and no amount of scrolling reaches them.
+ * the same timeline — but The Ground is not on that timeline at all, and no
+ * amount of scrolling reaches it.
  */
-export function HeroNavigation({ onSeek, onOpenGround, onOpenOrdering }) {
+export function HeroNavigation({ onSeek, onOpenGround }) {
   return (
     <header className="header">
       <a
@@ -32,16 +32,6 @@ export function HeroNavigation({ onSeek, onOpenGround, onOpenOrdering }) {
           }}
         >
           The Ground
-        </a>
-        <a
-          className="header__link"
-          href="#/parts-ordering"
-          onClick={(event) => {
-            event.preventDefault()
-            onOpenOrdering()
-          }}
-        >
-          Parts Ordering
         </a>
       </nav>
     </header>

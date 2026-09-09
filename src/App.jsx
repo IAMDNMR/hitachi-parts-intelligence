@@ -6,17 +6,15 @@ import { PartsShowcase } from './sections/PartsShowcase/PartsShowcase'
 import { ServiceExperience } from './sections/ServiceExperience/ServiceExperience'
 import { UptimeClose } from './sections/UptimeClose/UptimeClose'
 import { TheGround } from './ground/components/TheGround'
-import { PartsOrdering } from './ordering/components/PartsOrdering'
 
 const GROUND = '#/the-ground'
-const ORDERING = '#/parts-ordering'
 
 /**
  * Routing, such as it is.
  *
  * The project has no router and needs two routes, so this is the whole of
  * it: a hash the header sets and the page reads. A real router would be four
- * dependencies and a build change to serve three views, one of which is the
+ * dependencies and a build change to serve two views, one of which is the
  * scrolling home page.
  *
  * The hash is the source of truth rather than component state, so the back
@@ -40,11 +38,6 @@ export default function App() {
     window.scrollTo(0, 0)
   }, [])
 
-  const openOrdering = useCallback(() => {
-    window.location.hash = ORDERING
-    window.scrollTo(0, 0)
-  }, [])
-
   const goHome = useCallback(() => {
     // Clearing rather than setting '#' keeps a bare '#' out of the URL.
     window.history.pushState('', '', window.location.pathname + window.location.search)
@@ -60,13 +53,11 @@ export default function App() {
      to the route and is read by the view itself. */
   const on = (base) => route === base || route.startsWith(`${base}/`)
 
-  if (on(GROUND)) return <TheGround onHome={goHome} onOpenOrdering={openOrdering} />
-
-  if (on(ORDERING)) return <PartsOrdering onHome={goHome} onOpenGround={openGround} />
+  if (on(GROUND)) return <TheGround onHome={goHome} />
 
   return (
     <>
-      <Hero onOpenGround={openGround} onOpenOrdering={openOrdering} />
+      <Hero onOpenGround={openGround} />
 
       {/* The landing point for "Explore Parts & Services" — it keeps the
           #after-sales anchor the Hero scrolls to. */}
@@ -76,9 +67,9 @@ export default function App() {
 
       <ServiceExperience />
 
-      {/* The footer offers the two applications. By this point the header
-          that also offers them is five sections of scrolling away. */}
-      <UptimeClose onOpenGround={openGround} onOpenOrdering={openOrdering} />
+      {/* The footer offers the map. By this point the header that also
+          offers it is five sections of scrolling away. */}
+      <UptimeClose onOpenGround={openGround} />
     </>
   )
 }
