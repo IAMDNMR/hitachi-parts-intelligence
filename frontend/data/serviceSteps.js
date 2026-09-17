@@ -14,16 +14,16 @@
  * There are no figures here — no response times, no uptime percentages, no
  * fault counts — because the project holds no service data to support them.
  *
- * This is dealership after-sales service, not a machine's trip to a
- * building. The dealer service team follows the machine — a technician
- * diagnoses it where it is, and only where the job needs a workshop does the
- * machine come to one. Stage 01 carries that: a service need is raised and
- * reaches the dealer before anything is touched. It is folded into Inspect
- * rather than given a stage of its own, because the section's five stages
- * are cut to five ranges of footage (service-frame-map.json) and a sixth
- * stage has no footage to draw from yet — the model is correct here even
- * though the frame count is not, and expanding it is future work, not a
- * rewrite this pass is scoped to do.
+ * This is dealership after-sales service. The footage behind stages 01-04
+ * (section-4.mp4, frames 1-72) is a single continuous shot in the dealer
+ * workshop — genuine service activity (handset, panels, filters, tools),
+ * but a workshop, not the machine's own work site. The copy for those four
+ * stages is written to match that honestly: it describes the service
+ * process, not a claim that the technician travelled to the machine in the
+ * field. Only stage 05's footage (frames 73-90, a separate outdoor clip) is
+ * actually a work site, which is why it alone earns that language. See
+ * SERVICE_FUTURE_ASSETS.md for what outdoor service footage would be needed
+ * to honestly tell the field-service version of this story.
  *
  * The stage's own frames come from assets/source/section-04/, keyed by
  * service-frame-map.json rather than by anything written here — `id` matches
@@ -40,7 +40,7 @@ export const serviceSteps = [
     headline: ['The machine needs', 'more than parts.'],
     headlineAccent: 'It needs support.',
     statement:
-      'A machine needs attention. The dealer service team receives the need, and inspection begins before anything is touched.',
+      'A machine needs attention. The service process begins with inspection — understanding its condition before anything is touched.',
     systems: {
       consite: 'Condition reported by the machine as it works.',
       globalService: 'Service history, wherever the machine is.',
@@ -54,7 +54,7 @@ export const serviceSteps = [
     headline: ['Find the cause,', 'not the symptom.'],
     headlineAccent: 'The machine tells us.',
     statement:
-      'A technician diagnoses the machine where it is — or the machine is brought to a dealer workshop, when the job requires it.',
+      'In the dealer workshop, the technician traces the cause using the machine’s own data, before any panel is opened.',
     systems: {
       consite: 'Operating data that points at the fault.',
       globalService: 'Technical information behind the diagnosis.',
@@ -67,7 +67,8 @@ export const serviceSteps = [
     title: 'Maintain',
     headline: ['Service it before', 'it stops you.'],
     headlineAccent: 'Planned, not reactive.',
-    statement: 'Maintenance at the right interval protects performance before it is compromised.',
+    statement:
+      'Filters, fluids and components, checked and serviced at the right interval — protecting performance before it is compromised.',
     systems: {
       consite: 'Service alerts before an interval is missed.',
       globalService: 'Maintenance schedules and part references.',
@@ -79,9 +80,9 @@ export const serviceSteps = [
     icon: 'repair',
     title: 'Repair',
     headline: ['The right part,', 'fitted right.'],
-    headlineAccent: 'First time.',
+    headlineAccent: 'Service and repair.',
     statement:
-      'Required parts are identified and fulfilled, and the technician completes the repair.',
+      'Required parts are identified, and the technician completes the service in the workshop.',
     systems: {
       consite: 'The record the machine kept, informing the repair.',
       globalService: 'Technical reference data behind parts identification.',
