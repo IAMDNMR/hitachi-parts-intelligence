@@ -56,7 +56,7 @@ describe('partsStoreCatalogue (Parts Store)', () => {
     // parts + 13 attachments = 45. Every id below must trace to a real
     // 4_PARTS, 5_MACHINE_PARTS, or 3_ATTACHMENTS row — there is no fixed
     // "target count" this is padded out to.
-    assert.equal(partsStoreCatalogue.length, 45)
+    assert.equal(partsStoreCatalogue.length, 50)
     assert.equal(
       partsStoreCatalogue.some((p) => p.id === 'traction-battery'),
       false,

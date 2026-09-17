@@ -53,6 +53,11 @@ const grappleImage = new URL('../assets/parts/attachments/grapple.webp', import.
 const hookImage = new URL('../assets/parts/attachments/hook.webp', import.meta.url).href
 const forkImage = new URL('../assets/parts/attachments/fork.webp', import.meta.url).href
 const tilt_bucketImage = new URL('../assets/parts/attachments/tilt-bucket.webp', import.meta.url).href
+const hitachi_hydraulic_control_valveImage = new URL('../assets/parts/hitachi-hydraulic-control-valve.jpg', import.meta.url).href
+const hitachi_main_hydraulic_pumpImage = new URL('../assets/parts/hitachi-main-hydraulic-pump.jpg', import.meta.url).href
+const hitachi_stagev_diesel_engineImage = new URL('../assets/parts/hitachi-stagev-diesel-engine.jpg', import.meta.url).href
+const hitachi_swing_bearingImage = new URL('../assets/parts/hitachi-swing-bearing.jpg', import.meta.url).href
+const hitachi_final_drive_motorImage = new URL('../assets/parts/hitachi-final-drive-motor.jpg', import.meta.url).href
 
 // The 5 lubricant/reman parts already in partsCatalogue.js, given real
 // per-machine fitment.
@@ -400,6 +405,111 @@ const batteries = [
 ]
 
 const newFamilyParts = [
+  {
+    id: 'pt-044-main-control-valve',
+    partId: 'PT-044',
+    partNumber: '4719002',
+    name: 'Hitachi OEM Main Control Valve Block Assembly',
+    category: 'Hydraulics',
+    type: 'Control Valve',
+    description: 'Precision hydraulic manifold block assembly with solenoid valves, pressure relief valves, and high-pressure ports. Manages oil distribution to boom, arm, bucket, and swing circuits.',
+    source: 'Hitachi Construction Machinery / Zaxis-7 Excavators',
+    image: hitachi_hydraulic_control_valveImage,
+    imageSource: 'Hitachi Construction Machinery / OEM Precision Hydraulic Main Control Valve Block',
+    attributes: ['genuine', 'precision-engineered', 'available'],
+    recordClass: 'ORDERABLE_OEM_PART',
+    fitment: [
+      { machineId: 'MC-027', model: 'ZX210LC-7', level: 'MODEL/RANGE' },
+      { machineId: 'MC-029', model: 'ZX225USR-7', level: 'MODEL/RANGE' },
+      { machineId: 'MC-030', model: 'ZX250LC-7', level: 'MODEL/RANGE' },
+      { machineId: 'MC-032', model: 'ZX300LC-7', level: 'MODEL/RANGE' },
+      { machineId: 'MC-035', model: 'ZX350LC-7', level: 'MODEL/RANGE' },
+    ],
+  },
+  {
+    id: 'pt-045-main-hydraulic-pump',
+    partId: 'PT-045',
+    partNumber: '4658321',
+    name: 'Hitachi OEM Dual Axial Piston Main Hydraulic Pump',
+    category: 'Hydraulics',
+    type: 'Hydraulic Pump',
+    description: 'Dual variable-displacement axial piston hydraulic pump assembly (HPV118DW series). Generates high-pressure hydraulic flow up to 380 bar with electronic flow regulator.',
+    source: 'Hitachi Construction Machinery / Zaxis-7 Excavators',
+    image: hitachi_main_hydraulic_pumpImage,
+    imageSource: 'Hitachi Construction Machinery / Dual Axial Piston Main Hydraulic Pump (HPV118DW)',
+    attributes: ['genuine', 'high-pressure', 'available'],
+    recordClass: 'ORDERABLE_OEM_PART',
+    fitment: [
+      { machineId: 'MC-027', model: 'ZX210LC-7', level: 'MODEL/RANGE' },
+      { machineId: 'MC-029', model: 'ZX225USR-7', level: 'MODEL/RANGE' },
+      { machineId: 'MC-030', model: 'ZX250LC-7', level: 'MODEL/RANGE' },
+      { machineId: 'MC-032', model: 'ZX300LC-7', level: 'MODEL/RANGE' },
+      { machineId: 'MC-035', model: 'ZX350LC-7', level: 'MODEL/RANGE' },
+    ],
+  },
+  {
+    id: 'pt-046-stagev-diesel-engine',
+    partId: 'PT-046',
+    partNumber: '4621008',
+    name: 'Hitachi OEM Stage V Industrial Diesel Engine Assembly',
+    category: 'Engine',
+    type: 'Engine Assembly',
+    description: 'Complete Stage V emission-compliant 6-cylinder turbocharged common-rail industrial diesel engine assembly. High torque output and optimized fuel economy.',
+    source: 'Hitachi Construction Machinery / Zaxis-7 Excavators',
+    image: hitachi_stagev_diesel_engineImage,
+    imageSource: 'Hitachi Construction Machinery / Stage V 6-Cylinder Turbocharged Industrial Diesel Engine',
+    attributes: ['genuine', 'high-torque', 'available'],
+    recordClass: 'ORDERABLE_OEM_PART',
+    fitment: [
+      { machineId: 'MC-027', model: 'ZX210LC-7', level: 'MODEL/RANGE' },
+      { machineId: 'MC-029', model: 'ZX225USR-7', level: 'MODEL/RANGE' },
+      { machineId: 'MC-030', model: 'ZX250LC-7', level: 'MODEL/RANGE' },
+      { machineId: 'MC-032', model: 'ZX300LC-7', level: 'MODEL/RANGE' },
+      { machineId: 'MC-035', model: 'ZX350LC-7', level: 'MODEL/RANGE' },
+    ],
+  },
+  {
+    id: 'pt-047-swing-bearing',
+    partId: 'PT-047',
+    partNumber: '4398110',
+    name: 'Hitachi OEM Slewing Ring / Swing Bearing Assembly',
+    category: 'Drivetrain',
+    type: 'Swing Bearing',
+    description: 'Massive precision machined steel slewing ring gear assembly with internal gear teeth and induction-hardened raceways. Connects upperstructure to lower frame under heavy load.',
+    source: 'Hitachi Construction Machinery / Zaxis-7 Excavators',
+    image: hitachi_swing_bearingImage,
+    imageSource: 'Hitachi Construction Machinery / Precision Internal Gear Slewing Ring Bearing',
+    attributes: ['genuine', 'heavy-duty', 'available'],
+    recordClass: 'ORDERABLE_OEM_PART',
+    fitment: [
+      { machineId: 'MC-027', model: 'ZX210LC-7', level: 'MODEL/RANGE' },
+      { machineId: 'MC-029', model: 'ZX225USR-7', level: 'MODEL/RANGE' },
+      { machineId: 'MC-030', model: 'ZX250LC-7', level: 'MODEL/RANGE' },
+      { machineId: 'MC-032', model: 'ZX300LC-7', level: 'MODEL/RANGE' },
+      { machineId: 'MC-035', model: 'ZX350LC-7', level: 'MODEL/RANGE' },
+    ],
+  },
+  {
+    id: 'pt-048-final-drive-motor',
+    partId: 'PT-048',
+    partNumber: '9265430',
+    name: 'Hitachi OEM Final Drive Travel Motor & Gearbox',
+    category: 'Drivetrain',
+    type: 'Travel Motor',
+    description: 'Integrated axial piston travel motor with multi-stage planetary gear reduction box. Provides high tractive torque and dual-speed travel for crawler excavator undercarriages.',
+    source: 'Hitachi Construction Machinery / Zaxis-7 Excavators',
+    image: hitachi_final_drive_motorImage,
+    imageSource: 'Hitachi Construction Machinery / Planetary Gearbox Final Drive Travel Motor',
+    attributes: ['genuine', 'high-torque', 'available'],
+    recordClass: 'ORDERABLE_OEM_PART',
+    fitment: [
+      { machineId: 'MC-027', model: 'ZX210LC-7', level: 'MODEL/RANGE' },
+      { machineId: 'MC-029', model: 'ZX225USR-7', level: 'MODEL/RANGE' },
+      { machineId: 'MC-030', model: 'ZX250LC-7', level: 'MODEL/RANGE' },
+      { machineId: 'MC-032', model: 'ZX300LC-7', level: 'MODEL/RANGE' },
+      { machineId: 'MC-035', model: 'ZX350LC-7', level: 'MODEL/RANGE' },
+    ],
+  },
   {
     id: 'hitachi-genuine-parts',
     name: 'Hitachi Genuine Parts',
