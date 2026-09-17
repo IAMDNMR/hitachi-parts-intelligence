@@ -9,7 +9,7 @@ import {
 import { useScrollProgress } from '../../hooks/useScrollProgress'
 import { useFrameSequence } from '../../hooks/useFrameSequence'
 import { useReducedMotion } from '../../hooks/useReducedMotion'
-import { serviceSteps, serviceSystems } from '../../data/serviceSteps'
+import { serviceSteps, serviceNavSteps, serviceSystems } from '../../data/serviceSteps'
 import { ServiceIcon } from './ServiceIcons'
 import frameMap from '../../assets/source/section-04/service-frame-map.json'
 
@@ -34,26 +34,43 @@ const FRAME_URLS = Object.keys(FRAME_MODULES)
 const COUNT = FRAME_URLS.length
 
 /**
- * Which frames belong to which stage, read from the extractor's own map so
- * the two can never disagree. Ranges in the file are 1-based and inclusive;
- * these are 0-based and inclusive, in process order.
+ * Which frames belong to which service stage (the 5 numbered ones, NOT the
+ * field beat). Read from the extractor's own map so the two can never
+ * disagree. Ranges in the file are 1-based and inclusive; these are 0-based
+ * and inclusive, in process order.
  */
-const STAGE_FRAMES = serviceSteps.map((step) => {
+const NAV_STAGE_FRAMES = serviceNavSteps.map((step) => {
   const r = frameMap.stages[step.id]
   return { start: r.start - 1, end: r.end - 1 }
 })
 
-/** Frame index -> which stage is being shown. */
-function stageAtFrame(frame) {
-  for (let i = STAGE_FRAMES.length - 1; i >= 0; i -= 1) {
-    if (frame >= STAGE_FRAMES[i].start) return i
+/**
+ * Field beat: the outdoor frames reused as the opening establishing sequence.
+ * Frames 72–84 (0-based) — the first 13 of the 18 outdoor frames, so the
+ * opening and the ending (which uses all 18) feel intentionally distinct.
+ */
+const FIELD_FRAME_START = 72
+const FIELD_FRAME_END = 84
+const FIELD_FRAME_COUNT = FIELD_FRAME_END - FIELD_FRAME_START + 1
+
+/**
+ * The field beat occupies the first 1/7 of the total scroll distance.
+ * After this threshold, the numbered service journey (Inspect → Back to Work)
+ * takes over. Total section height is 700vh (was 600vh).
+ */
+const FIELD_PHASE_END = 1 / 7
+
+/** Frame index -> which NAV stage (0-4) is being shown. */
+function navStageAtFrame(frame) {
+  for (let i = NAV_STAGE_FRAMES.length - 1; i >= 0; i -= 1) {
+    if (frame >= NAV_STAGE_FRAMES[i].start) return i
   }
   return 0
 }
 
 const CONCURRENCY = 6
-const TOTAL = serviceSteps.length
-const LAST = TOTAL - 1
+const NAV_TOTAL = serviceNavSteps.length
+const NAV_LAST = NAV_TOTAL - 1
 const clamp = (v, lo, hi) => Math.min(Math.max(v, lo), hi)
 
 export function ServiceExperience() {
@@ -63,16 +80,20 @@ export function ServiceExperience() {
 
   useScrollProgress({ sectionRef, store, enabled: !reducedMotion })
 
-  /** Scrolls so that stage `index` is the one being read. */
+  /** Scrolls so that nav stage `index` is the one being read. */
   const goToStep = useCallback((index) => {
     const section = sectionRef.current
     if (!section) return
-    const i = clamp(index, 0, LAST)
-    const { start, end } = STAGE_FRAMES[i]
+    const i = clamp(index, 0, NAV_LAST)
+    const { start, end } = NAV_STAGE_FRAMES[i]
     const frame = (start + end) / 2
+    // Map the desired frame back to a scroll position, accounting for the
+    // field phase occupying the first 1/7 of scroll.
+    const serviceProgress = frame / (COUNT - 1)
+    const overallProgress = FIELD_PHASE_END + serviceProgress * (1 - FIELD_PHASE_END)
     const distance = section.offsetHeight - window.innerHeight
     window.scrollTo({
-      top: section.offsetTop + distance * (frame / (COUNT - 1)),
+      top: section.offsetTop + distance * overallProgress,
       behavior: 'smooth',
     })
   }, [])
@@ -115,28 +136,44 @@ export function ServiceExperience() {
 /* ---------------------------------------------------------------- shared */
 
 /**
- * Which stage is being read, derived from the frame on screen rather than
- * from the raw scroll fraction — so the copy changes exactly on the cut
- * between one stage's footage and the next.
- *
- * It is a handful of discrete values, so unlike the frame index it *is*
- * React state: it changes five times across the whole section, not sixty
- * times a second.
+ * Returns the active step index into `serviceSteps` (which includes the
+ * field beat at index 0). During the field phase, returns 0 (the field
+ * beat). During the service journey, returns 1-5 (mapped from the nav
+ * stage index).
  */
 function useActiveStep() {
   const [index, setIndex] = useState(0)
   useProgressEffect((p) => {
-    const frame = clamp(Math.round(p * (COUNT - 1)), 0, COUNT - 1)
-    const next = stageAtFrame(frame)
-    setIndex((prev) => (prev === next ? prev : next))
+    if (p <= FIELD_PHASE_END) {
+      // In the field phase
+      setIndex((prev) => (prev === 0 ? prev : 0))
+    } else {
+      // In the service journey — remap progress to frame
+      const serviceP = (p - FIELD_PHASE_END) / (1 - FIELD_PHASE_END)
+      const frame = clamp(Math.round(serviceP * (COUNT - 1)), 0, COUNT - 1)
+      const navIdx = navStageAtFrame(frame)
+      // +1 because serviceSteps[0] is the field beat
+      const next = navIdx + 1
+      setIndex((prev) => (prev === next ? prev : next))
+    }
   })
   return index
+}
+
+/**
+ * Returns the active nav stage index (0-4, into serviceNavSteps).
+ * Returns -1 during the field phase.
+ */
+function useActiveNavStep() {
+  const stepIdx = useActiveStep()
+  return stepIdx === 0 ? -1 : stepIdx - 1
 }
 
 /* ------------------------------------------------------------------ left */
 
 function IntroColumn() {
-  const stage = serviceSteps[useActiveStep()]
+  const stepIdx = useActiveStep()
+  const stage = serviceSteps[stepIdx]
 
   return (
     <div className="svc__intro">
@@ -146,43 +183,49 @@ function IntroColumn() {
         Service
       </p>
 
-      {/* Keyed on the stage, so the whole column re-enters on every change
-          rather than only the line at the bottom. */}
       <div className="svc__intro-live" key={stage.id}>
         <h2 className="svc__title" id="svc-title">
           {stage.headline.map((line) => (
             <span key={line}>{line}</span>
           ))}
-          <span className="svc__title-accent">{stage.headlineAccent}</span>
+          {stage.headlineAccent && (
+            <span className="svc__title-accent">{stage.headlineAccent}</span>
+          )}
         </h2>
 
-        <span className="svc__tick" aria-hidden="true" />
+        {!stage.isFieldBeat && (
+          <span className="svc__tick" aria-hidden="true" />
+        )}
 
         <p className="svc__lede">{stage.statement}</p>
 
-        <p className="svc__stage-count">
-          <span className="svc__stage-now">{stage.index}</span>
-          <span className="svc__stage-total">
-            / {String(TOTAL).padStart(2, '0')}
-          </span>
-        </p>
+        {!stage.isFieldBeat && (
+          <p className="svc__stage-count">
+            <span className="svc__stage-now">{stage.index}</span>
+            <span className="svc__stage-total">
+              / {String(NAV_TOTAL).padStart(2, '0')}
+            </span>
+          </p>
+        )}
       </div>
     </div>
   )
 }
 
 /**
- * The footage, drawn a frame at a time. Same scrubbing mechanism as the
- * earlier sections: scroll picks a frame and the canvas draws it, so
- * forwards and backwards both land exactly.
+ * The footage, drawn a frame at a time. During the field phase, the outdoor
+ * frames (72-84) are drawn. During the service journey, the indoor/outdoor
+ * frames are drawn based on the remapped scroll progress.
  *
- * There are no markers over the picture any more. They used to be fractions
- * of a cut-out machine's own box, which worked while the machine was the
- * only thing in the frame; here the camera changes scene and the machine
- * moves through the shot, so a fixed fraction would point at nothing.
+ * There is no separate canvas for the field beat — the same canvas draws
+ * both phases. During the field phase, the canvas draws the outdoor frames
+ * directly. A CSS class `.svc__stage--field` is applied during the field
+ * phase to adjust the visual treatment (lighter warm grade for daylight
+ * footage).
  */
 function MachineStage() {
   const canvasRef = useRef(null)
+  const [isField, setIsField] = useState(true)
   const { draw, failed } = useFrameSequence({
     urls: FRAME_URLS,
     canvasRef,
@@ -191,7 +234,19 @@ function MachineStage() {
 
   useProgressEffect((p) => {
     if (!COUNT) return
-    draw(clamp(Math.round(p * (COUNT - 1)), 0, COUNT - 1))
+
+    if (p <= FIELD_PHASE_END) {
+      // Field phase: scrub outdoor frames 72-84 forward
+      const fieldP = p / FIELD_PHASE_END
+      const frame = FIELD_FRAME_START + Math.round(fieldP * (FIELD_FRAME_COUNT - 1))
+      draw(clamp(frame, FIELD_FRAME_START, FIELD_FRAME_END))
+      setIsField(true)
+    } else {
+      // Service journey: remap and scrub all 90 frames
+      const serviceP = (p - FIELD_PHASE_END) / (1 - FIELD_PHASE_END)
+      draw(clamp(Math.round(serviceP * (COUNT - 1)), 0, COUNT - 1))
+      setIsField(false)
+    }
   })
 
   if (failed) {
@@ -206,7 +261,7 @@ function MachineStage() {
   }
 
   return (
-    <div className="svc__stage">
+    <div className={`svc__stage${isField ? ' svc__stage--field' : ''}`}>
       <ServiceAmbient />
       <div className="svc__machine">
         <canvas
@@ -254,15 +309,15 @@ function ServiceAmbient() {
 
 /** Wraps SystemsRow so the hook runs inside the progress provider. */
 function LiveSystemsRow() {
-  return <SystemsRow stageIndex={useActiveStep()} />
+  return <SystemsRow stepIndex={useActiveStep()} />
 }
 
 /**
  * ConSite and Global e-Service. The names hold; what each is doing changes
  * with the stage, so the line under each comes from the active step.
  */
-function SystemsRow({ stageIndex }) {
-  const stage = serviceSteps[stageIndex]
+function SystemsRow({ stepIndex }) {
+  const stage = serviceSteps[stepIndex]
 
   return (
     <ul className="svc__systems">
@@ -290,20 +345,23 @@ function SystemsRow({ stageIndex }) {
    on it, and only the stage being read opens to show its line. The rail and
    the detail panel used to be two separate elements saying the same thing —
    this is both.
+
+   Only the five NUMBERED stages appear here. The field beat is a context
+   beat, not a navigation item.
 -------------------------------------------------------------------------- */
 function ServiceJourney({ onGoToStep }) {
-  const active = useActiveStep()
+  const activeNav = useActiveNavStep()
 
   return (
     <nav className="svc__journey" aria-label="Service stages">
       <span className="svc__journey-line" aria-hidden="true" />
       <ol>
-        {serviceSteps.map((step, i) => (
-          <li key={step.id} className={i === active ? 'is-active' : undefined}>
+        {serviceNavSteps.map((step, i) => (
+          <li key={step.id} className={i === activeNav ? 'is-active' : undefined}>
             <button
               type="button"
               onClick={() => onGoToStep(i)}
-              aria-current={i === active ? 'true' : undefined}
+              aria-current={i === activeNav ? 'true' : undefined}
             >
               <span className="svc__journey-node" aria-hidden="true" />
               <span className="svc__journey-copy">
@@ -321,9 +379,9 @@ function ServiceJourney({ onGoToStep }) {
 function ServiceTranscript() {
   return (
     <div className="visually-hidden">
-      {serviceSteps.map((step) => (
+      {serviceNavSteps.map((step) => (
         <section key={step.id}>
-          <h3>{`${step.index} of ${String(TOTAL).padStart(2, '0')} — ${step.title}`}</h3>
+          <h3>{`${step.index} of ${String(NAV_TOTAL).padStart(2, '0')} \u2014 ${step.title}`}</h3>
           <p>{step.statement}</p>
         </section>
       ))}
@@ -339,7 +397,8 @@ function ServiceTranscript() {
 
 /** The masthead without the scroll: stage 01 carries the section's thesis. */
 function StaticIntro() {
-  const stage = serviceSteps[0]
+  // Use the inspect stage (index 1 in serviceSteps) for the static intro
+  const stage = serviceSteps[1]
   return (
     <div className="svc__intro">
       <p className="svc__kicker">
@@ -351,7 +410,9 @@ function StaticIntro() {
         {stage.headline.map((line) => (
           <span key={line}>{line}</span>
         ))}
-        <span className="svc__title-accent">{stage.headlineAccent}</span>
+        {stage.headlineAccent && (
+          <span className="svc__title-accent">{stage.headlineAccent}</span>
+        )}
       </h2>
       <span className="svc__tick" aria-hidden="true" />
       <p className="svc__lede">{stage.statement}</p>
@@ -361,16 +422,25 @@ function StaticIntro() {
 
 /**
  * Reduced motion: the five stages as a plain list. Nothing is pinned and
- * nothing scrubs.
+ * nothing scrubs. The field beat is represented as a brief intro paragraph
+ * before the numbered list.
  */
 function StaticService() {
+  const fieldStage = serviceSteps[0]
   return (
     <section className="svc svc--static" id="service" aria-labelledby="svc-title">
       <StaticIntro />
 
+      <div className="svc__static-field">
+        <p className="svc__static-field-headline">
+          {fieldStage.headline.join(' ')}
+        </p>
+        <p className="svc__static-field-statement">{fieldStage.statement}</p>
+      </div>
+
       <ol className="svc__static-steps">
-        {serviceSteps.map((step, i) => {
-          const { start, end } = STAGE_FRAMES[i]
+        {serviceNavSteps.map((step, i) => {
+          const { start, end } = NAV_STAGE_FRAMES[i]
           const url = FRAME_URLS[Math.round((start + end) / 2)]
           return (
             <li key={step.id}>
@@ -378,7 +448,7 @@ function StaticService() {
                 <img
                   className="svc__static-frame"
                   src={url}
-                  alt={`${step.title} — service stage ${step.index}`}
+                  alt={`${step.title} \u2014 service stage ${step.index}`}
                   decoding="async"
                 />
               )}
@@ -392,7 +462,7 @@ function StaticService() {
         })}
       </ol>
 
-      <SystemsRow stageIndex={0} />
+      <SystemsRow stepIndex={1} />
     </section>
   )
 }
