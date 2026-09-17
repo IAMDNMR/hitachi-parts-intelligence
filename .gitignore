@@ -24,7 +24,9 @@ neo4j/.env
 backend/video-processing/survey-s01/
 frontend/.test-build/
 
-# Official machine images, mirrored from backend/data/HITACHI_MACHINE_IMAGES/
-# by backend/catalogue-generation/build-web-images.py and build-cutouts.py.
-# ~96 MB of binaries; rebuildable, so not committed.
-frontend/public/machines/
+# NOTE: frontend/public/machines/ (official machine images) used to be
+# excluded here as "rebuildable from backend/data/HITACHI_MACHINE_IMAGES/
+# via backend/catalogue-generation/build-web-images.py and build-cutouts.py"
+# — but neither that source data nor those scripts exist anywhere in this
+# repo's history. These 1,252 files were the only copy, untracked by git,
+# which is also why they were missing from every deployment. Now committed.
