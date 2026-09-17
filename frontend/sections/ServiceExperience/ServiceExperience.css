@@ -26,8 +26,9 @@
   --s-glass: rgba(255, 255, 255, 0.7);
 
   position: relative;
-  /* One viewport of scroll per stage, plus one to read the last one in. */
-  height: 600vh;
+  /* One viewport per service stage (5), plus one for the field opening beat,
+     plus one to read the last one in. */
+  height: 700vh;
   background: var(--s-bg);
 }
 
@@ -602,4 +603,37 @@
 
 .svc--static .svc__systems {
   margin-top: 5vh;
+}
+
+/* Field establishing beat --------------------------------------------------
+   During the field phase the outdoor footage is shown on the same canvas.
+   The daylight footage needs a lighter warm grade than the grey indoor
+   studio, so we override the filter when `.svc__stage--field` is active. */
+.svc__stage--field .svc__canvas {
+  filter: sepia(0.18) saturate(1.12) hue-rotate(-6deg) brightness(1.06)
+    contrast(1.0);
+}
+
+/* Reduced-motion: brief field intro before the numbered list. */
+.svc__static-field {
+  margin-top: clamp(20px, 3vh, 36px);
+  padding-bottom: clamp(16px, 2.4vh, 28px);
+  border-bottom: 1px solid var(--s-line);
+}
+
+.svc__static-field-headline {
+  font-size: clamp(18px, 2vw, 28px);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  color: var(--charcoal);
+  line-height: 1.1;
+}
+
+.svc__static-field-statement {
+  margin-top: 8px;
+  font-size: clamp(12px, 1vw, 14px);
+  line-height: 1.6;
+  color: var(--ink-2);
+  max-width: 40ch;
 }

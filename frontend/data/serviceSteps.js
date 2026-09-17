@@ -1,5 +1,5 @@
 /**
- * Section 04's five service stages, in the order the work actually happens.
+ * Section 04's service stages, in the order the work actually happens.
  *
  * They are written as one process rather than five offers. Each stage owns
  * the whole of the left column: its own headline, set in two dark lines and
@@ -30,8 +30,28 @@
  * the map's stage keys, so the two cannot drift apart.
  *
  * `icon` names come from sections/ServiceExperience/ServiceIcons.jsx.
+ *
+ * The `field` pre-stage is an establishing beat that plays outdoor footage
+ * BEFORE the numbered journey begins. It reuses the same outdoor frames
+ * (73-90) that `backToWork` uses at the end, but scrubs only the first
+ * portion (frames 73-84) to create a distinct treatment. It is NOT a
+ * numbered service stage — the right-side navigation skips it entirely.
  */
 export const serviceSteps = [
+  {
+    id: 'field',
+    index: null,
+    icon: 'uptime',
+    title: null,
+    isFieldBeat: true,
+    headline: ['The machine', 'is at work.'],
+    headlineAccent: null,
+    statement: 'When it needs attention, service begins.',
+    systems: {
+      consite: 'Condition reported by the machine as it works.',
+      globalService: 'Service history, wherever the machine is.',
+    },
+  },
   {
     id: 'inspect',
     index: '01',
@@ -54,7 +74,7 @@ export const serviceSteps = [
     headline: ['Find the cause,', 'not the symptom.'],
     headlineAccent: 'The machine tells us.',
     statement:
-      'In the dealer workshop, the technician traces the cause using the machine’s own data, before any panel is opened.',
+      'In the dealer workshop, the technician traces the cause using the machine\u2019s own data, before any panel is opened.',
     systems: {
       consite: 'Operating data that points at the fault.',
       globalService: 'Technical information behind the diagnosis.',
@@ -102,6 +122,9 @@ export const serviceSteps = [
     },
   },
 ]
+
+/** The service stages that appear in the right-side navigation (numbered 01–05). */
+export const serviceNavSteps = serviceSteps.filter((s) => !s.isFieldBeat)
 
 /**
  * The two Hitachi service capabilities named in this section.
