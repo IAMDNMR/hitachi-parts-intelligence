@@ -1,0 +1,2442 @@
+/* ---------------------------------------------------------------------------
+   SECTION — MACHINERY
+
+   The machine universe as one section of the scrolling page. Category, model
+   and machine replace each other inside it; the page around it is untouched.
+
+   Everything here is scoped under .mc. This file is loaded on the home page
+   alongside every other section's stylesheet, so it defines nothing global —
+   no element selectors, no .header, no html/body rules. An earlier draft of
+   this file restyled .header and would have changed the header on every
+   section of the site.
+
+   Built on the project's existing tokens: the same paper ground, the same
+   charcoal type, orange kept for state and interaction.
+
+   The composition is bands and space rather than cards. A card puts a machine
+   in a box; a band puts it on a ground with room around it, which is how a
+   machine is actually photographed.
+--------------------------------------------------------------------------- */
+
+.mc {
+  position: relative;
+  padding: 120px 0;
+  background: var(--bg);
+}
+
+.mc__inner {
+  width: var(--content-width);
+  max-width: 1440px;
+  margin: 0 auto;
+}
+
+/* --- trail ---------------------------------------------------------------- */
+
+.mc__trail {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 32px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.mc__trail-item {
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  color: var(--ink-2);
+  cursor: pointer;
+  transition: color 200ms var(--ease);
+}
+
+.mc__trail-item:hover {
+  color: var(--orange);
+}
+
+.mc__trail-item.is-current {
+  color: var(--ink);
+  cursor: default;
+}
+
+.mc__trail-sep {
+  color: var(--border);
+}
+
+/* --- back control -------------------------------------------------------- */
+
+/* A real control, not just the breadcrumb. The breadcrumb says where you are;
+   this is the thing you press to leave. It sits at the top of the category and
+   machine views, where the reader looks for it. */
+.mc__backtop {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 28px;
+  padding: 11px 20px 11px 16px;
+  border: 1px solid var(--border);
+  background: var(--white);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink);
+  cursor: pointer;
+  transition: border-color 220ms var(--ease), color 220ms var(--ease),
+    transform 220ms var(--ease);
+}
+
+.mc__backtop:hover,
+.mc__backtop:focus-visible {
+  border-color: var(--orange);
+  color: var(--orange);
+  transform: translateX(-3px);
+}
+
+/* --- lede ----------------------------------------------------------------- */
+
+.mc__lede {
+  max-width: 52ch;
+  margin-bottom: 56px;
+}
+
+.mc__eyebrow {
+  margin-bottom: 14px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--orange);
+}
+
+.mc__title {
+  font-size: clamp(34px, 5vw, 64px);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.02;
+  color: var(--ink);
+}
+
+.mc__sub {
+  margin-top: 18px;
+  font-size: 16px;
+  line-height: 1.55;
+  color: var(--ink-2);
+}
+
+
+
+
+/* --- the stage ------------------------------------------------------------ */
+
+/* On the entry view the section drops its 120px of padding: the stage IS the
+   section, one viewport tall, and anything above it only pushes the machines
+   under the fold. The category and machine views keep the padding. */
+.mc--entry {
+  padding: 0;
+}
+
+/* Full bleed, one viewport. */
+.mc-stage {
+  position: relative;
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+  overflow: hidden;
+  isolation: isolate;
+}
+
+/* Warm stone, not white and not a photograph: a slow tonal fall from sand at
+   the top to a slightly deeper stone at the floor, a lift of light where the
+   machines stand, and a grain so fine it reads as surface rather than as
+   texture. */
+.mc-stage__plate {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background:
+    radial-gradient(ellipse 46% 42% at 62% 52%, rgba(255, 255, 255, 0.55) 0%, rgba(255, 255, 255, 0) 100%),
+    linear-gradient(176deg, #f5f2ec 0%, #efeae2 48%, #e7e1d6 100%);
+}
+
+.mc-stage__plate::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  opacity: 0.35;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.45 0 0 0 0 0.41 0 0 0 0 0.36 0 0 0 0.22 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* One long orange arc, the edge of a circle far larger than the stage, sweeping
+   down between the words and the machines. Only its left flank is kept - the
+   rest would cross the collection - so the mask fades it out to the right. */
+.mc-stage__arc {
+  position: absolute;
+  top: calc(62% - 42vw);
+  left: 29%;
+  z-index: 0;
+  width: 84vw;
+  height: 84vw;
+  border: 1.5px solid rgba(241, 90, 36, 0.5);
+  border-radius: 50%;
+  -webkit-mask-image: linear-gradient(to right, #000 0%, #000 16%, transparent 34%);
+  mask-image: linear-gradient(to right, #000 0%, #000 16%, transparent 34%);
+  pointer-events: none;
+}
+
+/* Two faint rings breaking in from the right edge. */
+.mc-stage__rings::before,
+.mc-stage__rings::after {
+  content: '';
+  position: absolute;
+  z-index: 0;
+  border: 1px solid rgba(120, 108, 96, 0.14);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.mc-stage__rings::before {
+  top: 4%;
+  right: -26vh;
+  width: 52vh;
+  height: 52vh;
+}
+
+.mc-stage__rings::after {
+  top: 38%;
+  right: -34vh;
+  width: 68vh;
+  height: 68vh;
+}
+
+/* The line HCME signs its range with, bottom left, set off by an orange
+   slash. Decoration; the words are in the markup for sighted readers only. */
+.mc-stage__claim {
+  position: absolute;
+  left: var(--page-gutter);
+  bottom: clamp(24px, 5vh, 56px);
+  z-index: 2;
+  padding-left: 58px;
+  font-size: clamp(10px, 0.78vw, 12.5px);
+  font-weight: 600;
+  letter-spacing: 0.3em;
+  line-height: 2.3;
+  text-transform: uppercase;
+  color: var(--ink-2);
+}
+
+.mc-stage__claim::before {
+  content: '';
+  position: absolute;
+  left: 16px;
+  top: -4px;
+  width: 1.5px;
+  height: calc(100% + 8px);
+  background: var(--orange);
+  transform: rotate(24deg);
+  transform-origin: center;
+}
+
+/* A short screen has no room under the values for it. */
+@media (max-height: 700px) {
+  .mc-stage__claim {
+    display: none;
+  }
+}
+
+/* Lede left, collection right, both centred in what the fixed 72px header
+   leaves. Capped on very tall screens so the collection does not float in a
+   sea of ground. */
+.mc-stage__inner {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: minmax(290px, 24%) minmax(0, 1fr);
+  align-items: center;
+  column-gap: clamp(28px, 3vw, 64px);
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 1760px;
+  min-height: min(100vh, 1100px);
+  min-height: min(100svh, 1100px);
+  margin: 0 auto;
+  padding: calc(var(--header-h) + 16px) var(--page-gutter) 24px;
+}
+
+.mc-stage__lede {
+  position: relative;
+  z-index: 2;
+  /* Level with the top row of machines rather than centred on the whole
+     collection, which left the title floating 150px below the first machine. */
+  align-self: start;
+  margin-top: clamp(16px, 6vh, 64px);
+  min-width: 0;
+}
+
+.mc-stage__title {
+  font-size: clamp(40px, 4.2vw, 72px);
+  font-weight: 800;
+  letter-spacing: -0.035em;
+  line-height: 0.96;
+  color: var(--ink);
+}
+
+.mc-stage__strap {
+  margin-top: 10px;
+  font-size: clamp(10px, 0.82vw, 12.5px);
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--ink-2);
+}
+
+.mc-stage__rule {
+  display: block;
+  width: 48px;
+  height: 2px;
+  margin: 16px 0;
+  background: var(--orange);
+}
+
+.mc-stage__body {
+  max-width: 34ch;
+  font-size: clamp(13px, 1vw, 15px);
+  line-height: 1.55;
+  color: var(--ink-2);
+}
+
+/* Reliable / Productive / Sustainable - Hitachi's own three words, each with a
+   mark and a line. Reset explicitly: a <ul> brings the browser's own left
+   padding, which indented the whole list off the lede's edge. */
+.mc-stage__values {
+  display: grid;
+  gap: clamp(10px, 1.6vh, 16px);
+  margin: clamp(18px, 3vh, 28px) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.mc-value {
+  display: grid;
+  grid-template-columns: 30px 1fr;
+  align-items: center;
+  gap: 12px;
+}
+
+.mc-value__icon {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  color: var(--orange);
+}
+
+.mc-value__icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+.mc-value__text {
+  display: grid;
+  gap: 2px;
+}
+
+.mc-value__label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+
+.mc-value__line {
+  font-size: 13px;
+  line-height: 1.35;
+  color: var(--ink-2);
+}
+
+/* --- the collection ------------------------------------------------------- */
+
+.mc-collection {
+  position: relative;
+  min-width: 0;
+}
+
+.mc-collection__count {
+  margin: 0 0 clamp(4px, 1vh, 12px);
+  text-align: right;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+}
+
+/* Twelve columns, two rows: the four excavator sizes take three columns each,
+   and the front row's three larger machines take four each, so both rows run
+   the full width of the collection. */
+.mc-collection__floor {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  grid-template-rows: auto auto;
+  row-gap: clamp(4px, 1.4vh, 18px);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.mc-collection__slot {
+  display: flex;
+  justify-content: center;
+  min-width: 0;
+  padding: 0 6px;
+}
+
+.mc-collection__slot[data-slot='1'] { grid-area: 1 / 1 / 2 / 4; }
+.mc-collection__slot[data-slot='2'] { grid-area: 1 / 4 / 2 / 7; }
+.mc-collection__slot[data-slot='3'] { grid-area: 1 / 7 / 2 / 10; }
+.mc-collection__slot[data-slot='4'] { grid-area: 1 / 10 / 2 / 13; }
+.mc-collection__slot[data-slot='5'] { grid-area: 2 / 1 / 3 / 5; }
+.mc-collection__slot[data-slot='6'] { grid-area: 2 / 5 / 3 / 9; }
+.mc-collection__slot[data-slot='7'] { grid-area: 2 / 9 / 3 / 13; }
+
+/* --- one category --------------------------------------------------------- */
+
+.mc-piece {
+  --img-h: clamp(88px, 16vh, 172px);
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  justify-items: center;
+  width: 100%;
+  padding: clamp(10px, 1.8vh, 22px) 8px clamp(10px, 1.6vh, 20px);
+  border: 0;
+  background: none;
+  font: inherit;
+  color: inherit;
+  text-align: center;
+  cursor: pointer;
+}
+
+/* The front row's machines are the big ones; they are drawn a size larger. */
+.mc-piece--front {
+  --img-h: clamp(100px, 19vh, 204px);
+}
+
+/* The glow the piece lifts into on hover: a tall soft oval, white at the top
+   and warmed by orange at the podium, with a hairline of orange round it. */
+.mc-piece::before {
+  content: '';
+  position: absolute;
+  inset: 0 6%;
+  z-index: -1;
+  border-radius: 50% / 40%;
+  background:
+    radial-gradient(ellipse 62% 24% at 50% 58%, rgba(241, 90, 36, 0.3) 0%, rgba(241, 90, 36, 0) 72%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.85) 0%, rgba(255, 255, 255, 0.4) 100%);
+  box-shadow: inset 0 0 0 1px rgba(241, 90, 36, 0.16), 0 24px 60px rgba(241, 90, 36, 0.14);
+  opacity: 0;
+  transform: scale(0.96);
+  transition: opacity 420ms var(--ease), transform 420ms var(--ease);
+}
+
+.mc-piece:hover::before,
+.mc-piece:focus-visible::before {
+  opacity: 1;
+  transform: none;
+}
+
+.mc-piece__stage {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  width: 100%;
+  height: var(--img-h);
+  margin-bottom: 12px;
+}
+
+/* The white disc every machine stands on - the top of a podium, lit from
+   above, with its own soft shadow on the ground. */
+.mc-piece__plinth {
+  position: absolute;
+  left: 50%;
+  bottom: -12px;
+  z-index: 0;
+  width: 96%;
+  height: clamp(22px, 2.2vw, 34px);
+  transform: translateX(-50%);
+  border-radius: 50%;
+  background: radial-gradient(ellipse 50% 50% at 50% 38%, #ffffff 0%, #fbfaf7 56%, #e9e3da 100%);
+  box-shadow: 0 10px 18px rgba(70, 52, 34, 0.14), inset 0 -2px 4px rgba(70, 52, 34, 0.06);
+  transition: box-shadow 420ms var(--ease);
+  pointer-events: none;
+}
+
+.mc-piece:hover .mc-piece__plinth,
+.mc-piece:focus-visible .mc-piece__plinth {
+  box-shadow: 0 10px 26px rgba(241, 90, 36, 0.42), 0 0 0 1px rgba(241, 90, 36, 0.18),
+    inset 0 -2px 4px rgba(70, 52, 34, 0.06);
+}
+
+.mc-piece__img {
+  position: relative;
+  z-index: 1;
+  max-width: 92%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  margin-bottom: 4px;
+  object-fit: contain;
+  filter: drop-shadow(0 6px 8px rgba(46, 38, 28, 0.16));
+  transform: translateZ(0);
+  transition: transform 520ms var(--ease), filter 520ms var(--ease);
+}
+
+/* Rigid Dump Trucks has no studio photograph anywhere in Hitachi's library, so
+   its on-location frame is feathered at the edges instead of cut out. */
+.mc-piece__img--masked {
+  -webkit-mask-image: radial-gradient(ellipse 60% 60% at 50% 50%, #000 48%, transparent 86%);
+  mask-image: radial-gradient(ellipse 60% 60% at 50% 50%, #000 48%, transparent 86%);
+  filter: none;
+}
+
+.mc-piece__label {
+  position: relative;
+  z-index: 1;
+  margin-top: clamp(8px, 1.4vh, 16px);
+  font-size: clamp(14px, 1.2vw, 22px);
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+  white-space: nowrap;
+  color: var(--ink);
+}
+
+.mc-piece__blurb {
+  position: relative;
+  z-index: 1;
+  max-width: 26ch;
+  /* Always two lines tall, so every arrow in a row sits on the same line even
+     when a description fits on one. */
+  min-height: 2.8em;
+  margin-top: 4px;
+  font-size: clamp(11px, 0.84vw, 15px);
+  line-height: 1.4;
+  color: var(--ink-2);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.mc-piece__cue {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: clamp(30px, 2.4vw, 42px);
+  height: clamp(30px, 2.4vw, 42px);
+  margin-top: clamp(6px, 1.2vh, 14px);
+  border: 1.5px solid var(--orange);
+  border-radius: 50%;
+  font-size: clamp(12px, 0.9vw, 15px);
+  line-height: 1;
+  color: var(--orange);
+  transition: background 260ms var(--ease), color 260ms var(--ease), box-shadow 260ms var(--ease);
+}
+
+.mc-piece:hover .mc-piece__img,
+.mc-piece:focus-visible .mc-piece__img {
+  transform: translateY(-6px) scale(1.04);
+  filter: drop-shadow(0 14px 14px rgba(46, 38, 28, 0.2));
+}
+
+.mc-piece:hover .mc-piece__img--masked,
+.mc-piece:focus-visible .mc-piece__img--masked {
+  filter: none;
+}
+
+.mc-piece:hover .mc-piece__cue,
+.mc-piece:focus-visible .mc-piece__cue {
+  background: var(--orange);
+  color: var(--white);
+  box-shadow: 0 8px 20px rgba(241, 90, 36, 0.4);
+}
+
+.mc-piece:focus-visible {
+  outline: none;
+}
+
+.mc-piece:focus-visible::before {
+  box-shadow: inset 0 0 0 2px var(--orange), 0 24px 60px rgba(241, 90, 36, 0.14);
+}
+
+/* --- LANDCROS, the chapter after the range -------------------------------- */
+
+/* White warmed by orange, in the same family as the hero at the top of the
+   page: a clean white ground, a strong orange glow rising from the upper right
+   and a softer one at the lower left, and orange contour lines carrying the
+   terrain motif over from the stage above. A graphite version was tried first
+   and rejected - it read as heavy and out of character with the rest of the
+   site. The change of ground from the stone catalogue to warm white is still
+   what marks this as a separate chapter. */
+.mc-lx {
+  /* Orange at full strength is 3.6:1 on white - fine for large type and marks,
+     short of 4.5:1 for small text. Small orange text uses this deeper tone. */
+  --lx-orange-text: #c4441a;
+  --lx-line: rgba(23, 23, 23, 0.12);
+
+  position: relative;
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+  overflow: hidden;
+  isolation: isolate;
+  background: #ffffff;
+  color: var(--ink);
+}
+
+.mc-lx__ground {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background:
+    radial-gradient(56% 62% at 88% 6%, rgba(241, 90, 36, 0.3) 0%, rgba(241, 90, 36, 0.12) 38%, rgba(241, 90, 36, 0) 70%),
+    radial-gradient(46% 52% at 2% 98%, rgba(247, 168, 110, 0.32) 0%, rgba(247, 168, 110, 0) 70%),
+    linear-gradient(160deg, #ffffff 0%, #fffaf5 42%, #fdf0e4 78%, #fbe6d2 100%);
+}
+
+.mc-lx__ground::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  opacity: 0.3;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.55 0 0 0 0 0.4 0 0 0 0 0.3 0 0 0 0.18 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* Diagonal hairlines in the top right corner, fading out from it. */
+.mc-lx__ground::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: min(30%, 420px);
+  height: 300px;
+  background: repeating-linear-gradient(135deg, rgba(241, 90, 36, 0.28) 0 1px, transparent 1px 14px);
+  -webkit-mask-image: radial-gradient(120% 100% at 100% 0%, #000 0%, transparent 70%);
+  mask-image: radial-gradient(120% 100% at 100% 0%, #000 0%, transparent 70%);
+}
+
+.mc-lx__rock {
+  position: absolute;
+  top: 16%;
+  right: 0;
+  z-index: 0;
+  width: min(18%, 300px);
+  height: 70%;
+  fill: rgba(140, 116, 96, 0.16);
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 22%, #000 70%, transparent 100%);
+  mask-image: linear-gradient(to bottom, transparent 0%, #000 22%, #000 70%, transparent 100%);
+  pointer-events: none;
+}
+
+.mc-lx__rock-far {
+  fill: rgba(140, 116, 96, 0.1);
+}
+
+.mc-lx__inner {
+  position: relative;
+  z-index: 1;
+  max-width: 1760px;
+  margin: 0 auto;
+  padding: clamp(72px, 11vh, 128px) var(--page-gutter) clamp(64px, 9vh, 104px);
+}
+
+/* --- head --- */
+
+.mc-lx__head {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: end;
+  column-gap: clamp(32px, 6vw, 120px);
+  margin-bottom: clamp(40px, 6vh, 64px);
+}
+
+.mc-lx__eyebrow {
+  margin-bottom: 16px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: var(--lx-orange-text);
+}
+
+/* Charcoal into orange across the word - the brand's two colours in one mark. */
+.mc-lx__title {
+  font-size: clamp(52px, 6.6vw, 112px);
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  line-height: 0.88;
+  color: var(--ink);
+  background: linear-gradient(100deg, var(--ink) 0%, var(--ink) 38%, #f15a24 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.mc-lx__tagline {
+  margin-top: 16px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+}
+
+.mc-lx__intro {
+  justify-self: end;
+  max-width: 50ch;
+}
+
+.mc-lx__rebrand {
+  font-size: clamp(18px, 1.5vw, 24px);
+  font-weight: 600;
+  line-height: 1.35;
+  color: var(--ink);
+}
+
+.mc-lx__lede {
+  margin: 12px 0 18px;
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--ink-2);
+}
+
+.mc-lx__link {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  text-decoration: none;
+  white-space: nowrap;
+  color: var(--lx-orange-text);
+}
+
+.mc-lx__link:hover,
+.mc-lx__link:focus-visible {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+/* --- concept tabs --- */
+
+.mc-lx__tabs {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-bottom: clamp(24px, 3.4vh, 36px);
+  border-bottom: 1px solid var(--lx-line);
+}
+
+.mc-lx__tab {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 18px 20px 20px 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  text-align: left;
+  color: rgba(23, 23, 23, 0.46);
+  cursor: pointer;
+  transition: color 260ms var(--ease);
+}
+
+/* The active tab is marked by a bar that grows along the rule, not by a box. */
+.mc-lx__tab::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 2px;
+  background: var(--orange);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 420ms var(--ease);
+}
+
+.mc-lx__tab.is-active {
+  color: var(--ink);
+}
+
+.mc-lx__tab.is-active::after {
+  transform: scaleX(1);
+}
+
+.mc-lx__tab:hover {
+  color: rgba(23, 23, 23, 0.82);
+}
+
+.mc-lx__tab:focus-visible {
+  outline: 2px solid var(--orange);
+  outline-offset: 4px;
+}
+
+.mc-lx__tab-num {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  font-variant-numeric: tabular-nums;
+  color: rgba(23, 23, 23, 0.32);
+  transition: color 260ms var(--ease);
+}
+
+.mc-lx__tab.is-active .mc-lx__tab-num {
+  color: var(--lx-orange-text);
+}
+
+.mc-lx__tab-text {
+  display: grid;
+  gap: 3px;
+}
+
+.mc-lx__tab-name {
+  font-size: clamp(16px, 1.3vw, 20px);
+  font-weight: 800;
+  letter-spacing: 0.01em;
+}
+
+.mc-lx__tab-kind {
+  font-size: 12px;
+  color: var(--ink-2);
+}
+
+/* --- the panel: gallery + facts --- */
+
+.mc-lx__panel {
+  /* The distance from the page edge to the content edge: the band's inner box
+     is min(100vw, 1760px) wide, centred, with --page-gutter (6%) of padding.
+     That 6% resolves against the band's width - 100vw - not the inner box's,
+     hence 6vw here. The photograph reaches back across this distance to touch
+     the left edge of the page, and the overlays on it use it to line up with
+     the text column above. */
+  --lx-bleed: calc((100vw - min(100vw, 1760px)) / 2 + 6vw);
+
+  display: grid;
+  grid-template-columns: minmax(0, 1.3fr) minmax(340px, 1fr);
+  align-items: center;
+  column-gap: clamp(24px, 3vw, 56px);
+  margin-left: calc(-1 * var(--lx-bleed));
+}
+
+/* --- the photograph --- */
+
+/* 3:2, the shape of most of the official LANDCROS photographs, so they show
+   whole rather than cropped to fill a taller box. */
+.mc-lx__stage {
+  position: relative;
+  min-width: 0;
+  aspect-ratio: 3 / 2;
+  margin: 0;
+}
+
+/* Only the pictures are masked - the chip, the counter and the arrows sit on
+   top and stay crisp. A light feather on the right and at the foot, just
+   enough to set the photograph into the ground; a deeper fade hid a third of
+   every picture. */
+.mc-lx__frames {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  -webkit-mask-image:
+    linear-gradient(to right, #000 0%, #000 86%, transparent 100%),
+    linear-gradient(to bottom, #000 0%, #000 90%, transparent 100%);
+  -webkit-mask-composite: source-in;
+  mask-image:
+    linear-gradient(to right, #000 0%, #000 86%, transparent 100%),
+    linear-gradient(to bottom, #000 0%, #000 90%, transparent 100%);
+  mask-composite: intersect;
+}
+
+/* Every photograph is stacked; only the current one is opaque, so each change
+   is a crossfade between two pictures already on the page. */
+.mc-lx__img {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  /* The whole picture, never cropped. A 3:2 photograph fills the frame
+     exactly; a 16:9 or 4:3 one keeps its own shape against the page edge. */
+  object-fit: contain;
+  object-position: left center;
+  opacity: 0;
+  transform: scale(1.03);
+  transition: opacity 700ms var(--ease), transform 2600ms var(--ease);
+}
+
+.mc-lx__img.is-on {
+  opacity: 1;
+  transform: none;
+}
+
+.mc-lx__status {
+  position: absolute;
+  top: clamp(20px, 3vw, 36px);
+  left: max(20px, var(--lx-bleed));
+  z-index: 2;
+  padding: 8px 14px;
+  background: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 4px 14px rgba(23, 23, 23, 0.12);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+
+/* Counter and segments, bottom left, lined up with the content edge. */
+.mc-lx__progress {
+  position: absolute;
+  left: max(20px, var(--lx-bleed));
+  bottom: 13%;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.mc-lx__count {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  font-variant-numeric: tabular-nums;
+  color: #ffffff;
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.5);
+}
+
+.mc-lx__segments {
+  display: flex;
+  gap: 4px;
+}
+
+.mc-lx__segment {
+  position: relative;
+  width: clamp(26px, 3vw, 48px);
+  height: 3px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.6);
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.25);
+}
+
+.mc-lx__segment.is-done {
+  background: var(--orange);
+}
+
+/* Full while held, filling over the slide's two seconds while it plays. */
+.mc-lx__segment-fill {
+  position: absolute;
+  inset: 0;
+  background: var(--orange);
+  transform-origin: left;
+}
+
+.mc-lx__segment-fill.is-running {
+  animation: mc-lx-fill linear forwards;
+}
+
+@keyframes mc-lx-fill {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+.mc-lx__arrows {
+  position: absolute;
+  right: 16%;
+  bottom: 10%;
+  z-index: 2;
+  display: flex;
+  gap: 12px;
+}
+
+.mc-lx__arrow {
+  display: grid;
+  place-items: center;
+  width: clamp(44px, 3.4vw, 54px);
+  height: clamp(44px, 3.4vw, 54px);
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(23, 23, 23, 0.55);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  color: #ffffff;
+  cursor: pointer;
+  transition: background 220ms var(--ease), transform 220ms var(--ease);
+}
+
+.mc-lx__arrow svg {
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.mc-lx__arrow:hover {
+  background: rgba(23, 23, 23, 0.8);
+  transform: scale(1.06);
+}
+
+.mc-lx__arrow--next {
+  background: var(--orange);
+  box-shadow: 0 8px 22px rgba(241, 90, 36, 0.4);
+}
+
+.mc-lx__arrow--next:hover {
+  background: #d9491a;
+}
+
+.mc-lx__arrow:focus-visible {
+  outline: 2px solid #ffffff;
+  outline-offset: 3px;
+}
+
+/* --- the facts --- */
+
+.mc-lx__info {
+  min-width: 0;
+  padding: 8px 0;
+}
+
+.mc-lx__kind {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--lx-orange-text);
+}
+
+.mc-lx__name {
+  /* Explicit: the global reset clears h1-h3 but not h4, whose default block
+     margin left a 58px hole between the name and its lead. */
+  margin: 12px 0 0;
+  font-size: clamp(30px, 3.1vw, 54px);
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  line-height: 0.98;
+  color: var(--ink);
+}
+
+.mc-lx__lead {
+  max-width: 40ch;
+  margin-top: 14px;
+  font-size: clamp(15px, 1.08vw, 18px);
+  line-height: 1.5;
+  color: var(--ink-2);
+}
+
+.mc-lx__rule {
+  display: block;
+  width: 46px;
+  height: 3px;
+  margin: 20px 0 4px;
+  background: var(--orange);
+}
+
+/* Two by two, divided by a hairline down the middle and one across - no
+   boxes. Each fact leads with its mark in orange. */
+.mc-lx__specs {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin: 0 0 24px;
+}
+
+.mc-lx__spec {
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr);
+  column-gap: 14px;
+  align-items: start;
+  /* Rows packed to the top. Without it a cell whose neighbour wrapped to two
+     lines stretched its own rows to match, and dropped its value well below
+     its label. */
+  align-content: start;
+  padding: 16px 20px 16px 0;
+  border-bottom: 1px solid var(--lx-line);
+}
+
+.mc-lx__spec:nth-child(odd) {
+  border-right: 1px solid var(--lx-line);
+}
+
+.mc-lx__spec:nth-child(even) {
+  padding-left: 22px;
+}
+
+.mc-lx__spec:nth-last-child(-n + 2) {
+  border-bottom: 0;
+}
+
+.mc-lx__spec-icon {
+  grid-row: 1 / span 2;
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  color: var(--orange);
+}
+
+.mc-lx__spec-icon svg {
+  width: 24px;
+  height: 24px;
+}
+
+.mc-lx__spec dt,
+.mc-lx__spec dd {
+  grid-column: 2;
+}
+
+.mc-lx__spec dt {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+}
+
+.mc-lx__spec dd {
+  margin: 5px 0 0;
+  font-size: clamp(13px, 0.9vw, 15px);
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--ink);
+}
+
+/* The one filled control in the section, the width of the facts above it. */
+.mc-lx__cta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  width: 100%;
+  max-width: 560px;
+  padding: 16px 22px;
+  border: 1px solid var(--orange);
+  background: var(--orange);
+  box-shadow: 0 12px 28px rgba(241, 90, 36, 0.3);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: #ffffff;
+  transition: background 260ms var(--ease), border-color 260ms var(--ease), box-shadow 260ms var(--ease);
+}
+
+.mc-lx__cta-arrow {
+  transition: transform 260ms var(--ease);
+}
+
+.mc-lx__cta:hover,
+.mc-lx__cta:focus-visible {
+  border-color: var(--ink);
+  background: var(--ink);
+  box-shadow: 0 12px 28px rgba(23, 23, 23, 0.2);
+}
+
+.mc-lx__cta:hover .mc-lx__cta-arrow,
+.mc-lx__cta:focus-visible .mc-lx__cta-arrow {
+  transform: translate(2px, -2px);
+}
+
+/* --- timeline --- */
+
+.mc-lx__timeline {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  margin: clamp(36px, 5vh, 64px) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.mc-lx__timeline::before {
+  content: '';
+  position: absolute;
+  top: 5px;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(241, 90, 36, 0.5), rgba(241, 90, 36, 0.2));
+}
+
+.mc-lx__when {
+  position: relative;
+  padding: 28px 18px 0 0;
+}
+
+.mc-lx__dot {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: var(--orange);
+  box-shadow: 0 0 0 4px rgba(241, 90, 36, 0.16);
+}
+
+/* Anything after today is drawn open - it has been announced, not done. */
+.mc-lx__when.is-ahead .mc-lx__dot {
+  border: 2px solid var(--orange);
+  background: #ffffff;
+}
+
+.mc-lx__when-link {
+  display: grid;
+  gap: 8px;
+  text-decoration: none;
+  color: inherit;
+}
+
+.mc-lx__when-date {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+
+.mc-lx__when-tag {
+  padding: 3px 6px;
+  border: 1px solid var(--orange);
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  color: var(--lx-orange-text);
+}
+
+.mc-lx__when-text {
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--ink-2);
+  transition: color 220ms var(--ease);
+}
+
+.mc-lx__when:last-child .mc-lx__when-text {
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.mc-lx__when-link:hover .mc-lx__when-text,
+.mc-lx__when-link:focus-visible .mc-lx__when-text {
+  color: var(--lx-orange-text);
+}
+
+.mc-lx__when-link:focus-visible {
+  outline: 2px solid var(--orange);
+  outline-offset: 4px;
+}
+
+/* --- Connect --- */
+
+.mc-lx__connect {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 8px 18px;
+  margin-top: clamp(48px, 7vh, 72px);
+  padding-top: 22px;
+  border-top: 1px solid var(--lx-line);
+}
+
+.mc-lx__connect-name {
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  color: var(--ink);
+}
+
+.mc-lx__connect-line {
+  font-size: 14px;
+  color: var(--ink-2);
+}
+
+@media (max-width: 1100px) {
+  .mc-lx__panel {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: 28px;
+    margin-right: calc(-1 * var(--lx-bleed));
+  }
+
+  /* Full width now, so only the foot fades. */
+  .mc-lx__frames {
+    -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 90%, transparent 100%);
+    mask-image: linear-gradient(to bottom, #000 0%, #000 90%, transparent 100%);
+  }
+
+  .mc-lx__arrows {
+    right: max(20px, var(--lx-bleed));
+  }
+
+  .mc-lx__info {
+    padding: 0 var(--lx-bleed);
+  }
+
+  .mc-lx__timeline {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    row-gap: 36px;
+  }
+
+  .mc-lx__timeline::before {
+    display: none;
+  }
+}
+
+@media (max-width: 900px) {
+  .mc-lx__head {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: 22px;
+  }
+
+  .mc-lx__intro {
+    justify-self: start;
+  }
+}
+
+/* Phone: the timeline becomes a vertical line down the left. */
+@media (max-width: 700px) {
+  .mc-lx__tab {
+    gap: 12px;
+    padding-right: 10px;
+  }
+
+  .mc-lx__tab-kind {
+    display: none;
+  }
+
+  .mc-lx__specs {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .mc-lx__spec,
+  .mc-lx__spec:nth-child(even) {
+    padding: 18px 0;
+    border-right: 0;
+    border-bottom: 1px solid var(--lx-line);
+  }
+
+  .mc-lx__spec:last-child {
+    border-bottom: 0;
+  }
+
+  .mc-lx__segment {
+    width: 22px;
+  }
+
+  .mc-lx__timeline {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: 0;
+  }
+
+  .mc-lx__timeline::before {
+    display: block;
+    top: 0;
+    bottom: 0;
+    left: 5px;
+    right: auto;
+    width: 1px;
+    height: auto;
+    background: rgba(241, 90, 36, 0.35);
+  }
+
+  .mc-lx__when {
+    padding: 0 0 22px 30px;
+  }
+
+  .mc-lx__dot {
+    top: 2px;
+  }
+
+  .mc-lx__cta {
+    width: 100%;
+    justify-content: space-between;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mc-lx__img,
+  .mc-lx__tab::after,
+  .mc-lx__cta-arrow {
+    transition: none;
+  }
+
+  .mc-lx__segment-fill.is-running {
+    animation: none;
+  }
+}
+
+/* --- the model showcase --------------------------------------------------- */
+
+/* A category's machines, one at a time, in a viewport pinned inside a tall
+   track. The section drops its padding so the pin starts at the top of the
+   page, under the fixed header. */
+.mc--show {
+  padding: 0;
+}
+
+.mc-show {
+  position: relative;
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+  --mc-show-p: 0;
+}
+
+.mc-show__pin {
+  position: sticky;
+  top: 0;
+  display: grid;
+  grid-template-rows: minmax(0, 1fr);
+  height: 100vh;
+  height: 100svh;
+  padding-top: var(--header-h);
+  box-sizing: border-box;
+  overflow: hidden;
+  /* The one stacking context in the showcase. Studio photographs are blended
+     into the ground with multiply, and that only works if the ground and the
+     machine share a context - so nothing between them may start its own (no
+     z-index, transform or opacity on the stage or the machine column). */
+  isolation: isolate;
+}
+
+/* Warm ivory, a lift of light behind the machine, the faintest orange at its
+   feet, and two hairlines. Nothing photographic, nothing to look at but the
+   machine. */
+.mc-show__ground {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 40% 46% at 52% 44%, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0) 72%),
+    radial-gradient(ellipse 34% 12% at 52% 78%, rgba(241, 90, 36, 0.09) 0%, rgba(241, 90, 36, 0) 70%),
+    radial-gradient(ellipse 60% 18% at 52% 84%, rgba(120, 100, 80, 0.07) 0%, rgba(120, 100, 80, 0) 70%),
+    linear-gradient(180deg, #f8f5f0 0%, #f2ede6 56%, #ebe5dc 100%);
+}
+
+.mc-show__ground::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(116deg, transparent 0 66%, rgba(23, 23, 23, 0.03) 66% calc(66% + 1px), transparent calc(66% + 1px)),
+    linear-gradient(116deg, transparent 0 71%, rgba(241, 90, 36, 0.05) 71% calc(71% + 1px), transparent calc(71% + 1px));
+}
+
+/* A thin orange circle behind the machine, most of it faded away. */
+.mc-show__arc {
+  position: absolute;
+  top: 14%;
+  left: 48%;
+  width: min(64vh, 42vw);
+  aspect-ratio: 1;
+  border: 1px solid rgba(241, 90, 36, 0.22);
+  border-radius: 50%;
+  -webkit-mask-image: linear-gradient(210deg, #000 20%, transparent 60%);
+  mask-image: linear-gradient(210deg, #000 20%, transparent 60%);
+  pointer-events: none;
+}
+
+.mc-show__stage {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(240px, 22%) minmax(0, 1fr) minmax(210px, 17%);
+  column-gap: clamp(16px, 2.4vw, 48px);
+  min-height: 0;
+  padding: clamp(20px, 4.5vh, 64px) var(--page-gutter) clamp(20px, 4vh, 48px);
+}
+
+.mc-show__sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* Name blocks, fact lists and machines are each stacked; the one for the
+   current machine is shown, the ones before it wait above/left and the ones
+   after it wait below/right, so every change moves in the direction of the
+   scroll without the component tracking direction at all.
+
+   Text blocks stack in one grid cell rather than absolutely, so their column
+   is as tall as the longest of them - a wheel loader's nine applications used
+   to run straight out of a fixed-height box and under the next button. */
+.mc-show__names,
+.mc-show__rows {
+  display: grid;
+}
+
+.mc-show__name-block,
+.mc-show__dl {
+  grid-area: 1 / 1;
+  align-self: start;
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 460ms var(--ease), transform 620ms var(--ease);
+  pointer-events: none;
+}
+
+.mc-show__name-block.is-past,
+.mc-show__dl.is-past {
+  transform: translateY(-18px);
+}
+
+.mc-show__name-block.is-on,
+.mc-show__dl.is-on {
+  opacity: 1;
+  transform: none;
+  pointer-events: auto;
+  transition-delay: 80ms;
+}
+
+/* --- left: the story --- */
+
+/* The two text columns sit on a layer above the machine, so a machine that
+   reaches under them never covers a word or a button. The columns themselves
+   let clicks through to the machine; only their controls and text take them. */
+.mc-show__story,
+.mc-show__facts {
+  position: relative;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.mc-show__back,
+.mc-show__arrow,
+.mc-show__counter {
+  pointer-events: auto;
+}
+
+.mc-show__story {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.mc-show__back {
+  align-self: flex-start;
+  display: inline-flex;
+  gap: 8px;
+  margin-bottom: clamp(14px, 3vh, 36px);
+  padding: 0;
+  border: 0;
+  background: none;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+  cursor: pointer;
+  transition: color 220ms var(--ease), transform 220ms var(--ease);
+}
+
+.mc-show__back:hover,
+.mc-show__back:focus-visible {
+  color: var(--orange);
+  transform: translateX(-3px);
+}
+
+.mc-show__rule {
+  display: block;
+  width: 56px;
+  height: 2px;
+  margin-bottom: clamp(16px, 2.6vh, 28px);
+  background: var(--orange);
+}
+
+.mc-show__category {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: #c4441a;
+}
+
+.mc-show__counter {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin: clamp(14px, 3.4vh, 44px) 0 clamp(6px, 1.2vh, 14px);
+  font-size: clamp(17px, 1.5vw, 22px);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.04em;
+}
+
+.mc-show__counter-now {
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.mc-show__counter-sep,
+.mc-show__counter-all {
+  font-weight: 400;
+  color: rgba(23, 23, 23, 0.42);
+}
+
+
+
+.mc-show__kicker {
+  margin-bottom: 8px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+}
+
+/* Sized to the name, not to a guess about it. The column is a size container,
+   and the type is the smaller of the design size and whatever lets the
+   longest unbroken run (--chars, set per machine) fit the column - so
+   "ZX490-7G" stays on one line, and "ZX250-300-350-7 MONO STRAIGHT BOOM" wraps
+   between its words but never through its code. */
+.mc-show__names {
+  container-type: inline-size;
+}
+
+.mc-show__name {
+  margin: 0;
+  font-size: min(clamp(34px, 3.7vw, 64px), 8.5vh, calc(100cqi / (var(--chars, 8) * 0.68)));
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.02;
+  color: var(--ink);
+  overflow-wrap: normal;
+}
+
+.mc-show__name-rule {
+  display: block;
+  width: 44px;
+  height: 1px;
+  margin: clamp(12px, 2.4vh, 26px) 0;
+  background: rgba(23, 23, 23, 0.2);
+}
+
+.mc-show__line {
+  max-width: 30ch;
+  font-size: clamp(14px, 1.08vw, 17px);
+  line-height: 1.6;
+  color: var(--ink-2);
+}
+
+.mc-show__step {
+  display: grid;
+  justify-items: center;
+  gap: 10px;
+  width: max-content;
+}
+
+
+.mc-show__arrow {
+  display: grid;
+  place-items: center;
+  width: clamp(44px, 3.4vw, 54px);
+  height: clamp(44px, 3.4vw, 54px);
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: #ffffff;
+  box-shadow: 0 8px 22px rgba(70, 52, 34, 0.12);
+  color: var(--ink);
+  cursor: pointer;
+  transition: background 220ms var(--ease), color 220ms var(--ease), transform 220ms var(--ease),
+    opacity 220ms var(--ease);
+}
+
+.mc-show__arrow svg {
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.mc-show__arrow:hover:not(:disabled) {
+  transform: scale(1.06);
+}
+
+.mc-show__arrow--next {
+  background: var(--orange);
+  box-shadow: 0 10px 24px rgba(241, 90, 36, 0.38);
+  color: #ffffff;
+}
+
+.mc-show__arrow:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.mc-show__arrow:focus-visible {
+  outline: 2px solid var(--orange);
+  outline-offset: 3px;
+}
+
+.mc-show__step-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+}
+
+.mc-show__tag {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.3em;
+  line-height: 2.1;
+  text-transform: uppercase;
+  color: var(--ink-2);
+}
+
+.mc-show__tag--left {
+  padding-left: 24px;
+  border-left: 1px solid rgba(23, 23, 23, 0.4);
+}
+
+/* --- centre: the machine --- */
+
+.mc-show__machines {
+  position: relative;
+  min-width: 0;
+  min-height: 0;
+}
+
+/* One box, wide enough that the machine can run out under the side text
+   columns - the whole point of putting the machine in the centre and the
+   words either side of it. Nothing about the box itself hides any of the
+   machine: object-fit: contain on the <img> inside it never crops, and
+   nothing here masks, blurs or fades the picture. What used to fade the
+   edges (a radial mask on site photos, mix-blend-mode on studio ones) is
+   gone - it was cutting into raised booms and washing out the machine's own
+   colour along with the backdrop it was meant to remove. Removing the studio
+   white sweep is now done for real, once, in build-cutouts.py, and this only
+   ever displays the result. */
+.mc-show__slide {
+  position: absolute;
+  top: 0;
+  right: -12%;
+  bottom: 12%;
+  left: -12%;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  opacity: 0;
+  transform: translate3d(6%, 0, 0) scale(0.88);
+  /* Leaving: a quick fade as it scales down and steps aside. */
+  transition: opacity 420ms var(--ease), transform 520ms var(--ease);
+  pointer-events: none;
+}
+
+.mc-show__slide.is-past {
+  transform: translate3d(-6%, 0, 0) scale(0.88);
+}
+
+/* Arriving: fades in, scales up and settles - a hair past full size and back,
+   which is what makes it feel set down rather than swapped in. */
+.mc-show__slide.is-on {
+  opacity: 1;
+  transform: none;
+  pointer-events: auto;
+  transition: opacity 560ms var(--ease) 60ms, transform 700ms cubic-bezier(0.2, 1.12, 0.36, 1) 60ms;
+}
+
+.mc-show__img {
+  position: relative;
+  display: block;
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  transition: transform 700ms var(--ease);
+}
+
+.mc-show__slide.is-on:hover .mc-show__img {
+  transform: scale(1.015);
+}
+
+.mc-show__slide:focus-visible {
+  outline: 2px solid var(--orange);
+  outline-offset: -2px;
+}
+
+/* The ground shadow, which moves with its machine. */
+.mc-show__shadow {
+  position: absolute;
+  left: 50%;
+  bottom: -3%;
+  width: 72%;
+  height: 9%;
+  transform: translateX(-50%);
+  border-radius: 50%;
+  background: radial-gradient(ellipse 50% 50% at 50% 50%, rgba(60, 44, 28, 0.32) 0%, rgba(60, 44, 28, 0.12) 50%, rgba(60, 44, 28, 0) 100%);
+  pointer-events: none;
+}
+
+.mc-show__dots {
+  position: absolute;
+  left: 50%;
+  bottom: 9.5%;
+  display: flex;
+  gap: 8px;
+  transform: translateX(-50%);
+}
+
+.mc-show__dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: rgba(23, 23, 23, 0.12);
+  transition: background 300ms var(--ease), transform 300ms var(--ease);
+}
+
+.mc-show__dot.is-on {
+  background: var(--orange);
+  transform: scale(1.35);
+}
+
+.mc-show__cue {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  display: grid;
+  justify-items: center;
+  gap: 10px;
+  transform: translateX(-50%);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--ink-2);
+  transition: opacity 400ms var(--ease);
+}
+
+.mc-show__cue.is-done {
+  opacity: 0;
+}
+
+.mc-show__mouse {
+  position: relative;
+  width: 18px;
+  height: 28px;
+  border: 1.5px solid rgba(23, 23, 23, 0.45);
+  border-radius: 10px;
+}
+
+.mc-show__mouse::after {
+  content: '';
+  position: absolute;
+  top: 5px;
+  left: 50%;
+  width: 2px;
+  height: 6px;
+  margin-left: -1px;
+  border-radius: 1px;
+  background: rgba(23, 23, 23, 0.5);
+  animation: mc-show-wheel 1.8s var(--ease) infinite;
+}
+
+@keyframes mc-show-wheel {
+  0% {
+    opacity: 0;
+    transform: translateY(-2px);
+  }
+  30% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+
+/* --- right: the facts --- */
+
+.mc-show__facts {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  padding-top: clamp(30px, 6.4vh, 84px);
+}
+
+
+
+/* Each fact leads with its orange mark, beside the label and value. */
+.mc-show__row {
+  display: grid;
+  grid-template-columns: 24px minmax(0, 1fr);
+  column-gap: 14px;
+  align-items: start;
+  padding: clamp(10px, 1.5vh, 15px) 0;
+  border-bottom: 1px solid rgba(23, 23, 23, 0.1);
+}
+
+.mc-show__row-icon {
+  grid-row: 1 / span 2;
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  margin-top: 1px;
+  color: var(--orange);
+}
+
+.mc-show__row-icon svg {
+  width: 22px;
+  height: 22px;
+}
+
+.mc-show__row dt,
+.mc-show__row dd {
+  grid-column: 2;
+}
+
+.mc-show__row dt {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+}
+
+.mc-show__row dd {
+  margin: 5px 0 0;
+  font-size: clamp(14px, 1.05vw, 16px);
+  line-height: 1.4;
+  color: var(--ink);
+}
+
+
+/* Tagline and the next button share the foot of the column, in the flow
+   under the facts, so however many rows a machine has they can never meet. */
+.mc-show__foot {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: auto;
+  padding-top: 20px;
+}
+
+.mc-show__foot--left {
+  justify-content: flex-start;
+  gap: clamp(20px, 2.4vw, 36px);
+}
+
+.mc-show__tag--right {
+  position: relative;
+  margin-left: 26px;
+}
+
+.mc-show__tag--right::before {
+  content: '';
+  position: absolute;
+  left: -22px;
+  top: -2px;
+  width: 1.5px;
+  height: calc(100% + 4px);
+  background: var(--orange);
+  transform: rotate(18deg);
+}
+
+.mc-show__step--next {
+  margin-left: auto;
+}
+
+/* --- smaller screens --- */
+
+@media (max-width: 1100px) {
+  .mc-show__stage {
+    grid-template-columns: minmax(200px, 25%) minmax(0, 1fr) minmax(180px, 21%);
+  }
+
+  .mc-show__tag {
+    display: none;
+  }
+}
+
+/* Short screens: the taglines are the first thing to go. */
+@media (max-height: 780px) {
+  .mc-show__tag {
+    display: none;
+  }
+}
+
+/* Phone and tablet portrait: the machine keeps the middle, its name sits
+   above it and its facts below; the strip gives way to the dots. */
+@media (max-width: 900px) {
+  .mc-show__stage {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto minmax(0, 1fr) auto;
+    row-gap: 10px;
+    padding-top: 14px;
+  }
+
+  .mc-show__story {
+    display: block;
+  }
+
+  /* Static here, so the prev / next arrows place themselves against the stage
+     rather than against these columns. */
+  .mc-show__story,
+  .mc-show__facts {
+    position: static;
+  }
+
+  /* A narrow screen has no side columns to reach under. */
+  .mc-show__slide {
+    right: -6%;
+    left: -6%;
+  }
+
+  .mc-show__back {
+    margin-bottom: 12px;
+  }
+
+  .mc-show__rule,
+  .mc-show__name-rule,
+  .mc-show__step-label {
+    display: none;
+  }
+
+  .mc-show__counter {
+    margin: 8px 0 6px;
+    font-size: 16px;
+  }
+
+  .mc-show__name {
+    font-size: min(clamp(28px, 8vw, 44px), calc(100cqi / (var(--chars, 8) * 0.68)));
+  }
+
+  .mc-show__line {
+    margin-top: 8px;
+    font-size: 13px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  /* Prev / next move onto the machine's flanks. */
+  .mc-show__step--prev,
+  .mc-show__step--next {
+    position: absolute;
+    top: 50%;
+    bottom: auto;
+    z-index: 2;
+    margin: 0;
+  }
+
+  .mc-show__step--prev {
+    left: var(--page-gutter);
+  }
+
+  .mc-show__step--next {
+    right: var(--page-gutter);
+  }
+
+  .mc-show__arrow {
+    width: 40px;
+    height: 40px;
+  }
+
+  .mc-show__facts {
+    padding-top: 0;
+  }
+
+  .mc-show__facts > .mc-show__rule {
+    display: none;
+  }
+
+  .mc-show__dl {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 16px;
+  }
+
+  /* The name above already says the category and the model. */
+  .mc-show__row--category,
+  .mc-show__row--model {
+    display: none;
+  }
+
+  .mc-show__row dd {
+    font-size: 13px;
+  }
+
+  .mc-show__cue {
+    display: none;
+  }
+
+  .mc-show__dots {
+    bottom: 2%;
+  }
+
+  .mc-show__slide {
+    bottom: 8%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mc-show__slide,
+  .mc-show__name-block,
+  .mc-show__dl,
+  .mc-show__img {
+    transition: none;
+  }
+
+  .mc-show__mouse::after {
+    animation: none;
+  }
+}
+
+/* --- detail --------------------------------------------------------------- */
+
+.mc__hero {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  margin-bottom: 56px;
+  background: var(--white);
+}
+
+.mc__hero-img {
+  max-width: 100%;
+  max-height: 56vh;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  mix-blend-mode: multiply;
+}
+
+.mc__detail-body {
+  display: grid;
+  grid-template-columns: 1.35fr 1fr;
+  gap: 60px;
+  margin-bottom: 64px;
+}
+
+.mc__h3 {
+  margin-bottom: 18px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+}
+
+.mc__facts .mc__h3:not(:first-child) {
+  margin-top: 40px;
+}
+
+.mc__dl {
+  margin: 0;
+}
+
+.mc__dl-row {
+  display: grid;
+  grid-template-columns: 190px 1fr;
+  gap: 20px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--grey-100);
+  font-size: 14px;
+}
+
+.mc__dl-row dt {
+  font-weight: 600;
+  color: var(--ink-2);
+}
+
+.mc__dl-row dd {
+  margin: 0;
+  color: var(--ink);
+}
+
+.mc__body {
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--ink);
+}
+
+.mc__source {
+  display: inline-block;
+  margin-top: 26px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--orange);
+  text-decoration: none;
+}
+
+.mc__source:hover {
+  text-decoration: underline;
+}
+
+.mc__next-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.mc__next-list li {
+  position: relative;
+  padding: 12px 0 12px 18px;
+  border-bottom: 1px solid var(--grey-100);
+  font-size: 14px;
+  color: var(--ink);
+}
+
+.mc__next-list li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 19px;
+  width: 5px;
+  height: 1px;
+  background: var(--orange);
+}
+
+.mc__note {
+  margin-top: 20px;
+  font-size: 12.5px;
+  line-height: 1.55;
+  color: var(--ink-2);
+}
+
+.mc__gallery {
+  margin-bottom: 56px;
+}
+
+.mc__gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 2px;
+}
+
+.mc__shot {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 4 / 3;
+  margin: 0;
+  padding: 14px;
+  background: var(--white);
+}
+
+.mc__shot-img {
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  mix-blend-mode: multiply;
+}
+
+.mc__back {
+  padding: 14px 22px;
+  border: 1px solid var(--border);
+  background: none;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink);
+  cursor: pointer;
+  transition: border-color 220ms var(--ease), color 220ms var(--ease);
+}
+
+.mc__back:hover {
+  border-color: var(--orange);
+  color: var(--orange);
+}
+
+/* --- a machine with no official image ------------------------------------- */
+
+.mc .mi--empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 130px;
+  background: var(--grey-100);
+}
+
+.mc .mi__empty-mark {
+  width: 26px;
+  height: 1px;
+  background: var(--border);
+}
+
+/* --- responsive ----------------------------------------------------------- */
+
+/* Tablet portrait: the lede goes above and the collection keeps its two rows
+   underneath - still four over three, just full width. */
+@media (max-width: 900px) {
+  .mc {
+    padding: 80px 0;
+  }
+
+  .mc--entry {
+    padding: 0;
+  }
+
+  .mc-stage__inner {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: clamp(18px, 3vh, 32px);
+    align-content: center;
+  }
+
+  .mc-stage__body {
+    max-width: 58ch;
+  }
+
+  /* The three values sit side by side under the body instead of stacking. */
+  .mc-stage__values {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  .mc-value {
+    grid-template-columns: 26px 1fr;
+    gap: 8px;
+  }
+
+  .mc-value__icon {
+    width: 26px;
+    height: 26px;
+  }
+
+  .mc-collection__count {
+    text-align: left;
+  }
+
+  .mc-piece {
+    --img-h: clamp(76px, 11vh, 132px);
+  }
+
+  .mc-piece--front {
+    --img-h: clamp(86px, 12.5vh, 152px);
+  }
+
+  .mc-stage__claim {
+    display: none;
+  }
+
+  .mc__detail-body {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+
+  .mc__dl-row {
+    grid-template-columns: 1fr;
+    gap: 4px;
+  }
+}
+
+/* Phone: one machine at a time on a row you swipe, with the next one showing
+   at the edge so it is obvious there is more. The row scrolls inside itself;
+   the page never scrolls sideways. */
+@media (max-width: 700px) {
+  .mc-stage__arc,
+  .mc-stage__rings {
+    display: none;
+  }
+
+  .mc-stage__title {
+    font-size: 44px;
+  }
+
+  /* On a phone the line under each value costs more height than it earns. */
+  .mc-value {
+    grid-template-columns: 1fr;
+    justify-items: start;
+    gap: 6px;
+  }
+
+  .mc-value__line {
+    display: none;
+  }
+
+  .mc-collection__floor {
+    display: flex;
+    gap: 8px;
+    margin: 0 calc(-1 * var(--page-gutter));
+    padding: 4px 14vw 8px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .mc-collection__floor::-webkit-scrollbar {
+    display: none;
+  }
+
+  .mc-collection__slot {
+    flex: 0 0 72%;
+    padding: 0;
+    scroll-snap-align: center;
+  }
+
+  .mc-piece,
+  .mc-piece--front {
+    --img-h: clamp(130px, 24vh, 200px);
+  }
+
+  .mc-piece__blurb {
+    font-size: 12px;
+  }
+}
+
+/* Motion is decoration here; nothing about the layout depends on it. */
+@media (prefers-reduced-motion: reduce) {
+  .mc-piece::before,
+  .mc-piece__img,
+  .mc-piece__plinth,
+  .mc-piece__cue {
+    transition: none;
+  }
+
+  .mc-piece:hover .mc-piece__img,
+  .mc-piece:focus-visible .mc-piece__img {
+    transform: none;
+  }
+}

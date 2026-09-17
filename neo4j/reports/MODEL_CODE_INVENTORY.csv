@@ -1,0 +1,85 @@
+machine_id,catalogue_record,raw_model_value,parsed_model_code,source_page_or_reference,model_count_source,parsed_count,notes
+MC-001,ZX330LC-5G CTA 25m,ZX330LC-5G CTA 25m,ZX330LC-5G CTA 25m,https://www.hitachicm.com/eu/en/machinery/excavators/special-applications/clamshell-telescopic-arm-excavators/product.zx330lc-5g-cta-25m/,1,1,Clamshell Telescopic Arm Excavators
+MC-002,ZX330LC-5G CTA 30m,ZX330LC-5G CTA 30m,ZX330LC-5G CTA 30m,https://www.hitachicm.com/eu/en/machinery/excavators/special-applications/clamshell-telescopic-arm-excavators/product.zx330lc-5g-cta-30m/,1,1,Clamshell Telescopic Arm Excavators
+MC-003,ZX350LC-7 CTA 25m and 30m,ZX350LC-7 CTA 25m and 30m,ZX350LC-7 CTA 25m and 30m,https://www.hitachicm.com/eu/en/machinery/excavators/special-applications/clamshell-telescopic-arm-excavators/product.zx350lc-7-cta-25m-30m/,1,1,Clamshell Telescopic Arm Excavators
+MC-004,ZX250-300-350-7 MONO STRAIGHT BOOM,ZX250-300-350-7 MONO STRAIGHT BOOM,ZX250-300-350-7 MONO STRAIGHT BOOM,https://www.hitachicm.com/eu/en/machinery/excavators/special-applications/demolition-excavators/product.zx250-300-350-7%20mono%20straight%20boom/,1,1,Demolition Excavators
+MC-005,ZX250-300-350-7 STRAIGHT BOOM,ZX250-300-350-7 STRAIGHT BOOM,ZX250-300-350-7 STRAIGHT BOOM,https://www.hitachicm.com/eu/en/machinery/excavators/special-applications/demolition-excavators/product.zx250-300-350-7%20straight%20boom/,1,1,Demolition Excavators
+MC-006,ZX390TC-7,ZX390TC-7,ZX390TC-7,https://www.hitachicm.com/eu/en/machinery/excavators/special-applications/demolition-excavators/product.zx390tc-7/,1,1,Demolition Excavators
+MC-007,ZX400MC-7,ZX400MC-7,ZX400MC-7,https://www.hitachicm.com/eu/en/machinery/excavators/special-applications/demolition-excavators/product.zx400mc-7/,1,1,Demolition Excavators
+MC-008,ZX600MC-7,ZX600MC-7,ZX600MC-7,https://www.hitachicm.com/eu/en/machinery/excavators/special-applications/demolition-excavators/product.zx600mc-7/,1,1,Demolition Excavators
+MC-009,ZX135USL-7 Forestry,ZX135USL-7 Forestry,ZX135USL-7 Forestry,https://www.hitachicm.com/eu/en/machinery/excavators/special-applications/forestry/product.zx135usl-7/,1,1,Forestry Excavators
+MC-010,ZX490-7G,ZX490-7G,ZX490-7G,https://www.hitachicm.com/eu/en/machinery/excavators/large-excavators/product.zx490-7g/,1,1,Large Excavators
+MC-011,ZX690-7G,ZX690-7G,ZX690-7G,https://www.hitachicm.com/eu/en/machinery/excavators/large-excavators/product.zx690-7g/,1,1,Large Excavators
+MC-012,ZX890-7G,ZX890-7G,ZX890-7G,https://www.hitachicm.com/eu/en/machinery/excavators/large-excavators/product.zx890-7g/,1,1,Large Excavators
+MC-013,EX1200-7,EX1200-7,EX1200-7,https://www.hitachicm.com/eu/en/machinery/excavators/large-excavators/product.ex1200-7/,1,1,Large Excavators
+MC-014,EX2000-7,EX2000-7,EX2000-7,https://www.hitachicm.com/eu/en/machinery/excavators/large-excavators/product.ex2000-7/,1,1,Large Excavators
+MC-015,EX2000-7,EX2000-7,EX2000-7,https://www.hitachicm.com/eu/en/machinery/excavators/large-excavators/product.ex2000-7e/,1,1,Large Excavators
+MC-016,EX2600-7,EX2600-7,EX2600-7,https://www.hitachicm.com/eu/en/machinery/excavators/large-excavators/product.ex2600-7/,1,1,Large Excavators
+MC-017,EX2600-7,EX2600-7,EX2600-7,https://www.hitachicm.com/eu/en/machinery/excavators/large-excavators/product.ex2600-7e/,1,1,Large Excavators
+MC-018,EX3600-7,EX3600-7,EX3600-7,https://www.hitachicm.com/eu/en/machinery/excavators/large-excavators/product.ex3600-7/,1,1,Large Excavators
+MC-019,EX3600-7,EX3600-7,EX3600-7,https://www.hitachicm.com/eu/en/machinery/excavators/large-excavators/product.ex3600-7e/,1,1,Large Excavators
+MC-020,EX5600-7,EX5600-7,EX5600-7,https://www.hitachicm.com/eu/en/machinery/excavators/large-excavators/product.ex5600-7/,1,1,Large Excavators
+MC-021,EX5600-7,EX5600-7,EX5600-7,https://www.hitachicm.com/eu/en/machinery/excavators/large-excavators/product.ex5600-7e/,1,1,Large Excavators
+MC-022,EX8000-7,EX8000-7,EX8000-7,https://www.hitachicm.com/eu/en/machinery/excavators/large-excavators/product.ex8000-7/,1,1,Large Excavators
+MC-023,EX8000-7,EX8000-7,EX8000-7,https://www.hitachicm.com/eu/en/machinery/excavators/large-excavators/product.ex8000-7e/,1,1,Large Excavators
+MC-024,ZX490LCH-7,ZX490LCH-7,ZX490LCH-7,https://www.hitachicm.com/eu/en/machinery/excavators/large-excavators/product.zx490lch-7/,1,1,Large Excavators
+MC-025,ZX530LCH-7,ZX530LCH-7,ZX530LCH-7,https://www.hitachicm.com/eu/en/machinery/excavators/large-excavators/product.zx530lch-7/,1,1,Large Excavators
+MC-026,ZX690LCH-7,ZX690LCH-7 | ZX690LCR-7,ZX690LCH-7,https://www.hitachicm.com/eu/en/machinery/excavators/large-excavators/product.zx690lch-7%20zx690lcr-7/,2,2,Large Excavators
+MC-026,ZX690LCH-7,ZX690LCH-7 | ZX690LCR-7,ZX690LCR-7,https://www.hitachicm.com/eu/en/machinery/excavators/large-excavators/product.zx690lch-7%20zx690lcr-7/,2,2,Large Excavators
+MC-027,ZX890LCH-7,ZX890LCH-7 | ZX890LCR-7,ZX890LCH-7,https://www.hitachicm.com/eu/en/machinery/excavators/large-excavators/product.zx890lch-7%20zx890lcr-7/,2,2,Large Excavators
+MC-027,ZX890LCH-7,ZX890LCH-7 | ZX890LCR-7,ZX890LCR-7,https://www.hitachicm.com/eu/en/machinery/excavators/large-excavators/product.zx890lch-7%20zx890lcr-7/,2,2,Large Excavators
+MC-028,ZX130-7B,ZX130-7B,ZX130-7B,https://www.hitachicm.com/eu/en/machinery/excavators/medium-excavators/product.zx130-7b/,1,1,Medium Excavators
+MC-029,ZX135-7EB,ZX135-7EB,ZX135-7EB,https://www.hitachicm.com/eu/en/machinery/excavators/medium-excavators/product.zx135-7eb/,1,1,Medium Excavators
+MC-030,ZX135US-7B,ZX135US-7B,ZX135US-7B,https://www.hitachicm.com/eu/en/machinery/excavators/medium-excavators/product.zx135us-7b/,1,1,Medium Excavators
+MC-031,ZX160-7,ZX160-7,ZX160-7,https://www.hitachicm.com/eu/en/machinery/excavators/medium-excavators/product.zx160-7/,1,1,Medium Excavators
+MC-032,ZX180-7,ZX180-7,ZX180-7,https://www.hitachicm.com/eu/en/machinery/excavators/medium-excavators/product.zx180-7/,1,1,Medium Excavators
+MC-033,ZX210LC-7,ZX210LC-7 | ZX210LCN-7,ZX210LC-7,https://www.hitachicm.com/eu/en/machinery/excavators/medium-excavators/product.zx210lc-7%20zx210lcn-7/,2,2,Medium Excavators
+MC-033,ZX210LC-7,ZX210LC-7 | ZX210LCN-7,ZX210LCN-7,https://www.hitachicm.com/eu/en/machinery/excavators/medium-excavators/product.zx210lc-7%20zx210lcn-7/,2,2,Medium Excavators
+MC-034,ZX220LC-GI,ZX220LC-GI,ZX220LC-GI,https://www.hitachicm.com/eu/en/machinery/excavators/medium-excavators/product.zx220lc-gi/,1,1,Medium Excavators
+MC-035,ZX225US-7,ZX225US-7,ZX225US-7,https://www.hitachicm.com/eu/en/machinery/excavators/medium-excavators/product.zx225us-7/,1,1,Medium Excavators
+MC-036,ZX225USR-7,ZX225USR-7,ZX225USR-7,https://www.hitachicm.com/eu/en/machinery/excavators/medium-excavators/product.zx225usr-7/,1,1,Medium Excavators
+MC-037,ZX250LC-7,ZX250LC-7 | ZX250LCN-7,ZX250LC-7,https://www.hitachicm.com/eu/en/machinery/excavators/medium-excavators/product.zx250lc-7%20zx250lcn-7/,2,2,Medium Excavators
+MC-037,ZX250LC-7,ZX250LC-7 | ZX250LCN-7,ZX250LCN-7,https://www.hitachicm.com/eu/en/machinery/excavators/medium-excavators/product.zx250lc-7%20zx250lcn-7/,2,2,Medium Excavators
+MC-038,ZX300LC-7,ZX300LC-7 | ZX300LCN-7,ZX300LC-7,https://www.hitachicm.com/eu/en/machinery/excavators/medium-excavators/product.zx300lc-7%20zx300lcn-7/,2,2,Medium Excavators
+MC-038,ZX300LC-7,ZX300LC-7 | ZX300LCN-7,ZX300LCN-7,https://www.hitachicm.com/eu/en/machinery/excavators/medium-excavators/product.zx300lc-7%20zx300lcn-7/,2,2,Medium Excavators
+MC-039,ZX350-7G,ZX350-7G,ZX350-7G,https://www.hitachicm.com/eu/en/machinery/excavators/medium-excavators/product.zx350-7g/,1,1,Medium Excavators
+MC-040,ZX350LC-7,ZX350LC-7 | ZX350LCN-7,ZX350LC-7,https://www.hitachicm.com/eu/en/machinery/excavators/medium-excavators/product.zx350lc-7%20zx350lcn-7/,2,2,Medium Excavators
+MC-040,ZX350LC-7,ZX350LC-7 | ZX350LCN-7,ZX350LCN-7,https://www.hitachicm.com/eu/en/machinery/excavators/medium-excavators/product.zx350lc-7%20zx350lcn-7/,2,2,Medium Excavators
+MC-041,ZX375US-7,ZX375US-7,ZX375US-7,https://www.hitachicm.com/eu/en/machinery/excavators/medium-excavators/product.zx375us-7/,1,1,Medium Excavators
+MC-042,ZX85-6EB,ZX85-6EB,ZX85-6EB,https://www.hitachicm.com/eu/en/machinery/excavators/medium-excavators/product.zx85-6eb/,1,1,Medium Excavators
+MC-043,ZX95US-USB-7,ZX95US-USB-7,ZX95US-USB-7,https://www.hitachicm.com/eu/en/machinery/excavators/medium-excavators/product.zx95us-usb-7/,1,1,Medium Excavators
+MC-044,ZX10U-6,ZX10U-6,ZX10U-6,https://www.hitachicm.com/eu/en/machinery/excavators/mini-excavators/product.zx10u-6/,1,1,Mini Excavators
+MC-045,ZX17U-6,ZX17U-6 | ZX19U-6,ZX17U-6,https://www.hitachicm.com/eu/en/machinery/excavators/mini-excavators/product.zx17u-6%20zx19u-6/,2,2,Mini Excavators
+MC-045,ZX17U-6,ZX17U-6 | ZX19U-6,ZX19U-6,https://www.hitachicm.com/eu/en/machinery/excavators/mini-excavators/product.zx17u-6%20zx19u-6/,2,2,Mini Excavators
+MC-046,ZX19-6,ZX19-6,ZX19-6,https://www.hitachicm.com/eu/en/machinery/excavators/mini-excavators/product.zx19-6/,1,1,Mini Excavators
+MC-047,ZX26U-6,ZX26U-6,ZX26U-6,https://www.hitachicm.com/eu/en/machinery/excavators/mini-excavators/product.zx26u-6/,1,1,Mini Excavators
+MC-048,ZX33U-6,ZX33U-6,ZX33U-6,https://www.hitachicm.com/eu/en/machinery/excavators/mini-excavators/product.zx33u-6/,1,1,Mini Excavators
+MC-049,ZX38U-6,ZX38U-6,ZX38U-6,https://www.hitachicm.com/eu/en/machinery/excavators/mini-excavators/product.zx38u-6/,1,1,Mini Excavators
+MC-050,ZX48U-6,ZX48U-6,ZX48U-6,https://www.hitachicm.com/eu/en/machinery/excavators/mini-excavators/product.zx48u-6/,1,1,Mini Excavators
+MC-051,ZX55U-6,ZX55U-6,ZX55U-6,https://www.hitachicm.com/eu/en/machinery/excavators/mini-excavators/product.zx55u-6/,1,1,Mini Excavators
+MC-052,ZX55U-6EB,ZX55U-6EB,ZX55U-6EB,https://www.hitachicm.com/eu/en/machinery/excavators/mini-excavators/product.zx55u-6eb/,1,1,Mini Excavators
+MC-053,ZX65USB-6,ZX65USB-6,ZX65USB-6,https://www.hitachicm.com/eu/en/machinery/excavators/mini-excavators/product.zx65usb-6/,1,1,Mini Excavators
+MC-054,EH3500AC-3,EH3500AC-3,EH3500AC-3,https://www.hitachicm.com/eu/en/machinery/rigid-dump-trucks/product.eh3500ac-3/,1,1,Rigid Dump Trucks
+MC-055,EH4000AC-3,EH4000AC-3,EH4000AC-3,https://www.hitachicm.com/eu/en/machinery/rigid-dump-trucks/product.eh4000ac-3/,1,1,Rigid Dump Trucks
+MC-056,EH5000AC-3,EH5000AC-3,EH5000AC-3,https://www.hitachicm.com/eu/en/machinery/rigid-dump-trucks/product.eh5000ac-3/,1,1,Rigid Dump Trucks
+MC-057,MA200-G,MA200-G,MA200-G,https://www.hitachicm.com/eu/en/machinery/excavators/special-applications/amphibious-excavators/product.ma200-g/,1,1,Amphibious Excavators
+MC-058,ZX130-7 SLF,ZX130-7 SLF,ZX130-7 SLF,https://www.hitachicm.com/eu/en/machinery/excavators/special-applications/super-long-front-excavators/product.zx130-7-slf/,1,1,Super Long Front Excavators
+MC-059,ZX210-7 SLF,ZX210-7 SLF,ZX210-7 SLF,https://www.hitachicm.com/eu/en/machinery/excavators/special-applications/super-long-front-excavators/product.zx210-7-slf/,1,1,Super Long Front Excavators
+MC-060,ZX250,ZX250,ZX250,https://www.hitachicm.com/eu/en/machinery/excavators/special-applications/super-long-front-excavators/product.zx250-300-350-7/,1,1,Super Long Front Excavators
+MC-061,ZX490-7 SLF,ZX490-7 SLF,ZX490-7 SLF,https://www.hitachicm.com/eu/en/machinery/excavators/special-applications/super-long-front-excavators/product.zx490-7%20slf/,1,1,Super Long Front Excavators
+MC-062,ZX95US-7 SLF,ZX95US-7 SLF,ZX95US-7 SLF,https://www.hitachicm.com/eu/en/machinery/excavators/special-applications/super-long-front-excavators/product.zx95us-7%20slf/,1,1,Super Long Front Excavators
+MC-063,ZX135US-7 SRF,ZX135US-7 SRF,ZX135US-7 SRF,https://www.hitachicm.com/eu/en/machinery/excavators/special-applications/tunneling-excavators/product.zx135us-7-short%20reach%20front/,1,1,Tunnelling Excavators
+MC-064,ZW140,ZW140,ZW140,https://www.hitachicm.com/eu/en/machinery/wheel-loaders/product.zw140/,1,1,Wheel Loaders
+MC-065,ZW160-7,ZW160-7,ZW160-7,https://www.hitachicm.com/eu/en/machinery/wheel-loaders/product.zw160-7/,1,1,Wheel Loaders
+MC-066,ZW180-7,ZW180-7,ZW180-7,https://www.hitachicm.com/eu/en/machinery/wheel-loaders/product.zw180-7/,1,1,Wheel Loaders
+MC-067,ZW220-7,ZW220-7,ZW220-7,https://www.hitachicm.com/eu/en/machinery/wheel-loaders/product.zw220-7/,1,1,Wheel Loaders
+MC-068,ZW250-7,ZW250-7,ZW250-7,https://www.hitachicm.com/eu/en/machinery/wheel-loaders/product.zw250-7/,1,1,Wheel Loaders
+MC-069,ZW310-7,ZW310-7,ZW310-7,https://www.hitachicm.com/eu/en/machinery/wheel-loaders/product.zw310-7/,1,1,Wheel Loaders
+MC-070,ZW95-6,ZW95-6,ZW95-6,https://www.hitachicm.com/eu/en/machinery/wheel-loaders/product.zw95-6/,1,1,Wheel Loaders
+MC-071,ZX135W-7,ZX135W-7,ZX135W-7,https://www.hitachicm.com/eu/en/machinery/excavators/wheeled-excavators/product.zx135w-7/,1,1,Wheeled Excavators
+MC-072,ZX150W-7,ZX150W-7,ZX150W-7,https://www.hitachicm.com/eu/en/machinery/excavators/wheeled-excavators/product.zx150w-7/,1,1,Wheeled Excavators
+MC-073,ZX155W-7,ZX155W-7,ZX155W-7,https://www.hitachicm.com/eu/en/machinery/excavators/wheeled-excavators/product.zx155w-7/,1,1,Wheeled Excavators
+MC-074,ZX175W-7,ZX175W-7,ZX175W-7,https://www.hitachicm.com/eu/en/machinery/excavators/wheeled-excavators/product.zx175w-7/,1,1,Wheeled Excavators
+MC-075,ZX180W-7,ZX180W-7,ZX180W-7,https://www.hitachicm.com/eu/en/machinery/excavators/wheeled-excavators/product.zx180w-7/,1,1,Wheeled Excavators
+MC-076,ZX220W-7,ZX220W-7,ZX220W-7,https://www.hitachicm.com/eu/en/machinery/excavators/wheeled-excavators/product.zx220w-7/,1,1,Wheeled Excavators
+MC-077,ZX95W-7,ZX95W-7,ZX95W-7,https://www.hitachicm.com/eu/en/machinery/excavators/wheeled-excavators/product.zx95w-7/,1,1,Wheeled Excavators

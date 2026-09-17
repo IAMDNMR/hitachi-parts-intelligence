@@ -1,0 +1,3014 @@
+{
+ "source_sha256": "53bd4845233a7330a2d819d1fdc849dfb5d67c542101eceaf5ef3d9bd798d338",
+ "sheets": [
+  {
+   "sheet": "00_README",
+   "rows": 70,
+   "cols": 2,
+   "header": [
+    "Purpose",
+    "Structured, fully traceable source data from which the application\u2019s Machine, Parts, Fitment, Service and After-Sales models can be designed and populated. This is a master/reference data foundation - it deliberately contains NO operational Service Jobs, Technicians or Service Locations."
+   ],
+   "columns": [
+    {
+     "name": "Purpose",
+     "non_empty": 70,
+     "empty": 0,
+     "unique": 70,
+     "tags": []
+    },
+    {
+     "name": "Structured, fully traceable source data from which the application\u2019s Machine, Parts, Fitment, Service and After-Sales models can be designed and populated. This is a master/reference data foundation - it deliberately contains NO operational Service Jobs, Technicians or Service Locations.",
+     "non_empty": 62,
+     "empty": 8,
+     "unique": 62,
+     "tags": [
+      "SOURCE/EVIDENCE",
+      "URL"
+     ]
+    }
+   ],
+   "duplicate_rows": 0,
+   "id_column": null,
+   "duplicate_ids": 0,
+   "is_junction": false
+  },
+  {
+   "sheet": "01_MACHINE_CATEGORIES",
+   "rows": 17,
+   "cols": 14,
+   "header": [
+    "Category ID",
+    "Parent Category",
+    "Category Name",
+    "Official Category Name",
+    "Category Description",
+    "Product Type",
+    "Machine Configuration",
+    "On-road / Off-road",
+    "Primary Application",
+    "Official URL",
+    "Source",
+    "Source ID",
+    "Source Date",
+    "Notes"
+   ],
+   "columns": [
+    {
+     "name": "Category ID",
+     "non_empty": 17,
+     "empty": 0,
+     "unique": 17,
+     "tags": []
+    },
+    {
+     "name": "Parent Category",
+     "non_empty": 17,
+     "empty": 0,
+     "unique": 4,
+     "tags": []
+    },
+    {
+     "name": "Category Name",
+     "non_empty": 17,
+     "empty": 0,
+     "unique": 17,
+     "tags": []
+    },
+    {
+     "name": "Official Category Name",
+     "non_empty": 17,
+     "empty": 0,
+     "unique": 17,
+     "tags": [
+      "SOURCE/EVIDENCE"
+     ]
+    },
+    {
+     "name": "Category Description",
+     "non_empty": 17,
+     "empty": 0,
+     "unique": 17,
+     "tags": []
+    },
+    {
+     "name": "Product Type",
+     "non_empty": 17,
+     "empty": 0,
+     "unique": 7,
+     "tags": []
+    },
+    {
+     "name": "Machine Configuration",
+     "non_empty": 15,
+     "empty": 2,
+     "unique": 15,
+     "tags": []
+    },
+    {
+     "name": "On-road / Off-road",
+     "non_empty": 16,
+     "empty": 1,
+     "unique": 4,
+     "tags": []
+    },
+    {
+     "name": "Primary Application",
+     "non_empty": 17,
+     "empty": 0,
+     "unique": 17,
+     "tags": []
+    },
+    {
+     "name": "Official URL",
+     "non_empty": 17,
+     "empty": 0,
+     "unique": 17,
+     "tags": [
+      "SOURCE/EVIDENCE",
+      "URL"
+     ]
+    },
+    {
+     "name": "Source",
+     "non_empty": 17,
+     "empty": 0,
+     "unique": 1,
+     "tags": [
+      "SOURCE/EVIDENCE"
+     ]
+    },
+    {
+     "name": "Source ID",
+     "non_empty": 17,
+     "empty": 0,
+     "unique": 11,
+     "tags": [
+      "SOURCE/EVIDENCE"
+     ]
+    },
+    {
+     "name": "Source Date",
+     "non_empty": 17,
+     "empty": 0,
+     "unique": 1,
+     "tags": [
+      "SOURCE/EVIDENCE"
+     ]
+    },
+    {
+     "name": "Notes",
+     "non_empty": 17,
+     "empty": 0,
+     "unique": 2,
+     "tags": [
+      "NOTES/RESEARCH",
+      "SOURCE/EVIDENCE"
+     ]
+    }
+   ],
+   "duplicate_rows": 0,
+   "id_column": "Category ID",
+   "duplicate_ids": 0,
+   "is_junction": false
+  },
+  {
+   "sheet": "02_MACHINE_MASTER",
+   "rows": 77,
+   "cols": 36,
+   "header": [
+    "Machine ID",
+    "Manufacturer",
+    "Brand",
+    "Machine Category",
+    "Machine Subcategory",
+    "Category ID",
+    "Product Family",
+    "Model",
+    "Models Covered",
+    "Model Count",
+    "Generation / Series",
+    "Machine Type",
+    "Configuration",
+    "Power Source",
+    "Official Product Name",
+    "Official Product URL",
+    "Available In",
+    "Engine / Motor Rated Power",
+    "Operating Weight (as published)",
+    "Operating Weight (kg, normalised)",
+    "Bucket Capacity (as published)",
+    "Battery Capacity",
+    "Nominal Payload",
+    "Max. Digging Depth",
+    "Max. Digging Reach",
+    "Overall Width",
+    "Overall Height of Cab",
+    "Fuel Tank Capacity",
+    "Published Spec Row Count",
+    "Published Spec Groups",
+    "Official Overview Text",
+    "Brochure PDF",
+    "Data Class",
+    "Source ID",
+    "Source Date",
+    "Notes"
+   ],
+   "columns": [
+    {
+     "name": "Machine ID",
+     "non_empty": 77,
+     "empty": 0,
+     "unique": 77,
+     "tags": []
+    },
+    {
+     "name": "Manufacturer",
+     "non_empty": 77,
+     "empty": 0,
+     "unique": 1,
+     "tags": []
+    },
+    {
+     "name": "Brand",
+     "non_empty": 77,
+     "empty": 0,
+     "unique": 1,
+     "tags": []
+    },
+    {
+     "name": "Machine Category",
+     "non_empty": 77,
+     "empty": 0,
+     "unique": 3,
+     "tags": []
+    },
+    {
+     "name": "Machine Subcategory",
+     "non_empty": 77,
+     "empty": 0,
+     "unique": 12,
+     "tags": []
+    },
+    {
+     "name": "Category ID",
+     "non_empty": 77,
+     "empty": 0,
+     "unique": 12,
+     "tags": []
+    },
+    {
+     "name": "Product Family",
+     "non_empty": 77,
+     "empty": 0,
+     "unique": 5,
+     "tags": []
+    },
+    {
+     "name": "Model",
+     "non_empty": 77,
+     "empty": 0,
+     "unique": 72,
+     "tags": []
+    },
+    {
+     "name": "Models Covered",
+     "non_empty": 77,
+     "empty": 0,
+     "unique": 72,
+     "tags": []
+    },
+    {
+     "name": "Model Count",
+     "non_empty": 77,
+     "empty": 0,
+     "unique": 2,
+     "tags": []
+    },
+    {
+     "name": "Generation / Series",
+     "non_empty": 73,
+     "empty": 4,
+     "unique": 4,
+     "tags": []
+    },
+    {
+     "name": "Machine Type",
+     "non_empty": 77,
+     "empty": 0,
+     "unique": 3,
+     "tags": []
+    },
+    {
+     "name": "Configuration",
+     "non_empty": 77,
+     "empty": 0,
+     "unique": 13,
+     "tags": []
+    },
+    {
+     "name": "Power Source",
+     "non_empty": 77,
+     "empty": 0,
+     "unique": 2,
+     "tags": [
+      "SOURCE/EVIDENCE"
+     ]
+    },
+    {
+     "name": "Official Product Name",
+     "non_empty": 77,
+     "empty": 0,
+     "unique": 77,
+     "tags": [
+      "SOURCE/EVIDENCE"
+     ]
+    },
+    {
+     "name": "Official Product URL",
+     "non_empty": 77,
+     "empty": 0,
+     "unique": 77,
+     "tags": [
+      "SOURCE/EVIDENCE",
+      "URL"
+     ]
+    },
+    {
+     "name": "Available In",
+     "non_empty": 70,
+     "empty": 7,
+     "unique": 2,
+     "tags": []
+    },
+    {
+     "name": "Engine / Motor Rated Power",
+     "non_empty": 73,
+     "empty": 4,
+     "unique": 50,
+     "tags": []
+    },
+    {
+     "name": "Operating Weight (as published)",
+     "non_empty": 77,
+     "empty": 0,
+     "unique": 75,
+     "tags": []
+    },
+    {
+     "name": "Operating Weight (kg, normalised)",
+     "non_empty": 77,
+     "empty": 0,
+     "unique": 72,
+     "tags": []
+    },
+    {
+     "name": "Bucket Capacity (as published)",
+     "non_empty": 56,
+     "empty": 21,
+     "unique": 44,
+     "tags": []
+    },
+    {
+     "name": "Battery Capacity",
+     "non_empty": 3,
+     "empty": 74,
+     "unique": 3,
+     "tags": []
+    },
+    {
+     "name": "Nominal Payload",
+     "non_empty": 3,
+     "empty": 74,
+     "unique": 3,
+     "tags": []
+    },
+    {
+     "name": "Max. Digging Depth",
+     "non_empty": 60,
+     "empty": 17,
+     "unique": 56,
+     "tags": []
+    },
+    {
+     "name": "Max. Digging Reach",
+     "non_empty": 41,
+     "empty": 36,
+     "unique": 39,
+     "tags": []
+    },
+    {
+     "name": "Overall Width",
+     "non_empty": 23,
+     "empty": 54,
+     "unique": 15,
+     "tags": []
+    },
+    {
+     "name": "Overall Height of Cab",
+     "non_empty": 32,
+     "empty": 45,
+     "unique": 22,
+     "tags": []
+    },
+    {
+     "name": "Fuel Tank Capacity",
+     "non_empty": 4,
+     "empty": 73,
+     "unique": 4,
+     "tags": []
+    },
+    {
+     "name": "Published Spec Row Count",
+     "non_empty": 77,
+     "empty": 0,
+     "unique": 26,
+     "tags": []
+    },
+    {
+     "name": "Published Spec Groups",
+     "non_empty": 77,
+     "empty": 0,
+     "unique": 17,
+     "tags": []
+    },
+    {
+     "name": "Official Overview Text",
+     "non_empty": 77,
+     "empty": 0,
+     "unique": 68,
+     "tags": [
+      "SOURCE/EVIDENCE"
+     ]
+    },
+    {
+     "name": "Brochure PDF",
+     "non_empty": 77,
+     "empty": 0,
+     "unique": 65,
+     "tags": [
+      "URL"
+     ]
+    },
+    {
+     "name": "Data Class",
+     "non_empty": 77,
+     "empty": 0,
+     "unique": 1,
+     "tags": [
+      "SOURCE/EVIDENCE"
+     ]
+    },
+    {
+     "name": "Source ID",
+     "non_empty": 77,
+     "empty": 0,
+     "unique": 1,
+     "tags": [
+      "SOURCE/EVIDENCE"
+     ]
+    },
+    {
+     "name": "Source Date",
+     "non_empty": 77,
+     "empty": 0,
+     "unique": 1,
+     "tags": [
+      "SOURCE/EVIDENCE"
+     ]
+    },
+    {
+     "name": "Notes",
+     "non_empty": 77,
+     "empty": 0,
+     "unique": 1,
+     "tags": [
+      "NOTES/RESEARCH",
+      "SOURCE/EVIDENCE"
+     ]
+    }
+   ],
+   "duplicate_rows": 0,
+   "id_column": "Machine ID",
+   "duplicate_ids": 0,
+   "is_junction": false
+  },
+  {
+   "sheet": "03_MACHINE_SPECIFICATIONS",
+   "rows": 1635,
+   "cols": 14,
+   "header": [
+    "Spec ID",
+    "Machine ID",
+    "Model",
+    "Machine Subcategory",
+    "Specification Group",
+    "Specification Name",
+    "Specification Value",
+    "Unit",
+    "Normalised Value",
+    "Data Class",
+    "Source ID",
+    "Official URL",
+    "Source Date",
+    "Notes"
+   ],
+   "columns": [
+    {
+     "name": "Spec ID",
+     "non_empty": 1635,
+     "empty": 0,
+     "unique": 1635,
+     "tags": []
+    },
+    {
+     "name": "Machine ID",
+     "non_empty": 1635,
+     "empty": 0,
+     "unique": 77,
+     "tags": []
+    },
+    {
+     "name": "Model",
+     "non_empty": 1635,
+     "empty": 0,
+     "unique": 72,
+     "tags": []
+    },
+    {
+     "name": "Machine Subcategory",
+     "non_empty": 1635,
+     "empty": 0,
+     "unique": 12,
+     "tags": []
+    },
+    {
+     "name": "Specification Group",
+     "non_empty": 1635,
+     "empty": 0,
+     "unique": 24,
+     "tags": []
+    },
+    {
+     "name": "Specification Name",
+     "non_empty": 1635,
+     "empty": 0,
+     "unique": 124,
+     "tags": []
+    },
+    {
+     "name": "Specification Value",
+     "non_empty": 1635,
+     "empty": 0,
+     "unique": 1052,
+     "tags": []
+    },
+    {
+     "name": "Unit",
+     "non_empty": 1046,
+     "empty": 589,
+     "unique": 17,
+     "tags": []
+    },
+    {
+     "name": "Normalised Value",
+     "non_empty": 480,
+     "empty": 1155,
+     "unique": 276,
+     "tags": []
+    },
+    {
+     "name": "Data Class",
+     "non_empty": 1635,
+     "empty": 0,
+     "unique": 1,
+     "tags": [
+      "SOURCE/EVIDENCE"
+     ]
+    },
+    {
+     "name": "Source ID",
+     "non_empty": 1635,
+     "empty": 0,
+     "unique": 1,
+     "tags": [
+      "SOURCE/EVIDENCE"
+     ]
+    },
+    {
+     "name": "Official URL",
+     "non_empty": 1635,
+     "empty": 0,
+     "unique": 77,
+     "tags": [
+      "SOURCE/EVIDENCE",
+      "URL"
+     ]
+    },
+    {
+     "name": "Source Date",
+     "non_empty": 1635,
+     "empty": 0,
+     "unique": 1,
+     "tags": [
+      "SOURCE/EVIDENCE"
+     ]
+    },
+    {
+     "name": "Notes",
+     "non_empty": 1635,
+     "empty": 0,
+     "unique": 1,
+     "tags": [
+      "NOTES/RESEARCH",
+      "SOURCE/EVIDENCE"
+     ]
+    }
+   ],
+   "duplicate_rows": 0,
+   "id_column": "Spec ID",
+   "duplicate_ids": 0,
+   "is_junction": false
+  },
+  {
+   "sheet": "04_MACHINE_APPLICATIONS",
+   "rows": 328,
+   "cols": 12,
+   "header": [
+    "Machine ID",
+    "Model",
+    "Machine Subcategory",
+    "Application",
+    "Application Type",
+    "Official Description",
+    "Data Class",
+    "Source ID",
+    "Source URL",
+    "Confidence",
+    "Source Date",
+    "Notes"
+   ],
+   "columns": [
+    {
+     "name": "Machine ID",
+     "non_empty": 328,
+     "empty": 0,
+     "unique": 77,
+     "tags": []
+    },
+    {
+     "name": "Model",
+     "non_empty": 328,
+     "empty": 0,
+     "unique": 72,
+     "tags": []
+    },
+    {
+     "name": "Machine Subcategory",
+     "non_empty": 328,
+     "empty": 0,
+     "unique": 12,
+     "tags": []
+    },
+    {
+     "name": "Application",
+     "non_empty": 328,
+     "empty": 0,
+     "unique": 29,
+     "tags": []
+    },
+    {
+     "name": "Application Type",
+     "non_empty": 328,
+     "empty": 0,
+     "unique": 2,
+     "tags": []
+    },
+    {
+     "name": "Official Description",
+     "non_empty": 328,
+     "empty": 0,
+     "unique": 12,
+     "tags": [
+      "SOURCE/EVIDENCE"
+     ]
+    },
+    {
+     "name": "Data Class",
+     "non_empty": 328,
+     "empty": 0,
+     "unique": 1,
+     "tags": [
+      "SOURCE/EVIDENCE"
+     ]
+    },
+    {
+     "name": "Source ID",
+     "non_empty": 328,
+     "empty": 0,
+     "unique": 7,
+     "tags": [
+      "SOURCE/EVIDENCE"
+     ]
+    },
+    {
+     "name": "Source URL",
+     "non_empty": 328,
+     "empty": 0,
+     "unique": 7,
+     "tags": [
+      "SOURCE/EVIDENCE",
+      "URL"
+     ]
+    },
+    {
+     "name": "Confidence",
+     "non_empty": 328,
+     "empty": 0,
+     "unique": 1,
+     "tags": [
+      "SOURCE/EVIDENCE"
+     ]
+    },
+    {
+     "name": "Source Date",
+     "non_empty": 328,
+     "empty": 0,
+     "unique": 1,
+     "tags": [
+      "SOURCE/EVIDENCE"
+     ]
+    },
+    {
+     "name": "Notes",
+     "non_empty": 328,
+     "empty": 0,
+     "unique": 1,
+     "tags": [
+      "NOTES/RESEARCH",
+      "SOURCE/EVIDENCE"
+     ]
+    }
+   ],
+   "duplicate_rows": 0,
+   "id_column": null,
+   "duplicate_ids": 0,
+   "is_junction": true
+  },
+  {
+   "sheet": "05_ATTACHMENTS",
+   "rows": 17,
+   "cols": 20,
+   "header": [
+    "Attachment ID",
+    "Attachment Name",
+    "Attachment Type",
+    "Attachment Category",
+    "Machine ID",
+    "Compatible Machine Model",
+    "Compatible Machine Category",
+    "Mounting / Coupling Type",
+    "Hydraulic Requirement",
+    "Weight",
+    "Dimensions",
+    "Capacity",
+    "Purpose / Application",
+    "Detachable / Fixed",
+    "Official URL",
+    "Data Class",
+    "Source ID",
+    "Confidence",
+    "Source Date",
+    "Notes"
+   ],
+   "columns": [
+    {
+     "name": "Attachment ID",
+     "non_empty": 17,
+     "empty": 0,
+     "unique": 17,
+     "tags": []
+    },
+    {
+     "name": "Attachment Name",
+     "non_empty": 17,
+     "empty": 0,
+     "unique": 17,
+     "tags": []
+    },
+    {
+     "name": "Attachment Type",
+     "non_empty": 17,
+     "empty": 0,
+     "unique": 8,
+     "tags": []
+    },
+    {
+     "name": "Attachment Category",
+     "non_empty": 17,
+     "empty": 0,
+     "unique": 5,
+     "tags": []
+    },
+    {
+     "name": "Machine ID",
+     "non_empty": 17,
+     "empty": 0,
+     "unique": 1,
+     "tags": []
+    },
+    {
+     "name": "Compatible Machine Model",
+     "non_empty": 7,
+     "empty": 10,
+     "unique": 7,
+     "tags": []
+    },
+    {
+     "name": "Compatible Machine Category",
+     "non_empty": 17,
+     "empty": 0,
+     "unique": 15,
+     "tags": []
+    },
+    {
+     "name": "Mounting / Coupling Type",
+     "non_empty": 10,
+     "empty": 7,
+     "unique": 6,
+     "tags": []
+    },
+    {
+     "name": "Hydraulic Requirement",
+     "non_empty": 14,
+     "empty": 3,
+     "unique": 7,
+     "tags": []
+    },
+    {
+     "name": "Weight",
+     "non_empty": 0,
+     "empty": 17,
+     "unique": 0,
+     "tags": []
+    },
+    {
+     "name": "Dimensions",
+     "non_empty": 0,
+     "empty": 17,
+     "unique": 0,
+     "tags": []
+    },
+    {
+     "name": "Capacity",
+     "non_empty": 7,
+     "empty": 10,
+     "unique": 7,
+     "tags": []
+    },
+    {
+     "name": "Purpose / Application",
+     "non_empty": 17,
+     "empty": 0,
+     "unique": 17,
+     "tags": []
+    },
+    {
+     "name": "Detachable / Fixed",
+     "non_empty": 17,
+     "empty": 0,
+     "unique": 5,
+     "tags": []
+    },
+    {
+     "name": "Official URL",
+     "non_empty": 17,
+     "empty": 0,
+     "unique": 7,
+     "tags": [
+      "SOURCE/EVIDENCE",
+      "URL"
+     ]
+    },
+    {
+     "name": "Data Class",
+     "non_empty": 17,
+     "empty": 0,
+     "unique": 1,
+     "tags": [
+      "SOURCE/EVIDENCE"
+     ]
+    },
+    {
+     "name": "Source ID",
+     "non_empty": 17,
+     "empty": 0,
+     "unique": 7,
+     "tags": [
+      "SOURCE/EVIDENCE"
+     ]
+    },
+    {
+     "name": "Confidence",
+     "non_empty": 17,
+     "empty": 0,
+     "unique": 2,
+     "tags": [
+      "SOURCE/EVIDENCE"
+     ]
+    },
+    {
+     "name": "Source Date",
+     "non_empty": 17,
+     "empty": 0,
+     "unique": 1,
+     "tags": [
+      "SOURCE/EVIDENCE"
+     ]
+    },
+    {
+     "name": "Notes",
+     "non_empty": 17,
+     "empty": 0,
+     "unique": 17,
+     "tags": [
+      "NOTES/RESEARCH",
+      "SOURCE/EVIDENCE"
+     ]
+    }
+   ],
+   "duplicate_rows": 0,
+   "id_column": "Attachment ID",
+   "duplicate_ids": 0,
+   "is_junction": false
+  },
+  {
+   "sheet": "06_PART_MASTER",
+   "rows": 43,
+   "cols": 21,
+   "header": [
+    "Part ID",
+    "Part Number",
+    "Part Name",
+    "Part Category",
+    "Part Subcategory",
+    "Component / Assembly",
+    "Genuine Hitachi Part",
+    "Consumable",
+    "Wear Part",
+    "Replacement Part",
+    "Service Part",
+    "Attachment Part",
+    "Description",
+    "Supersedes Part Number",
+    "Superseded By",
+    "Data Class",
+    "Source ID",
+    "Source URL",
+    "Confidence",
+    "Source Date",
+    "Notes"
+   ],
+   "columns": [
+    {
+     "name": "Part ID",
+     "non_empty": 43,
+     "empty": 0,
+     "unique": 43,
+     "tags": []
+    },
+    {
+     "name": "Part Number",
+     "non_empty": 20,
+     "empty": 23,
+     "unique": 20,
+     "tags": []
+    },
+    {
+     "name": "Part Name",
+     "non_empty": 43,
+     "empty": 0,
+     "unique": 25,
+     "tags": []
+    },
+    {
+     "name": "Part Category",
+     "non_empty": 43,
+     "empty": 0,
+     "unique": 8,
+     "tags": []
+    },
+    {
+     "name": "Part Subcategory",
+     "non_empty": 43,
+     "empty": 0,
+     "unique": 15,
+     "tags": []
+    },
+    {
+     "name": "Component / Assembly",
+     "non_empty": 43,
+     "empty": 0,
+     "unique": 16,
+     "tags": []
+    },
+    {
+     "name": "Genuine Hitachi Part",
+     "non_empty": 43,
+     "empty": 0,
+     "unique": 4,
+     "tags": []
+    },
+    {
+     "name": "Consumable",
+     "non_empty": 43,
+     "empty": 0,
+     "unique": 3,
+     "tags": []
+    },
+    {
+     "name": "Wear Part",
+     "non_empty": 43,
+     "empty": 0,
+     "unique": 3,
+     "tags": []
+    },
+    {
+     "name": "Replacement Part",
+     "non_empty": 43,
+     "empty": 0,
+     "unique": 2,
+     "tags": []
+    },
+    {
+     "name": "Service Part",
+     "non_empty": 43,
+     "empty": 0,
+     "unique": 2,
+     "tags": []
+    },
+    {
+     "name": "Attachment Part",
+     "non_empty": 43,
+     "empty": 0,
+     "unique": 1,
+     "tags": []
+    },
+    {
+     "name": "Description",
+     "non_empty": 43,
+     "empty": 0,
+     "unique": 41,
+     "tags": []
+    },
+    {
+     "name": "Supersedes Part Number",
+     "non_empty": 0,
+     "empty": 43,
+     "unique": 0,
+     "tags": []
+    },
+    {
+     "name": "Superseded By",
+     "non_empty": 0,
+     "empty": 43,
+     "unique": 0,
+     "tags": []
+    },
+    {
+     "name": "Data Class",
+     "non_empty": 43,
+     "empty": 0,
+     "unique": 1,
+     "tags": [
+      "SOURCE/EVIDENCE"
+     ]
+    },
+    {
+     "name": "Source ID",
+     "non_empty": 43,
+     "empty": 0,
+     "unique": 12,
+     "tags": [
+      "SOURCE/EVIDENCE"
+     ]
+    },
+    {
+     "name": "Source URL",
+     "non_empty": 43,
+     "empty": 0,
+     "unique": 12,
+     "tags": [
+      "SOURCE/EVIDENCE",
+      "URL"
+     ]
+    },
+    {
+     "name": "Confidence",
+     "non_empty": 43,
+     "empty": 0,
+     "unique": 1,
+     "tags": [
+      "SOURCE/EVIDENCE"
+     ]
+    },
+    {
+     "name": "Source Date",
+     "non_empty": 43,
+     "empty": 0,
+     "unique": 1,
+     "tags": [
+      "SOURCE/EVIDENCE"
+     ]
+    },
+    {
+     "name": "Notes",
+     "non_empty": 43,
+     "empty": 0,
+     "unique": 2,
+     "tags": [
+      "NOTES/RESEARCH",
+      "SOURCE/EVIDENCE"
+     ]
+    }
+   ],
+   "duplicate_rows": 0,
+   "id_column": "Part ID",
+   "duplicate_ids": 0,
+   "is_junction": false
+  },
+  {
+   "sheet": "07_MACHINE_PART_FITMENT",
+   "rows": 944,
+   "cols": 17,
+   "header": [
+    "Fitment ID",
+    "Machine ID",
+    "Machine Model",
+    "Part ID",
+    "Part Number",
+    "Part Name",
+    "Assembly",
+    "Fitment Type",
+    "Compatibility",
+    "Installation Context",
+    "Position / Location",
+    "Data Class",
+    "Source ID",
+    "Official URL",
+    "Confidence",
+    "Source Date",
+    "Notes"
+   ],
+   "columns": [
+    {
+     "name": "Fitment ID",
+     "non_empty": 944,
+     "empty": 0,
+     "unique": 944,
+     "tags": []
+    },
+    {
+     "name": "Machine ID",
+     "non_empty": 944,
+     "empty": 0,
+     "unique": 78,
+     "tags": []
+    },
+    {
+     "name": "Machine Model",
+     "non_empty": 944,
+     "empty": 0,
+     "unique": 73,
+     "tags": []
+    },
+    {
+     "name": "Part ID",
+     "non_empty": 944,
+     "empty": 0,
+     "unique": 35,
+     "tags": []
+    },
+    {
+     "name": "Part Number",
+     "non_empty": 68,
+     "empty": 876,
+     "unique": 20,
+     "tags": []
+    },
+    {
+     "name": "Part Name",
+     "non_empty": 944,
+     "empty": 0,
+     "unique": 17,
+     "tags": []
+    },
+    {
+     "name": "Assembly",
+     "non_empty": 944,
+     "empty": 0,
+     "unique": 12,
+     "tags": []
+    },
+    {
+     "name": "Fitment Type",
+     "non_empty": 944,
+     "empty": 0,
+     "unique": 5,
+     "tags": []
+    },
+    {
+     "name": "Compatibility",
+     "non_empty": 944,
+     "empty": 0,
+     "unique": 4,
+     "tags": []
+    },
+    {
+     "name": "Installation Context",
+     "non_empty": 944,
+     "empty": 0,
+     "unique": 2,
+     "tags": []
+    },
+    {
+     "name": "Position / Location",
+     "non_empty": 57,
+     "empty": 887,
+     "unique": 1,
+     "tags": []
+    },
+    {
+     "name": "Data Class",
+     "non_empty": 944,
+     "empty": 0,
+     "unique": 2,
+     "tags": [
+      "SOURCE/EVIDENCE"
+     ]
+    },
+    {
+     "name": "Source ID",
+     "non_empty": 944,
+     "empty": 0,
+     "unique": 10,
+     "tags": [
+      "SOURCE/EVIDENCE"
+     ]
+    },
+    {
+     "name": "Official URL",
+     "non_empty": 944,
+     "empty": 0,
+     "unique": 10,
+     "tags": [
+      "SOURCE/EVIDENCE",
+      "URL"
+     ]
+    },
+    {
+     "name": "Confidence",
+     "non_empty": 944,
+     "empty": 0,
+     "unique": 2,
+     "tags": [
+      "SOURCE/EVIDENCE"
+     ]
+    },
+    {
+     "name": "Source Date",
+     "non_empty": 944,
+     "empty": 0,
+     "unique": 1,
+     "tags": [
+      "SOURCE/EVIDENCE"
+     ]
+    },
+    {
+     "name": "Notes",
+     "non_empty": 944,
+     "empty": 0,
+     "unique": 66,
+     "tags": [
+      "NOTES/RESEARCH",
+      "SOURCE/EVIDENCE"
+     ]
+    }
+   ],
+   "duplicate_rows": 0,
+   "id_column": "Fitment ID",
+   "duplicate_ids": 0,
+   "is_junction": false
+  },
+  {
+   "sheet": "08_SERVICE_CAPABILITIES",
+   "rows": 22,
+   "cols": 18,
+   "header": [
+    "Service ID",
+    "Service Name",
+    "Service Category",
+    "Description",
+    "Applies To Machine Category",
+    "Applies To Machine Model",
+    "Customer Site",
+    "Dealer Workshop",
+    "Other Location",
+    "Dealer Delivered",
+    "External Authorised Provider",
+    "Related Parts",
+    "Related Machine Data",
+    "Source URL",
+    "Official / Derived",
+    "Source ID",
+    "Source Date",
+    "Notes"
+   ],
+   "columns": [
+    {
+     "name": "Service ID",
+     "non_empty": 22,
+     "empty": 0,
+     "unique": 22,
+     "tags": []
+    },
+    {
+     "name": "Service Name",
+     "non_empty": 22,
+     "empty": 0,
+     "unique": 22,
+     "tags": []
+    },
+    {
+     "name": "Service Category",
+     "non_empty": 22,
+     "empty": 0,
+     "unique": 17,
+     "tags": []
+    },
+    {
+     "name": "Description",
+     "non_empty": 22,
+     "empty": 0,
+     "unique": 22,
+     "tags": []
+    },
+    {
+     "name": "Applies To Machine Category",
+     "non_empty": 22,
+     "empty": 0,
+     "unique": 9,
+     "tags": []
+    },
+    {
+     "name": "Applies To Machine Model",
+     "non_empty": 2,
+     "empty": 20,
+     "unique": 2,
+     "tags": []
+    },
+    {
+     "name": "Customer Site",
+     "non_empty": 22,
+     "empty": 0,
+     "unique": 2,
+     "tags": []
+    },
+    {
+     "name": "Dealer Workshop",
+     "non_empty": 22,
+     "empty": 0,
+     "unique": 2,
+     "tags": []
+    },
+    {
+     "name": "Other Location",
+     "non_empty": 5,
+     "empty": 17,
+     "unique": 5,
+     "tags": []
+    },
+    {
+     "name": "Dealer Delivered",
+     "non_empty": 22,
+     "empty": 0,
+     "unique": 2,
+     "tags": []
+    },
+    {
+     "name": "External Authorised Provider",
+     "non_empty": 22,
+     "empty": 0,
+     "unique": 3,
+     "tags": []
+    },
+    {
+     "name": "Related Parts",
+     "non_empty": 15,
+     "empty": 7,
+     "unique": 10,
+     "tags": []
+    },
+    {
+     "name": "Related Machine Data",
+     "non_empty": 7,
+     "empty": 15,
+     "unique": 6,
+     "tags": []
+    },
+    {
+     "name": "Source URL",
+     "non_empty": 22,
+     "empty": 0,
+     "unique": 12,
+     "tags": [
+      "SOURCE/EVIDENCE",
+      "URL"
+     ]
+    },
+    {
+     "name": "Official / Derived",
+     "non_empty": 22,
+     "empty": 0,
+     "unique": 1,
+     "tags": [
+      "SOURCE/EVIDENCE"
+     ]
+    },
+    {
+     "name": "Source ID",
+     "non_empty": 22,
+     "empty": 0,
+     "unique": 12,
+     "tags": [
+      "SOURCE/EVIDENCE"
+     ]
+    },
+    {
+     "name": "Source Date",
+     "non_empty": 22,
+     "empty": 0,
+     "unique": 1,
+     "tags": [
+      "SOURCE/EVIDENCE"
+     ]
+    },
+    {
+     "name": "Notes",
+     "non_empty": 22,
+     "empty": 0,
+     "unique": 1,
+     "tags": [
+      "NOTES/RESEARCH",
+      "SOURCE/EVIDENCE"
+     ]
+    }
+   ],
+   "duplicate_rows": 0,
+   "id_column": "Service ID",
+   "duplicate_ids": 0,
+   "is_junction": false
+  },
+  {
+   "sheet": "09_MACHINE_SERVICE_MATRIX",
+   "rows": 1694,
+   "cols": 20,
+   "header": [
+    "Machine ID",
+    "Machine Category",
+    "Machine Model",
+    "Service ID",
+    "Service Name",
+    "Service Type",
+    "Applicability",
+    "Service Location",
+    "Trigger",
+    "Interval (officially stated)",
+    "Machine Hours",
+    "Condition Based",
+    "Dealer Service",
+    "Workshop Service",
+    "Field Service",
+    "Data Class",
+    "Source ID",
+    "Confidence",
+    "Source Date",
+    "Notes"
+   ],
+   "columns": [
+    {
+     "name": "Machine ID",
+     "non_empty": 1694,
+     "empty": 0,
+     "unique": 77,
+     "tags": []
+    },
+    {
+     "name": "Machine Category",
+     "non_empty": 1694,
+     "empty": 0,
+     "unique": 12,
+     "tags": []
+    },
+    {
+     "name": "Machine Model",
+     "non_empty": 1694,
+     "empty": 0,
+     "unique": 72,
+     "tags": []
+    },
+    {
+     "name": "Service ID",
+     "non_empty": 1694,
+     "empty": 0,
+     "unique": 22,
+     "tags": []
+    },
+    {
+     "name": "Service Name",
+     "non_empty": 1694,
+     "empty": 0,
+     "unique": 22,
+     "tags": []
+    },
+    {
+     "name": "Service Type",
+     "non_empty": 1694,
+     "empty": 0,
+     "unique": 17,
+     "tags": []
+    },
+    {
+     "name": "Applicability",
+     "non_empty": 1694,
+     "empty": 0,
+     "unique": 8,
+     "tags": []
+    },
+    {
+     "name": "Service Location",
+     "non_empty": 1694,
+     "empty": 0,
+     "unique": 3,
+     "tags": []
+    },
+    {
+     "name": "Trigger",
+     "non_empty": 0,
+     "empty": 1694,
+     "unique": 0,
+     "tags": []
+    },
+    {
+     "name": "Interval (officially stated)",
+     "non_empty": 308,
+     "empty": 1386,
+     "unique": 4,
+     "tags": [
+      "SOURCE/EVIDENCE"
+     ]
+    },
+    {
+     "name": "Machine Hours",
+     "non_empty": 0,
+     "empty": 1694,
+     "unique": 0,
+     "tags": []
+    },
+    {
+     "name": "Condition Based",
+     "non_empty": 0,
+     "empty": 1694,
+     "unique": 0,
+     "tags": []
+    },
+    {
+     "name": "Dealer Service",
+     "non_empty": 1694,
+     "empty": 0,
+     "unique": 2,
+     "tags": []
+    },
+    {
+     "name": "Workshop Service",
+     "non_empty": 1694,
+     "empty": 0,
+     "unique": 2,
+     "tags": []
+    },
+    {
+     "name": "Field Service",
+     "non_empty": 1694,
+     "empty": 0,
+     "unique": 2,
+     "tags": []
+    },
+    {
+     "name": "Data Class",
+     "non_empty": 1694,
+     "empty": 0,
+     "unique": 1,
+     "tags": [
+      "SOURCE/EVIDENCE"
+     ]
+    },
+    {
+     "name": "Source ID",
+     "non_empty": 1694,
+     "empty": 0,
+     "unique": 12,
+     "tags": [
+      "SOURCE/EVIDENCE"
+     ]
+    },
+    {
+     "name": "Confidence",
+     "non_empty": 1694,
+     "empty": 0,
+     "unique": 2,
+     "tags": [
+      "SOURCE/EVIDENCE"
+     ]
+    },
+    {
+     "name": "Source Date",
+     "non_empty": 1694,
+     "empty": 0,
+     "unique": 1,
+     "tags": [
+      "SOURCE/EVIDENCE"
+     ]
+    },
+    {
+     "name": "Notes",
+     "non_empty": 1694,
+     "empty": 0,
+     "unique": 1,
+     "tags": [
+      "NOTES/RESEARCH",
+      "SOURCE/EVIDENCE"
+     ]
+    }
+   ],
+   "duplicate_rows": 0,
+   "id_column": null,
+   "duplicate_ids": 0,
+   "is_junction": true
+  },
+  {
+   "sheet": "10_MAINTENANCE_SCHEDULE",
+   "rows": 10,
+   "cols": 20,
+   "header": [
+    "Maintenance ID",
+    "Machine ID",
+    "Applies To (as stated)",
+    "Maintenance Activity",
+    "Maintenance Type",
+    "Interval",
+    "Interval Unit",
+    "Operating Hours",
+    "Calendar Interval",
+    "Component",
+    "Required Part",
+    "Required Quantity",
+    "Consumable",
+    "Service Description / Official Wording",
+    "Data Class",
+    "Source ID",
+    "Source URL",
+    "Confidence",
+    "Source Date",
+    "Notes"
+   ],
+   "columns": [
+    {
+     "name": "Maintenance ID",
+     "non_empty": 10,
+     "empty": 0,
+     "unique": 10,
+     "tags": []
+    },
+    {
+     "name": "Machine ID",
+     "non_empty": 10,
+     "empty": 0,
+     "unique": 1,
+     "tags": []
+    },
+    {
+     "name": "Applies To (as stated)",
+     "non_empty": 10,
+     "empty": 0,
+     "unique": 9,
+     "tags": []
+    },
+    {
+     "name": "Maintenance Activity",
+     "non_empty": 10,
+     "empty": 0,
+     "unique": 10,
+     "tags": []
+    },
+    {
+     "name": "Maintenance Type",
+     "non_empty": 10,
+     "empty": 0,
+     "unique": 7,
+     "tags": []
+    },
+    {
+     "name": "Interval",
+     "non_empty": 4,
+     "empty": 6,
+     "unique": 4,
+     "tags": []
+    },
+    {
+     "name": "Interval Unit",
+     "non_empty": 4,
+     "empty": 6,
+     "unique": 1,
+     "tags": []
+    },
+    {
+     "name": "Operating Hours",
+     "non_empty": 4,
+     "empty": 6,
+     "unique": 4,
+     "tags": []
+    },
+    {
+     "name": "Calendar Interval",
+     "non_empty": 1,
+     "empty": 9,
+     "unique": 1,
+     "tags": []
+    },
+    {
+     "name": "Component",
+     "non_empty": 10,
+     "empty": 0,
+     "unique": 7,
+     "tags": []
+    },
+    {
+     "name": "Required Part",
+     "non_empty": 9,
+     "empty": 1,
+     "unique": 8,
+     "tags": []
+    },
+    {
+     "name": "Required Quantity",
+     "non_empty": 0,
+     "empty": 10,
+     "unique": 0,
+     "tags": []
+    },
+    {
+     "name": "Consumable",
+     "non_empty": 10,
+     "empty": 0,
+     "unique": 2,
+     "tags": []
+    },
+    {
+     "name": "Service Description / Official Wording",
+     "non_empty": 10,
+     "empty": 0,
+     "unique": 10,
+     "tags": [
+      "SOURCE/EVIDENCE"
+     ]
+    },
+    {
+     "name": "Data Class",
+     "non_empty": 10,
+     "empty": 0,
+     "unique": 2,
+     "tags": [
+      "SOURCE/EVIDENCE"
+     ]
+    },
+    {
+     "name": "Source ID",
+     "non_empty": 10,
+     "empty": 0,
+     "unique": 7,
+     "tags": [
+      "SOURCE/EVIDENCE"
+     ]
+    },
+    {
+     "name": "Source URL",
+     "non_empty": 10,
+     "empty": 0,
+     "unique": 7,
+     "tags": [
+      "SOURCE/EVIDENCE",
+      "URL"
+     ]
+    },
+    {
+     "name": "Confidence",
+     "non_empty": 10,
+     "empty": 0,
+     "unique": 3,
+     "tags": [
+      "SOURCE/EVIDENCE"
+     ]
+    },
+    {
+     "name": "Source Date",
+     "non_empty": 10,
+     "empty": 0,
+     "unique": 1,
+     "tags": [
+      "SOURCE/EVIDENCE"
+     ]
+    },
+    {
+     "name": "Notes",
+     "non_empty": 10,
+     "empty": 0,
+     "unique": 1,
+     "tags": [
+      "NOTES/RESEARCH",
+      "SOURCE/EVIDENCE",
+      "URL"
+     ]
+    }
+   ],
+   "duplicate_rows": 0,
+   "id_column": "Maintenance ID",
+   "duplicate_ids": 0,
+   "is_junction": false
+  },
+  {
+   "sheet": "11_SERVICE_PART_REQUIREMENTS",
+   "rows": 11,
+   "cols": 17,
+   "header": [
+    "Requirement ID",
+    "Machine ID",
+    "Service ID",
+    "Service Name",
+    "Maintenance Activity",
+    "Part ID",
+    "Part Number",
+    "Part Name",
+    "Quantity",
+    "Mandatory / Optional",
+    "Consumable / Wear / Replacement",
+    "Data Class",
+    "Source ID",
+    "Source URL",
+    "Confidence",
+    "Source Date",
+    "Notes"
+   ],
+   "columns": [
+    {
+     "name": "Requirement ID",
+     "non_empty": 11,
+     "empty": 0,
+     "unique": 11,
+     "tags": []
+    },
+    {
+     "name": "Machine ID",
+     "non_empty": 11,
+     "empty": 0,
+     "unique": 1,
+     "tags": []
+    },
+    {
+     "name": "Service ID",
+     "non_empty": 11,
+     "empty": 0,
+     "unique": 8,
+     "tags": []
+    },
+    {
+     "name": "Service Name",
+     "non_empty": 11,
+     "empty": 0,
+     "unique": 8,
+     "tags": []
+    },
+    {
+     "name": "Maintenance Activity",
+     "non_empty": 11,
+     "empty": 0,
+     "unique": 8,
+     "tags": []
+    },
+    {
+     "name": "Part ID",
+     "non_empty": 11,
+     "empty": 0,
+     "unique": 7,
+     "tags": []
+    },
+    {
+     "name": "Part Number",
+     "non_empty": 0,
+     "empty": 11,
+     "unique": 0,
+     "tags": []
+    },
+    {
+     "name": "Part Name",
+     "non_empty": 11,
+     "empty": 0,
+     "unique": 7,
+     "tags": []
+    },
+    {
+     "name": "Quantity",
+     "non_empty": 1,
+     "empty": 10,
+     "unique": 1,
+     "tags": []
+    },
+    {
+     "name": "Mandatory / Optional",
+     "non_empty": 11,
+     "empty": 0,
+     "unique": 2,
+     "tags": []
+    },
+    {
+     "name": "Consumable / Wear / Replacement",
+     "non_empty": 11,
+     "empty": 0,
+     "unique": 2,
+     "tags": []
+    },
+    {
+     "name": "Data Class",
+     "non_empty": 11,
+     "empty": 0,
+     "unique": 1,
+     "tags": [
+      "SOURCE/EVIDENCE"
+     ]
+    },
+    {
+     "name": "Source ID",
+     "non_empty": 11,
+     "empty": 0,
+     "unique": 7,
+     "tags": [
+      "SOURCE/EVIDENCE"
+     ]
+    },
+    {
+     "name": "Source URL",
+     "non_empty": 11,
+     "empty": 0,
+     "unique": 7,
+     "tags": [
+      "SOURCE/EVIDENCE",
+      "URL"
+     ]
+    },
+    {
+     "name": "Confidence",
+     "non_empty": 11,
+     "empty": 0,
+     "unique": 3,
+     "tags": [
+      "SOURCE/EVIDENCE"
+     ]
+    },
+    {
+     "name": "Source Date",
+     "non_empty": 11,
+     "empty": 0,
+     "unique": 1,
+     "tags": [
+      "SOURCE/EVIDENCE"
+     ]
+    },
+    {
+     "name": "Notes",
+     "non_empty": 11,
+     "empty": 0,
+     "unique": 11,
+     "tags": [
+      "NOTES/RESEARCH",
+      "SOURCE/EVIDENCE"
+     ]
+    }
+   ],
+   "duplicate_rows": 0,
+   "id_column": "Requirement ID",
+   "duplicate_ids": 0,
+   "is_junction": false
+  },
+  {
+   "sheet": "12_MACHINE_DIGITAL_SERVICES",
+   "rows": 616,
+   "cols": 20,
+   "header": [
+    "Digital Service ID",
+    "Service Name",
+    "Machine ID",
+    "Machine Model",
+    "Machine Category",
+    "Applicability",
+    "Capability",
+    "Machine Data",
+    "Alert / Monitoring",
+    "Maintenance Support",
+    "Diagnostic Support",
+    "Parts Support",
+    "Dealer Support",
+    "Description",
+    "Stated Applicability (official wording)",
+    "Data Class",
+    "Source ID",
+    "URL",
+    "Source Date",
+    "Notes"
+   ],
+   "columns": [
+    {
+     "name": "Digital Service ID",
+     "non_empty": 616,
+     "empty": 0,
+     "unique": 8,
+     "tags": []
+    },
+    {
+     "name": "Service Name",
+     "non_empty": 616,
+     "empty": 0,
+     "unique": 8,
+     "tags": []
+    },
+    {
+     "name": "Machine ID",
+     "non_empty": 616,
+     "empty": 0,
+     "unique": 77,
+     "tags": []
+    },
+    {
+     "name": "Machine Model",
+     "non_empty": 616,
+     "empty": 0,
+     "unique": 72,
+     "tags": []
+    },
+    {
+     "name": "Machine Category",
+     "non_empty": 616,
+     "empty": 0,
+     "unique": 12,
+     "tags": []
+    },
+    {
+     "name": "Applicability",
+     "non_empty": 616,
+     "empty": 0,
+     "unique": 2,
+     "tags": []
+    },
+    {
+     "name": "Capability",
+     "non_empty": 616,
+     "empty": 0,
+     "unique": 8,
+     "tags": []
+    },
+    {
+     "name": "Machine Data",
+     "non_empty": 616,
+     "empty": 0,
+     "unique": 8,
+     "tags": []
+    },
+    {
+     "name": "Alert / Monitoring",
+     "non_empty": 616,
+     "empty": 0,
+     "unique": 7,
+     "tags": []
+    },
+    {
+     "name": "Maintenance Support",
+     "non_empty": 616,
+     "empty": 0,
+     "unique": 5,
+     "tags": []
+    },
+    {
+     "name": "Diagnostic Support",
+     "non_empty": 616,
+     "empty": 0,
+     "unique": 2,
+     "tags": []
+    },
+    {
+     "name": "Parts Support",
+     "non_empty": 616,
+     "empty": 0,
+     "unique": 3,
+     "tags": []
+    },
+    {
+     "name": "Dealer Support",
+     "non_empty": 616,
+     "empty": 0,
+     "unique": 2,
+     "tags": []
+    },
+    {
+     "name": "Description",
+     "non_empty": 616,
+     "empty": 0,
+     "unique": 8,
+     "tags": []
+    },
+    {
+     "name": "Stated Applicability (official wording)",
+     "non_empty": 616,
+     "empty": 0,
+     "unique": 8,
+     "tags": [
+      "SOURCE/EVIDENCE"
+     ]
+    },
+    {
+     "name": "Data Class",
+     "non_empty": 616,
+     "empty": 0,
+     "unique": 1,
+     "tags": [
+      "SOURCE/EVIDENCE"
+     ]
+    },
+    {
+     "name": "Source ID",
+     "non_empty": 616,
+     "empty": 0,
+     "unique": 6,
+     "tags": [
+      "SOURCE/EVIDENCE"
+     ]
+    },
+    {
+     "name": "URL",
+     "non_empty": 616,
+     "empty": 0,
+     "unique": 6,
+     "tags": [
+      "URL"
+     ]
+    },
+    {
+     "name": "Source Date",
+     "non_empty": 616,
+     "empty": 0,
+     "unique": 1,
+     "tags": [
+      "SOURCE/EVIDENCE"
+     ]
+    },
+    {
+     "name": "Notes",
+     "non_empty": 616,
+     "empty": 0,
+     "unique": 1,
+     "tags": [
+      "NOTES/RESEARCH",
+      "SOURCE/EVIDENCE"
+     ]
+    }
+   ],
+   "duplicate_rows": 0,
+   "id_column": null,
+   "duplicate_ids": 0,
+   "is_junction": true
+  },
+  {
+   "sheet": "13_AFTER_SALES_RELATIONSHIPS",
+   "rows": 3283,
+   "cols": 14,
+   "header": [
+    "Relationship ID",
+    "From Entity Type",
+    "From ID",
+    "From Name",
+    "Relationship",
+    "To Entity Type",
+    "To ID",
+    "To Name",
+    "Data Class",
+    "Source ID",
+    "Source URL",
+    "Confidence",
+    "Source Date",
+    "Notes"
+   ],
+   "columns": [
+    {
+     "name": "Relationship ID",
+     "non_empty": 3283,
+     "empty": 0,
+     "unique": 3283,
+     "tags": []
+    },
+    {
+     "name": "From Entity Type",
+     "non_empty": 3283,
+     "empty": 0,
+     "unique": 5,
+     "tags": []
+    },
+    {
+     "name": "From ID",
+     "non_empty": 3283,
+     "empty": 0,
+     "unique": 135,
+     "tags": []
+    },
+    {
+     "name": "From Name",
+     "non_empty": 3283,
+     "empty": 0,
+     "unique": 132,
+     "tags": []
+    },
+    {
+     "name": "Relationship",
+     "non_empty": 3283,
+     "empty": 0,
+     "unique": 13,
+     "tags": []
+    },
+    {
+     "name": "To Entity Type",
+     "non_empty": 3283,
+     "empty": 0,
+     "unique": 5,
+     "tags": []
+    },
+    {
+     "name": "To ID",
+     "non_empty": 3266,
+     "empty": 17,
+     "unique": 84,
+     "tags": []
+    },
+    {
+     "name": "To Name",
+     "non_empty": 3283,
+     "empty": 0,
+     "unique": 77,
+     "tags": []
+    },
+    {
+     "name": "Data Class",
+     "non_empty": 3283,
+     "empty": 0,
+     "unique": 2,
+     "tags": [
+      "SOURCE/EVIDENCE"
+     ]
+    },
+    {
+     "name": "Source ID",
+     "non_empty": 3283,
+     "empty": 0,
+     "unique": 38,
+     "tags": [
+      "SOURCE/EVIDENCE"
+     ]
+    },
+    {
+     "name": "Source URL",
+     "non_empty": 3283,
+     "empty": 0,
+     "unique": 38,
+     "tags": [
+      "SOURCE/EVIDENCE",
+      "URL"
+     ]
+    },
+    {
+     "name": "Confidence",
+     "non_empty": 3283,
+     "empty": 0,
+     "unique": 3,
+     "tags": [
+      "SOURCE/EVIDENCE"
+     ]
+    },
+    {
+     "name": "Source Date",
+     "non_empty": 3283,
+     "empty": 0,
+     "unique": 1,
+     "tags": [
+      "SOURCE/EVIDENCE"
+     ]
+    },
+    {
+     "name": "Notes",
+     "non_empty": 3283,
+     "empty": 0,
+     "unique": 55,
+     "tags": [
+      "NOTES/RESEARCH",
+      "SOURCE/EVIDENCE"
+     ]
+    }
+   ],
+   "duplicate_rows": 0,
+   "id_column": "Relationship ID",
+   "duplicate_ids": 0,
+   "is_junction": false
+  },
+  {
+   "sheet": "14_SOURCE_REGISTER",
+   "rows": 47,
+   "cols": 10,
+   "header": [
+    "Source ID",
+    "Source Organisation",
+    "Source Type",
+    "URL",
+    "Page Title",
+    "Machine / Category",
+    "Data Domain",
+    "Date Accessed",
+    "Official Source",
+    "Notes"
+   ],
+   "columns": [
+    {
+     "name": "Source ID",
+     "non_empty": 47,
+     "empty": 0,
+     "unique": 47,
+     "tags": [
+      "SOURCE/EVIDENCE"
+     ]
+    },
+    {
+     "name": "Source Organisation",
+     "non_empty": 47,
+     "empty": 0,
+     "unique": 3,
+     "tags": [
+      "SOURCE/EVIDENCE"
+     ]
+    },
+    {
+     "name": "Source Type",
+     "non_empty": 47,
+     "empty": 0,
+     "unique": 14,
+     "tags": [
+      "SOURCE/EVIDENCE"
+     ]
+    },
+    {
+     "name": "URL",
+     "non_empty": 47,
+     "empty": 0,
+     "unique": 46,
+     "tags": [
+      "URL"
+     ]
+    },
+    {
+     "name": "Page Title",
+     "non_empty": 47,
+     "empty": 0,
+     "unique": 47,
+     "tags": []
+    },
+    {
+     "name": "Machine / Category",
+     "non_empty": 47,
+     "empty": 0,
+     "unique": 26,
+     "tags": []
+    },
+    {
+     "name": "Data Domain",
+     "non_empty": 47,
+     "empty": 0,
+     "unique": 42,
+     "tags": []
+    },
+    {
+     "name": "Date Accessed",
+     "non_empty": 47,
+     "empty": 0,
+     "unique": 1,
+     "tags": [
+      "SOURCE/EVIDENCE"
+     ]
+    },
+    {
+     "name": "Official Source",
+     "non_empty": 47,
+     "empty": 0,
+     "unique": 2,
+     "tags": [
+      "SOURCE/EVIDENCE"
+     ]
+    },
+    {
+     "name": "Notes",
+     "non_empty": 47,
+     "empty": 0,
+     "unique": 2,
+     "tags": [
+      "NOTES/RESEARCH",
+      "SOURCE/EVIDENCE"
+     ]
+    }
+   ],
+   "duplicate_rows": 0,
+   "id_column": null,
+   "duplicate_ids": 0,
+   "is_junction": false
+  },
+  {
+   "sheet": "15_DATA_QUALITY",
+   "rows": 40,
+   "cols": 9,
+   "header": [
+    "Entity",
+    "Record ID",
+    "Field",
+    "Value",
+    "Source",
+    "Confidence",
+    "Status",
+    "Missing / Unknown Reason",
+    "Validation Note"
+   ],
+   "columns": [
+    {
+     "name": "Entity",
+     "non_empty": 40,
+     "empty": 0,
+     "unique": 9,
+     "tags": []
+    },
+    {
+     "name": "Record ID",
+     "non_empty": 40,
+     "empty": 0,
+     "unique": 30,
+     "tags": []
+    },
+    {
+     "name": "Field",
+     "non_empty": 40,
+     "empty": 0,
+     "unique": 17,
+     "tags": []
+    },
+    {
+     "name": "Value",
+     "non_empty": 33,
+     "empty": 7,
+     "unique": 16,
+     "tags": []
+    },
+    {
+     "name": "Source",
+     "non_empty": 40,
+     "empty": 0,
+     "unique": 12,
+     "tags": [
+      "SOURCE/EVIDENCE"
+     ]
+    },
+    {
+     "name": "Confidence",
+     "non_empty": 40,
+     "empty": 0,
+     "unique": 4,
+     "tags": [
+      "SOURCE/EVIDENCE"
+     ]
+    },
+    {
+     "name": "Status",
+     "non_empty": 40,
+     "empty": 0,
+     "unique": 7,
+     "tags": []
+    },
+    {
+     "name": "Missing / Unknown Reason",
+     "non_empty": 39,
+     "empty": 1,
+     "unique": 19,
+     "tags": []
+    },
+    {
+     "name": "Validation Note",
+     "non_empty": 40,
+     "empty": 0,
+     "unique": 20,
+     "tags": [
+      "NOTES/RESEARCH",
+      "URL"
+     ]
+    }
+   ],
+   "duplicate_rows": 0,
+   "id_column": null,
+   "duplicate_ids": 0,
+   "is_junction": true
+  },
+  {
+   "sheet": "16_CATEGORY_COMPARISON",
+   "rows": 12,
+   "cols": 16,
+   "header": [
+    "Category",
+    "Category ID",
+    "Typical Machine Type",
+    "Machine Count",
+    "Machine Count (live formula)",
+    "Main Applications",
+    "Common Attachments",
+    "Common Parts Characteristics",
+    "Common Service Characteristics",
+    "Machine-Specific Service Characteristics",
+    "Digital Services",
+    "Key Technical Differences",
+    "After-Sales Differences",
+    "Published Specification Groups (frequency)",
+    "Source ID",
+    "Source Date"
+   ],
+   "columns": [
+    {
+     "name": "Category",
+     "non_empty": 12,
+     "empty": 0,
+     "unique": 12,
+     "tags": []
+    },
+    {
+     "name": "Category ID",
+     "non_empty": 12,
+     "empty": 0,
+     "unique": 12,
+     "tags": []
+    },
+    {
+     "name": "Typical Machine Type",
+     "non_empty": 12,
+     "empty": 0,
+     "unique": 12,
+     "tags": []
+    },
+    {
+     "name": "Machine Count",
+     "non_empty": 12,
+     "empty": 0,
+     "unique": 7,
+     "tags": []
+    },
+    {
+     "name": "Machine Count (live formula)",
+     "non_empty": 0,
+     "empty": 12,
+     "unique": 0,
+     "tags": []
+    },
+    {
+     "name": "Main Applications",
+     "non_empty": 12,
+     "empty": 0,
+     "unique": 12,
+     "tags": []
+    },
+    {
+     "name": "Common Attachments",
+     "non_empty": 11,
+     "empty": 1,
+     "unique": 11,
+     "tags": []
+    },
+    {
+     "name": "Common Parts Characteristics",
+     "non_empty": 12,
+     "empty": 0,
+     "unique": 10,
+     "tags": []
+    },
+    {
+     "name": "Common Service Characteristics",
+     "non_empty": 12,
+     "empty": 0,
+     "unique": 8,
+     "tags": []
+    },
+    {
+     "name": "Machine-Specific Service Characteristics",
+     "non_empty": 12,
+     "empty": 0,
+     "unique": 12,
+     "tags": []
+    },
+    {
+     "name": "Digital Services",
+     "non_empty": 11,
+     "empty": 1,
+     "unique": 7,
+     "tags": []
+    },
+    {
+     "name": "Key Technical Differences",
+     "non_empty": 12,
+     "empty": 0,
+     "unique": 12,
+     "tags": []
+    },
+    {
+     "name": "After-Sales Differences",
+     "non_empty": 12,
+     "empty": 0,
+     "unique": 10,
+     "tags": []
+    },
+    {
+     "name": "Published Specification Groups (frequency)",
+     "non_empty": 12,
+     "empty": 0,
+     "unique": 12,
+     "tags": []
+    },
+    {
+     "name": "Source ID",
+     "non_empty": 12,
+     "empty": 0,
+     "unique": 7,
+     "tags": [
+      "SOURCE/EVIDENCE"
+     ]
+    },
+    {
+     "name": "Source Date",
+     "non_empty": 12,
+     "empty": 0,
+     "unique": 1,
+     "tags": [
+      "SOURCE/EVIDENCE"
+     ]
+    }
+   ],
+   "duplicate_rows": 0,
+   "id_column": "Category ID",
+   "duplicate_ids": 0,
+   "is_junction": false
+  },
+  {
+   "sheet": "17_COMMON_VS_SPECIFIC",
+   "rows": 34,
+   "cols": 8,
+   "header": [
+    "Analysis ID",
+    "Capability",
+    "Classification",
+    "Evidence / Finding",
+    "Source URL",
+    "Source ID",
+    "Confidence",
+    "Source Date"
+   ],
+   "columns": [
+    {
+     "name": "Analysis ID",
+     "non_empty": 34,
+     "empty": 0,
+     "unique": 34,
+     "tags": []
+    },
+    {
+     "name": "Capability",
+     "non_empty": 34,
+     "empty": 0,
+     "unique": 34,
+     "tags": []
+    },
+    {
+     "name": "Classification",
+     "non_empty": 34,
+     "empty": 0,
+     "unique": 11,
+     "tags": []
+    },
+    {
+     "name": "Evidence / Finding",
+     "non_empty": 34,
+     "empty": 0,
+     "unique": 34,
+     "tags": []
+    },
+    {
+     "name": "Source URL",
+     "non_empty": 34,
+     "empty": 0,
+     "unique": 25,
+     "tags": [
+      "SOURCE/EVIDENCE",
+      "URL"
+     ]
+    },
+    {
+     "name": "Source ID",
+     "non_empty": 34,
+     "empty": 0,
+     "unique": 25,
+     "tags": [
+      "SOURCE/EVIDENCE"
+     ]
+    },
+    {
+     "name": "Confidence",
+     "non_empty": 34,
+     "empty": 0,
+     "unique": 2,
+     "tags": [
+      "SOURCE/EVIDENCE"
+     ]
+    },
+    {
+     "name": "Source Date",
+     "non_empty": 34,
+     "empty": 0,
+     "unique": 1,
+     "tags": [
+      "SOURCE/EVIDENCE"
+     ]
+    }
+   ],
+   "duplicate_rows": 0,
+   "id_column": "Analysis ID",
+   "duplicate_ids": 0,
+   "is_junction": false
+  },
+  {
+   "sheet": "18_DATA_DICTIONARY",
+   "rows": 68,
+   "cols": 10,
+   "header": [
+    "Table Name",
+    "Field Name",
+    "Data Type",
+    "Required?",
+    "Primary Key?",
+    "Foreign Key?",
+    "Description",
+    "Example",
+    "Source Sheet",
+    "Notes"
+   ],
+   "columns": [
+    {
+     "name": "Table Name",
+     "non_empty": 68,
+     "empty": 0,
+     "unique": 16,
+     "tags": []
+    },
+    {
+     "name": "Field Name",
+     "non_empty": 68,
+     "empty": 0,
+     "unique": 54,
+     "tags": []
+    },
+    {
+     "name": "Data Type",
+     "non_empty": 68,
+     "empty": 0,
+     "unique": 17,
+     "tags": []
+    },
+    {
+     "name": "Required?",
+     "non_empty": 68,
+     "empty": 0,
+     "unique": 2,
+     "tags": []
+    },
+    {
+     "name": "Primary Key?",
+     "non_empty": 68,
+     "empty": 0,
+     "unique": 2,
+     "tags": []
+    },
+    {
+     "name": "Foreign Key?",
+     "non_empty": 68,
+     "empty": 0,
+     "unique": 7,
+     "tags": []
+    },
+    {
+     "name": "Description",
+     "non_empty": 68,
+     "empty": 0,
+     "unique": 64,
+     "tags": []
+    },
+    {
+     "name": "Example",
+     "non_empty": 68,
+     "empty": 0,
+     "unique": 53,
+     "tags": [
+      "URL"
+     ]
+    },
+    {
+     "name": "Source Sheet",
+     "non_empty": 68,
+     "empty": 0,
+     "unique": 15,
+     "tags": [
+      "SOURCE/EVIDENCE"
+     ]
+    },
+    {
+     "name": "Notes",
+     "non_empty": 68,
+     "empty": 0,
+     "unique": 2,
+     "tags": [
+      "NOTES/RESEARCH",
+      "SOURCE/EVIDENCE"
+     ]
+    }
+   ],
+   "duplicate_rows": 0,
+   "id_column": null,
+   "duplicate_ids": 0,
+   "is_junction": false
+  },
+  {
+   "sheet": "19_RELATIONSHIP_SCHEMA",
+   "rows": 18,
+   "cols": 8,
+   "header": [
+    "Schema ID",
+    "From Entity",
+    "Cardinality",
+    "To Entity",
+    "Implementation",
+    "Evidence Class",
+    "Design Note",
+    "Source ID"
+   ],
+   "columns": [
+    {
+     "name": "Schema ID",
+     "non_empty": 18,
+     "empty": 0,
+     "unique": 18,
+     "tags": []
+    },
+    {
+     "name": "From Entity",
+     "non_empty": 18,
+     "empty": 0,
+     "unique": 8,
+     "tags": []
+    },
+    {
+     "name": "Cardinality",
+     "non_empty": 18,
+     "empty": 0,
+     "unique": 4,
+     "tags": []
+    },
+    {
+     "name": "To Entity",
+     "non_empty": 18,
+     "empty": 0,
+     "unique": 14,
+     "tags": []
+    },
+    {
+     "name": "Implementation",
+     "non_empty": 18,
+     "empty": 0,
+     "unique": 18,
+     "tags": []
+    },
+    {
+     "name": "Evidence Class",
+     "non_empty": 17,
+     "empty": 1,
+     "unique": 9,
+     "tags": []
+    },
+    {
+     "name": "Design Note",
+     "non_empty": 18,
+     "empty": 0,
+     "unique": 18,
+     "tags": [
+      "NOTES/RESEARCH"
+     ]
+    },
+    {
+     "name": "Source ID",
+     "non_empty": 17,
+     "empty": 1,
+     "unique": 13,
+     "tags": [
+      "SOURCE/EVIDENCE"
+     ]
+    }
+   ],
+   "duplicate_rows": 0,
+   "id_column": "Schema ID",
+   "duplicate_ids": 0,
+   "is_junction": false
+  },
+  {
+   "sheet": "20_COMPLETENESS_CHECK",
+   "rows": 33,
+   "cols": 6,
+   "header": [
+    "Check ID",
+    "Metric",
+    "Count",
+    "Sheet",
+    "Note",
+    "Source Date"
+   ],
+   "columns": [
+    {
+     "name": "Check ID",
+     "non_empty": 23,
+     "empty": 10,
+     "unique": 23,
+     "tags": []
+    },
+    {
+     "name": "Metric",
+     "non_empty": 32,
+     "empty": 1,
+     "unique": 32,
+     "tags": []
+    },
+    {
+     "name": "Count",
+     "non_empty": 22,
+     "empty": 11,
+     "unique": 21,
+     "tags": []
+    },
+    {
+     "name": "Sheet",
+     "non_empty": 32,
+     "empty": 1,
+     "unique": 26,
+     "tags": []
+    },
+    {
+     "name": "Note",
+     "non_empty": 22,
+     "empty": 11,
+     "unique": 22,
+     "tags": [
+      "NOTES/RESEARCH"
+     ]
+    },
+    {
+     "name": "Source Date",
+     "non_empty": 22,
+     "empty": 11,
+     "unique": 1,
+     "tags": [
+      "SOURCE/EVIDENCE"
+     ]
+    }
+   ],
+   "duplicate_rows": 0,
+   "id_column": "Check ID",
+   "duplicate_ids": 0,
+   "is_junction": false
+  }
+ ]
+}

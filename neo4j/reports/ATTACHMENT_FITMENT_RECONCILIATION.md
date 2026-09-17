@@ -1,0 +1,25 @@
+# Attachment Fitment Reconciliation
+
+14 of 21 model-code text fragments (across the 7 attachments that state `Compatible Machine Model` at all, out of 17 total attachments) resolve to a real `Machine` via exact match against `MODEL_CODE_INVENTORY.csv`. This document classifies the 7 that don't, per Item 4's required categories, using only source evidence — no compatibility is invented for any of them.
+
+## Classification
+
+| Attachment | Skipped fragment | Classification | Evidence |
+|---|---|---|---|
+| ATT-002 (Loading shovel bucket) | `"EX8000-7 and their Electric Drive variants"` | **DESCRIPTIVE QUALIFIER** | Trailing prose following 6 already-resolved literal codes (EX1200-7 … EX8000-7). Refers to the Electric Drive pages (MC-015/017/019/021/023 — see `MODEL_CODE_RECONCILIATION_REPORT.md` §5) but is not itself a parseable code string. |
+| ATT-005 (GET mini/compact) | `"ZX10 to ZX85 (as stated)"` | **MODEL RANGE** | Explicit `"(as stated)"` marker — the source itself flags this as a verbatim range, per the `00_README` "no silent expansion" rule. Correctly not decomposed into individual mini-excavator codes. |
+| ATT-007 (Bradken GET ultra-large) | `"ZX890-6 and EX1200-7 to EX8000-6 (as stated)"` | **MODEL RANGE** | Same `"(as stated)"` marker. Also references a `-6` generation (ZX890-6, EX8000-6) that this catalogue (77 `-7`-generation records) doesn't cover at all — consistent with the source's practice of citing prior-generation compatibility from an official page without expecting a matching current-catalogue record. |
+| ATT-014 (Telescopic/clamshell arm) | `"ZX350LC-7 CTA 25m/30m"` | **REAL MODEL CODE** (currently unresolved by design, not by ambiguity) | Matches `MC-003` (`Model: "ZX350LC-7 CTA 25m and 30m"`) exactly in meaning — the attachment text uses `/` where the machine record uses `"and"`. Not imported as a `FITS` edge in this phase because the exact-match resolver deliberately does not attempt delimiter normalization or fuzzy matching, to guarantee zero accidental false matches elsewhere. Recommended safe follow-up: a single, narrowly-scoped normalization rule (`/ ` between two arm-length numbers → `" and "`) before matching, then re-verify against every other attachment fragment to confirm it introduces no new false positives, before adding it to `machine_attachment.cypher`. |
+| ATT-015 (Super long front) | `"ZX250/300/350-7 SLF"` | **REAL MODEL RANGE** (currently unresolved) | Matches `MC-060` — same `URL` (`.../product.zx250-300-350-7/`) and subcategory ("Super Long Front Excavators") as the range group documented in `MODEL_CODE_RECONCILIATION_REPORT.md` §5 for MC-004/005/060. Not resolved by the current exact-match import for the same reason as ATT-014 — `/`-delimited compact notation isn't in `MODEL_CODE_INVENTORY.csv`'s literal strings. |
+| ATT-016 (Mono/two/three-piece demolition boom) | `"ZX250/300/350-7 (mono straight boom / straight boom)"` | **REAL MODEL RANGE**, referencing two records (currently unresolved) | The parenthetical explicitly names both `MC-004` ("MONO STRAIGHT BOOM") and `MC-005` ("STRAIGHT BOOM") by their own subcategory naming. Not resolved by the current exact-match import, same reason as above. |
+| ATT-017 (Short reach front) | `"ZX135US-7 (short reach front)"` | **AMBIGUOUS / UNCLEAR** | No machine record is named exactly `"ZX135US-7"`. The closest candidates are `MC-030` (`ZX135US-7B`) and `MC-063` (`ZX135US-7 SRF`) — neither is an exact match, and nothing in the source disambiguates which (if either) this refers to. This may be the same class of gap as `FIT-0032`/`ZX240N-7` (a real configuration the current EU catalogue doesn't carry its own page for) rather than a typo for one of the two candidates. **Not resolved, and not guessed at** — held as genuinely unclear rather than forced into either candidate. |
+
+## Summary
+
+- **14 fragments**: real model codes, resolved, imported as `FITS` edges.
+- **3 fragments** (ATT-014, ATT-015, ATT-016): real, specific model-range references that a future, carefully-scoped normalization pass could safely resolve — currently left unresolved by design, not because the evidence is weak, but because the current import deliberately favours zero false positives over higher recall.
+- **2 fragments** (ATT-005, ATT-007): genuine source-stated ranges, correctly kept verbatim per the source's own "no silent expansion" policy — not intended to resolve to individual machine records at all.
+- **1 fragment** (ATT-002): descriptive prose about codes already resolved elsewhere in the same row — not a separate compatibility claim.
+- **1 fragment** (ATT-017): genuinely ambiguous — no forced resolution, flagged for a human decision or further source research.
+
+No compatibility was invented for any of the 7. The 14-edge count in the current design is a deliberately conservative floor, not a ceiling — `IMPORT_DESIGN_REPORT.md` §13 already flagged this as a known limitation before this review; this document supplies the specific, per-fragment justification.

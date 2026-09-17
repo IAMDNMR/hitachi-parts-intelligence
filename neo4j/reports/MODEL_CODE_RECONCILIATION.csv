@@ -1,0 +1,80 @@
+model_code,in_cleaned_84,in_readme_79,machine_record,classification,evidence,recommended_treatment
+EH3500AC-3,yes,yes,MC-054,CONFIRMED_DISTINCT_MODEL,"Appears once, on MC-054.",Keep as a single models_covered entry on its one Machine node.
+EH4000AC-3,yes,yes,MC-055,CONFIRMED_DISTINCT_MODEL,"Appears once, on MC-055.",Keep as a single models_covered entry on its one Machine node.
+EH5000AC-3,yes,yes,MC-056,CONFIRMED_DISTINCT_MODEL,"Appears once, on MC-056.",Keep as a single models_covered entry on its one Machine node.
+EX1200-7,yes,yes,MC-013,CONFIRMED_DISTINCT_MODEL,"Appears once, on MC-013.",Keep as a single models_covered entry on its one Machine node.
+EX2000-7,yes,yes,MC-014; MC-015,CONFIGURATION_VARIANT,"Appears on 2 separate catalogue pages (MC-014, MC-015), each with its own distinct product URL (one ends in a plain model slug, the other in the same slug + ""e"" — the Electric Drive variant). The source's Model/Models Covered text was not given a distinct code for the electric page, so the same code string legitimately names two different real products.","Keep as TWO separate Machine nodes (one per catalogue page/URL — they have independent specs, fitment and relationships), each carrying this same code string in its own models_covered list. Do not merge the two pages into one node; do not invent a distinct code string neither the source nor the site publishes."
+EX2600-7,yes,yes,MC-016; MC-017,CONFIGURATION_VARIANT,"Appears on 2 separate catalogue pages (MC-016, MC-017), each with its own distinct product URL (one ends in a plain model slug, the other in the same slug + ""e"" — the Electric Drive variant). The source's Model/Models Covered text was not given a distinct code for the electric page, so the same code string legitimately names two different real products.","Keep as TWO separate Machine nodes (one per catalogue page/URL — they have independent specs, fitment and relationships), each carrying this same code string in its own models_covered list. Do not merge the two pages into one node; do not invent a distinct code string neither the source nor the site publishes."
+EX3600-7,yes,yes,MC-018; MC-019,CONFIGURATION_VARIANT,"Appears on 2 separate catalogue pages (MC-018, MC-019), each with its own distinct product URL (one ends in a plain model slug, the other in the same slug + ""e"" — the Electric Drive variant). The source's Model/Models Covered text was not given a distinct code for the electric page, so the same code string legitimately names two different real products.","Keep as TWO separate Machine nodes (one per catalogue page/URL — they have independent specs, fitment and relationships), each carrying this same code string in its own models_covered list. Do not merge the two pages into one node; do not invent a distinct code string neither the source nor the site publishes."
+EX5600-7,yes,yes,MC-020; MC-021,CONFIGURATION_VARIANT,"Appears on 2 separate catalogue pages (MC-020, MC-021), each with its own distinct product URL (one ends in a plain model slug, the other in the same slug + ""e"" — the Electric Drive variant). The source's Model/Models Covered text was not given a distinct code for the electric page, so the same code string legitimately names two different real products.","Keep as TWO separate Machine nodes (one per catalogue page/URL — they have independent specs, fitment and relationships), each carrying this same code string in its own models_covered list. Do not merge the two pages into one node; do not invent a distinct code string neither the source nor the site publishes."
+EX8000-7,yes,yes,MC-022; MC-023,CONFIGURATION_VARIANT,"Appears on 2 separate catalogue pages (MC-022, MC-023), each with its own distinct product URL (one ends in a plain model slug, the other in the same slug + ""e"" — the Electric Drive variant). The source's Model/Models Covered text was not given a distinct code for the electric page, so the same code string legitimately names two different real products.","Keep as TWO separate Machine nodes (one per catalogue page/URL — they have independent specs, fitment and relationships), each carrying this same code string in its own models_covered list. Do not merge the two pages into one node; do not invent a distinct code string neither the source nor the site publishes."
+MA200-G,yes,yes,MC-057,CONFIRMED_DISTINCT_MODEL,"Appears once, on MC-057.",Keep as a single models_covered entry on its one Machine node.
+ZW140,yes,yes,MC-064,CONFIRMED_DISTINCT_MODEL,"Appears once, on MC-064.",Keep as a single models_covered entry on its one Machine node.
+ZW160-7,yes,yes,MC-065,CONFIRMED_DISTINCT_MODEL,"Appears once, on MC-065.",Keep as a single models_covered entry on its one Machine node.
+ZW180-7,yes,yes,MC-066,CONFIRMED_DISTINCT_MODEL,"Appears once, on MC-066.",Keep as a single models_covered entry on its one Machine node.
+ZW220-7,yes,yes,MC-067,CONFIRMED_DISTINCT_MODEL,"Appears once, on MC-067.",Keep as a single models_covered entry on its one Machine node.
+ZW250-7,yes,yes,MC-068,CONFIRMED_DISTINCT_MODEL,"Appears once, on MC-068.",Keep as a single models_covered entry on its one Machine node.
+ZW310-7,yes,yes,MC-069,CONFIRMED_DISTINCT_MODEL,"Appears once, on MC-069.",Keep as a single models_covered entry on its one Machine node.
+ZW95-6,yes,yes,MC-070,CONFIRMED_DISTINCT_MODEL,"Appears once, on MC-070.",Keep as a single models_covered entry on its one Machine node.
+ZX10U-6,yes,yes,MC-044,CONFIRMED_DISTINCT_MODEL,"Appears once, on MC-044.",Keep as a single models_covered entry on its one Machine node.
+ZX130-7 SLF,yes,yes,MC-058,CONFIRMED_DISTINCT_MODEL,"Appears once, on MC-058.",Keep as a single models_covered entry on its one Machine node.
+ZX130-7B,yes,yes,MC-028,CONFIRMED_DISTINCT_MODEL,"Appears once, on MC-028.",Keep as a single models_covered entry on its one Machine node.
+ZX135-7EB,yes,yes,MC-029,CONFIRMED_DISTINCT_MODEL,"Appears once, on MC-029.",Keep as a single models_covered entry on its one Machine node.
+ZX135US-7 SRF,yes,yes,MC-063,CONFIRMED_DISTINCT_MODEL,"Appears once, on MC-063.",Keep as a single models_covered entry on its one Machine node.
+ZX135US-7B,yes,yes,MC-030,CONFIRMED_DISTINCT_MODEL,"Appears once, on MC-030.",Keep as a single models_covered entry on its one Machine node.
+ZX135USL-7 Forestry,yes,yes,MC-009,CONFIRMED_DISTINCT_MODEL,"Appears once, on MC-009.",Keep as a single models_covered entry on its one Machine node.
+ZX135W-7,yes,yes,MC-071,CONFIRMED_DISTINCT_MODEL,"Appears once, on MC-071.",Keep as a single models_covered entry on its one Machine node.
+ZX150W-7,yes,yes,MC-072,CONFIRMED_DISTINCT_MODEL,"Appears once, on MC-072.",Keep as a single models_covered entry on its one Machine node.
+ZX155W-7,yes,yes,MC-073,CONFIRMED_DISTINCT_MODEL,"Appears once, on MC-073.",Keep as a single models_covered entry on its one Machine node.
+ZX160-7,yes,yes,MC-031,CONFIRMED_DISTINCT_MODEL,"Appears once, on MC-031.",Keep as a single models_covered entry on its one Machine node.
+ZX175W-7,yes,yes,MC-074,CONFIRMED_DISTINCT_MODEL,"Appears once, on MC-074.",Keep as a single models_covered entry on its one Machine node.
+ZX17U-6,yes,yes,MC-045,CONFIRMED_DISTINCT_MODEL,"Appears once, on MC-045.",Keep as a single models_covered entry on its one Machine node.
+ZX180-7,yes,yes,MC-032,CONFIRMED_DISTINCT_MODEL,"Appears once, on MC-032.",Keep as a single models_covered entry on its one Machine node.
+ZX180W-7,yes,yes,MC-075,CONFIRMED_DISTINCT_MODEL,"Appears once, on MC-075.",Keep as a single models_covered entry on its one Machine node.
+ZX19-6,yes,yes,MC-046,CONFIRMED_DISTINCT_MODEL,"Appears once, on MC-046.",Keep as a single models_covered entry on its one Machine node.
+ZX19U-6,yes,yes,MC-045,CONFIRMED_DISTINCT_MODEL,"Appears once, on MC-045.",Keep as a single models_covered entry on its one Machine node.
+ZX210-7 SLF,yes,yes,MC-059,CONFIRMED_DISTINCT_MODEL,"Appears once, on MC-059.",Keep as a single models_covered entry on its one Machine node.
+ZX210LC-7,yes,yes,MC-033,CONFIRMED_DISTINCT_MODEL,"Appears once, on MC-033.",Keep as a single models_covered entry on its one Machine node.
+ZX210LCN-7,yes,yes,MC-033,CONFIRMED_DISTINCT_MODEL,"Appears once, on MC-033.",Keep as a single models_covered entry on its one Machine node.
+ZX220LC-GI,yes,yes,MC-034,CONFIRMED_DISTINCT_MODEL,"Appears once, on MC-034.",Keep as a single models_covered entry on its one Machine node.
+ZX220W-7,yes,yes,MC-076,CONFIRMED_DISTINCT_MODEL,"Appears once, on MC-076.",Keep as a single models_covered entry on its one Machine node.
+ZX225US-7,yes,yes,MC-035,CONFIRMED_DISTINCT_MODEL,"Appears once, on MC-035.",Keep as a single models_covered entry on its one Machine node.
+ZX225USR-7,yes,yes,MC-036,CONFIRMED_DISTINCT_MODEL,"Appears once, on MC-036.",Keep as a single models_covered entry on its one Machine node.
+ZX250,yes,yes,MC-060,CONFIRMED_DISTINCT_MODEL,"Appears once, on MC-060.",Keep as a single models_covered entry on its one Machine node.
+ZX250-300-350-7 MONO STRAIGHT BOOM,yes,yes,MC-004,CONFIRMED_DISTINCT_MODEL,"Appears once, on MC-004.",Keep as a single models_covered entry on its one Machine node.
+ZX250-300-350-7 STRAIGHT BOOM,yes,yes,MC-005,CONFIRMED_DISTINCT_MODEL,"Appears once, on MC-005.",Keep as a single models_covered entry on its one Machine node.
+ZX250LC-7,yes,yes,MC-037,CONFIRMED_DISTINCT_MODEL,"Appears once, on MC-037.",Keep as a single models_covered entry on its one Machine node.
+ZX250LCN-7,yes,yes,MC-037,CONFIRMED_DISTINCT_MODEL,"Appears once, on MC-037.",Keep as a single models_covered entry on its one Machine node.
+ZX26U-6,yes,yes,MC-047,CONFIRMED_DISTINCT_MODEL,"Appears once, on MC-047.",Keep as a single models_covered entry on its one Machine node.
+ZX300LC-7,yes,yes,MC-038,CONFIRMED_DISTINCT_MODEL,"Appears once, on MC-038.",Keep as a single models_covered entry on its one Machine node.
+ZX300LCN-7,yes,yes,MC-038,CONFIRMED_DISTINCT_MODEL,"Appears once, on MC-038.",Keep as a single models_covered entry on its one Machine node.
+ZX330LC-5G CTA 25m,yes,yes,MC-001,CONFIRMED_DISTINCT_MODEL,"Appears once, on MC-001.",Keep as a single models_covered entry on its one Machine node.
+ZX330LC-5G CTA 30m,yes,yes,MC-002,CONFIRMED_DISTINCT_MODEL,"Appears once, on MC-002.",Keep as a single models_covered entry on its one Machine node.
+ZX33U-6,yes,yes,MC-048,CONFIRMED_DISTINCT_MODEL,"Appears once, on MC-048.",Keep as a single models_covered entry on its one Machine node.
+ZX350-7G,yes,yes,MC-039,CONFIRMED_DISTINCT_MODEL,"Appears once, on MC-039.",Keep as a single models_covered entry on its one Machine node.
+ZX350LC-7,yes,yes,MC-040,CONFIRMED_DISTINCT_MODEL,"Appears once, on MC-040.",Keep as a single models_covered entry on its one Machine node.
+ZX350LC-7 CTA 25m and 30m,yes,yes,MC-003,CONFIRMED_DISTINCT_MODEL,"Appears once, on MC-003.",Keep as a single models_covered entry on its one Machine node.
+ZX350LCN-7,yes,yes,MC-040,CONFIRMED_DISTINCT_MODEL,"Appears once, on MC-040.",Keep as a single models_covered entry on its one Machine node.
+ZX375US-7,yes,yes,MC-041,CONFIRMED_DISTINCT_MODEL,"Appears once, on MC-041.",Keep as a single models_covered entry on its one Machine node.
+ZX38U-6,yes,yes,MC-049,CONFIRMED_DISTINCT_MODEL,"Appears once, on MC-049.",Keep as a single models_covered entry on its one Machine node.
+ZX390TC-7,yes,yes,MC-006,CONFIRMED_DISTINCT_MODEL,"Appears once, on MC-006.",Keep as a single models_covered entry on its one Machine node.
+ZX400MC-7,yes,yes,MC-007,CONFIRMED_DISTINCT_MODEL,"Appears once, on MC-007.",Keep as a single models_covered entry on its one Machine node.
+ZX48U-6,yes,yes,MC-050,CONFIRMED_DISTINCT_MODEL,"Appears once, on MC-050.",Keep as a single models_covered entry on its one Machine node.
+ZX490-7 SLF,yes,yes,MC-061,CONFIRMED_DISTINCT_MODEL,"Appears once, on MC-061.",Keep as a single models_covered entry on its one Machine node.
+ZX490-7G,yes,yes,MC-010,CONFIRMED_DISTINCT_MODEL,"Appears once, on MC-010.",Keep as a single models_covered entry on its one Machine node.
+ZX490LCH-7,yes,yes,MC-024,CONFIRMED_DISTINCT_MODEL,"Appears once, on MC-024.",Keep as a single models_covered entry on its one Machine node.
+ZX530LCH-7,yes,yes,MC-025,CONFIRMED_DISTINCT_MODEL,"Appears once, on MC-025.",Keep as a single models_covered entry on its one Machine node.
+ZX55U-6,yes,yes,MC-051,CONFIRMED_DISTINCT_MODEL,"Appears once, on MC-051.",Keep as a single models_covered entry on its one Machine node.
+ZX55U-6EB,yes,yes,MC-052,CONFIRMED_DISTINCT_MODEL,"Appears once, on MC-052.",Keep as a single models_covered entry on its one Machine node.
+ZX600MC-7,yes,yes,MC-008,CONFIRMED_DISTINCT_MODEL,"Appears once, on MC-008.",Keep as a single models_covered entry on its one Machine node.
+ZX65USB-6,yes,yes,MC-053,CONFIRMED_DISTINCT_MODEL,"Appears once, on MC-053.",Keep as a single models_covered entry on its one Machine node.
+ZX690-7G,yes,yes,MC-011,CONFIRMED_DISTINCT_MODEL,"Appears once, on MC-011.",Keep as a single models_covered entry on its one Machine node.
+ZX690LCH-7,yes,yes,MC-026,CONFIRMED_DISTINCT_MODEL,"Appears once, on MC-026.",Keep as a single models_covered entry on its one Machine node.
+ZX690LCR-7,yes,yes,MC-026,CONFIRMED_DISTINCT_MODEL,"Appears once, on MC-026.",Keep as a single models_covered entry on its one Machine node.
+ZX85-6EB,yes,yes,MC-042,CONFIRMED_DISTINCT_MODEL,"Appears once, on MC-042.",Keep as a single models_covered entry on its one Machine node.
+ZX890-7G,yes,yes,MC-012,CONFIRMED_DISTINCT_MODEL,"Appears once, on MC-012.",Keep as a single models_covered entry on its one Machine node.
+ZX890LCH-7,yes,yes,MC-027,CONFIRMED_DISTINCT_MODEL,"Appears once, on MC-027.",Keep as a single models_covered entry on its one Machine node.
+ZX890LCR-7,yes,yes,MC-027,CONFIRMED_DISTINCT_MODEL,"Appears once, on MC-027.",Keep as a single models_covered entry on its one Machine node.
+ZX95US-7 SLF,yes,yes,MC-062,CONFIRMED_DISTINCT_MODEL,"Appears once, on MC-062.",Keep as a single models_covered entry on its one Machine node.
+ZX95US-USB-7,yes,yes,MC-043,CONFIRMED_DISTINCT_MODEL,"Appears once, on MC-043.",Keep as a single models_covered entry on its one Machine node.
+ZX95W-7,yes,yes,MC-077,CONFIRMED_DISTINCT_MODEL,"Appears once, on MC-077.",Keep as a single models_covered entry on its one Machine node.

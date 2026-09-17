@@ -1,6 +1,6 @@
 # Dependencies and build output
-node_modules
-dist
+frontend/node_modules
+frontend/dist
 
 # Python
 __pycache__/
@@ -8,16 +8,23 @@ __pycache__/
 .venv/
 .pytest_cache/
 
-# Runtime state, not source.
-# The schema is owned by Alembic and the starter rows by app/seed.py, so this
-# file is rebuilt by `alembic upgrade head` + a first run. Committing it would
-# put one developer's demo requirements into everyone else's checkout.
+# Runtime state, not source. Nothing in this repo currently generates a .db
+# file (the previous ordering backend that did was removed), but any stray
+# local database file should still never be committed.
 *.db
 
 # Local configuration. .env.example is committed; the real one is not.
 .env
+.env.*
 .env.local
+neo4j/.env
+**/.env
 
 # Scratch output from backend/video-processing/ survey scripts
 backend/video-processing/survey-s01/
-.test-build/
+frontend/.test-build/
+
+# Official machine images, mirrored from backend/data/HITACHI_MACHINE_IMAGES/
+# by backend/catalogue-generation/build-web-images.py and build-cutouts.py.
+# ~96 MB of binaries; rebuildable, so not committed.
+frontend/public/machines/

@@ -1,0 +1,139 @@
+/* The one header bar, shared by the home page and the Parts Store.
+   Near-opaque charcoal rather than a translucent wash, so brand and nav
+   read on reliable contrast regardless of what's behind it — full-bleed
+   hero video on the home page, an ordinary page background in the Store. */
+.site-header {
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  height: var(--header-h);
+  padding: 0 clamp(1.2rem, 2.6vw, 2.8rem);
+  background: rgba(11, 15, 22, 0.92);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.site-header--fixed {
+  position: fixed;
+}
+
+.site-header--sticky {
+  position: sticky;
+  z-index: 30;
+}
+
+.site-header__brand {
+  display: grid;
+  gap: 4px;
+  text-decoration: none;
+  line-height: 1;
+}
+
+.site-header__brand-main {
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: 0.24em;
+  color: var(--white);
+}
+
+.site-header__brand-sub {
+  width: max-content;
+  padding: 0.16rem 0.36rem;
+  color: #fff;
+  background: var(--orange);
+  font-size: 8.5px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+}
+
+/* The gap is not optional. At 0.2em of tracking on 10px caps, two links
+   separated only by their own padding read as one unbroken string. */
+.site-header__nav {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  margin-left: auto;
+}
+
+.site-header__link {
+  position: relative;
+  padding: 6px 2px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.82);
+  text-decoration: none;
+  transition: color 220ms var(--ease);
+}
+
+/* The underline grows from the left rather than fading in, so the hover
+   reads as a mark being drawn. */
+.site-header__link::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  background: var(--orange);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 260ms var(--ease);
+}
+
+.site-header__link:hover,
+.site-header__link.is-current {
+  color: var(--orange);
+}
+
+.site-header__link:hover::after,
+.site-header__link.is-current::after {
+  transform: scaleX(1);
+}
+
+.site-header__cart {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  margin-left: 1.5rem;
+  padding: 0.5rem 0.85rem;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 999px;
+  color: #fff;
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.site-header__cart b {
+  display: grid;
+  place-items: center;
+  min-width: 1.35rem;
+  height: 1.35rem;
+  border-radius: 999px;
+  background: var(--orange);
+}
+
+@media (max-width: 980px) {
+  .site-header {
+    height: auto;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    padding: 1rem;
+  }
+
+  .site-header__nav {
+    order: 3;
+    flex: 1 0 100%;
+    justify-content: flex-start;
+    overflow: auto;
+    padding-bottom: 0.25rem;
+  }
+
+  .site-header__link.is-current::after {
+    bottom: -0.45rem;
+  }
+}
