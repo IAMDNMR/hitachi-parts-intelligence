@@ -91,6 +91,34 @@ function loadCart() {
 
 export function PartsStore({ onHome }) {
   const products = useMemo(productRecords, [])
+  // Neo4j enrichment for the catalogue above — additive only. Keyed by Part
+  // Number, the one identifier both sides share reliably; see
+  // api/_lib/enrichment.js for why fuzzy matching is never used here. An
+  // empty object (the initial state, and what stays in place if the fetch
+  // fails) means every part renders exactly as it always has — enrichment
+  // is optional, never load-bearing.
+  const [enrichment, setEnrichment] = useState({})
+
+  useEffect(() => {
+    let cancelled = false
+    fetch('/api/part-enrichment')
+      .then((res) => {
+        if (!res.ok) throw new Error(`/api/part-enrichment responded ${res.status}`)
+        return res.json()
+      })
+      .then((data) => {
+        if (!cancelled) setEnrichment(data.enrichment || {})
+      })
+      .catch(() => {
+        // Silent by design: Neo4j being unreachable is not a Parts Store
+        // error, so it gets none of the fallback-notice UI the enrichment
+        // itself would need. The catalogue already works without it.
+      })
+    return () => {
+      cancelled = true
+    }
+  }, [])
+
   const [query, setQuery] = useState('')
   const [machineType, setMachineType] = useState('')
   const [machineId, setMachineId] = useState('')
@@ -316,6 +344,7 @@ export function PartsStore({ onHome }) {
       {detail && (
         <DetailDrawer
           product={products.find((p) => p.id === detail)}
+          enrichment={enrichment}
           cart={cart}
           setCart={setCart}
           selectedMachine={selectedMachine}
@@ -360,8 +389,12 @@ function ProductCard({ product, selectedMachine, onDetail, onCart }) {
   )
 }
 
-function DetailDrawer({ product, cart, setCart, selectedMachine, onClose }) {
+function DetailDrawer({ product, enrichment, cart, setCart, selectedMachine, onClose }) {
   const rel = relationshipFor(product, selectedMachine)
+  // Exact Part Number match only — see api/_lib/enrichment.js. A part with
+  // no partNumber, or one Neo4j has no fitment data for, simply has nothing
+  // here; the rest of this drawer is unaffected either way.
+  const verified = product.partNumber ? enrichment?.[product.partNumber] : null
   return (
     <div className="ps-drawer" role="dialog" aria-modal="true">
       <button type="button" className="ps-drawer__close" onClick={onClose}>Close</button>
@@ -386,6 +419,12 @@ function DetailDrawer({ product, cart, setCart, selectedMachine, onClose }) {
             <dt>Relationship level</dt><dd>{levelLabel[rel.level]}</dd>
             <dt>Availability</dt><dd>Quote required. No live stock feed.</dd>
             <dt>Price</dt><dd>Not supplied</dd>
+            {verified && (
+              <>
+                <dt>Compatible machines (verified)</dt>
+                <dd>{verified.compatibleMachines.map((m) => m.model).join(', ')}</dd>
+              </>
+            )}
           </dl>
           <button type="button" onClick={() => setCart([...cart, { id: product.id, name: product.name, qty: 1, machine: selectedMachine?.model || null }])}>Add to quote request</button>
         </article>

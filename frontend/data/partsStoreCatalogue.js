@@ -413,17 +413,24 @@ const newFamilyParts = [
     category: 'Hydraulics',
     type: 'Control Valve',
     description: 'Precision hydraulic manifold block assembly with solenoid valves, pressure relief valves, and high-pressure ports. Manages oil distribution to boom, arm, bucket, and swing circuits.',
-    source: 'Hitachi Construction Machinery / Zaxis-7 Excavators',
+    source: 'Internally generated — not an HCME publication (see neo4j SRC-048)',
     image: hitachi_hydraulic_control_valveImage,
-    imageSource: 'Hitachi Construction Machinery / OEM Precision Hydraulic Main Control Valve Block',
+    imageSource: 'Internally sourced image — not official Hitachi/HCME publication photography',
     attributes: ['genuine', 'precision-engineered', 'available'],
     recordClass: 'ORDERABLE_OEM_PART',
     fitment: [
-      { machineId: 'MC-027', model: 'ZX210LC-7', level: 'MODEL/RANGE' },
-      { machineId: 'MC-029', model: 'ZX225USR-7', level: 'MODEL/RANGE' },
-      { machineId: 'MC-030', model: 'ZX250LC-7', level: 'MODEL/RANGE' },
-      { machineId: 'MC-032', model: 'ZX300LC-7', level: 'MODEL/RANGE' },
-      { machineId: 'MC-035', model: 'ZX350LC-7', level: 'MODEL/RANGE' },
+      // Machine IDs verified directly against data/machineCatalogue.js — the
+      // original 5 (MC-027, MC-029, MC-030, MC-032, MC-035) did not actually
+      // correspond to the ZX210LC-7/ZX225USR-7/ZX250LC-7/ZX300LC-7/ZX350LC-7
+      // models named below; these are the correct machine IDs for those
+      // models, matching neo4j/scripts/relabel_internal_parts.py.
+      { machineId: 'MC-033', model: 'ZX210LC-7', level: 'MODEL/RANGE' },
+      { machineId: 'MC-036', model: 'ZX225USR-7', level: 'MODEL/RANGE' },
+      { machineId: 'MC-037', model: 'ZX250LC-7', level: 'MODEL/RANGE' },
+      { machineId: 'MC-038', model: 'ZX300LC-7', level: 'MODEL/RANGE' },
+      { machineId: 'MC-039', model: 'ZX350-7G', level: 'MODEL/RANGE' },
+      { machineId: 'MC-040', model: 'ZX350LC-7', level: 'MODEL/RANGE' },
+      { machineId: 'MC-041', model: 'ZX375US-7', level: 'MODEL/RANGE' },
     ],
   },
   {
@@ -434,17 +441,24 @@ const newFamilyParts = [
     category: 'Hydraulics',
     type: 'Hydraulic Pump',
     description: 'Dual variable-displacement axial piston hydraulic pump assembly (HPV118DW series). Generates high-pressure hydraulic flow up to 380 bar with electronic flow regulator.',
-    source: 'Hitachi Construction Machinery / Zaxis-7 Excavators',
+    source: 'Internally generated — not an HCME publication (see neo4j SRC-048)',
     image: hitachi_main_hydraulic_pumpImage,
-    imageSource: 'Hitachi Construction Machinery / Dual Axial Piston Main Hydraulic Pump (HPV118DW)',
+    imageSource: 'Internally sourced image — not official Hitachi/HCME publication photography',
     attributes: ['genuine', 'high-pressure', 'available'],
     recordClass: 'ORDERABLE_OEM_PART',
     fitment: [
-      { machineId: 'MC-027', model: 'ZX210LC-7', level: 'MODEL/RANGE' },
-      { machineId: 'MC-029', model: 'ZX225USR-7', level: 'MODEL/RANGE' },
-      { machineId: 'MC-030', model: 'ZX250LC-7', level: 'MODEL/RANGE' },
-      { machineId: 'MC-032', model: 'ZX300LC-7', level: 'MODEL/RANGE' },
-      { machineId: 'MC-035', model: 'ZX350LC-7', level: 'MODEL/RANGE' },
+      // Machine IDs verified directly against data/machineCatalogue.js — the
+      // original 5 (MC-027, MC-029, MC-030, MC-032, MC-035) did not actually
+      // correspond to the ZX210LC-7/ZX225USR-7/ZX250LC-7/ZX300LC-7/ZX350LC-7
+      // models named below; these are the correct machine IDs for those
+      // models, matching neo4j/scripts/relabel_internal_parts.py.
+      { machineId: 'MC-033', model: 'ZX210LC-7', level: 'MODEL/RANGE' },
+      { machineId: 'MC-036', model: 'ZX225USR-7', level: 'MODEL/RANGE' },
+      { machineId: 'MC-037', model: 'ZX250LC-7', level: 'MODEL/RANGE' },
+      { machineId: 'MC-038', model: 'ZX300LC-7', level: 'MODEL/RANGE' },
+      { machineId: 'MC-039', model: 'ZX350-7G', level: 'MODEL/RANGE' },
+      { machineId: 'MC-040', model: 'ZX350LC-7', level: 'MODEL/RANGE' },
+      { machineId: 'MC-041', model: 'ZX375US-7', level: 'MODEL/RANGE' },
     ],
   },
   {
@@ -455,17 +469,24 @@ const newFamilyParts = [
     category: 'Engine',
     type: 'Engine Assembly',
     description: 'Complete Stage V emission-compliant 6-cylinder turbocharged common-rail industrial diesel engine assembly. High torque output and optimized fuel economy.',
-    source: 'Hitachi Construction Machinery / Zaxis-7 Excavators',
+    source: 'Internally generated — not an HCME publication (see neo4j SRC-048)',
     image: hitachi_stagev_diesel_engineImage,
-    imageSource: 'Hitachi Construction Machinery / Stage V 6-Cylinder Turbocharged Industrial Diesel Engine',
+    imageSource: 'Internally sourced image — not official Hitachi/HCME publication photography',
     attributes: ['genuine', 'high-torque', 'available'],
     recordClass: 'ORDERABLE_OEM_PART',
     fitment: [
-      { machineId: 'MC-027', model: 'ZX210LC-7', level: 'MODEL/RANGE' },
-      { machineId: 'MC-029', model: 'ZX225USR-7', level: 'MODEL/RANGE' },
-      { machineId: 'MC-030', model: 'ZX250LC-7', level: 'MODEL/RANGE' },
-      { machineId: 'MC-032', model: 'ZX300LC-7', level: 'MODEL/RANGE' },
-      { machineId: 'MC-035', model: 'ZX350LC-7', level: 'MODEL/RANGE' },
+      // Machine IDs verified directly against data/machineCatalogue.js — the
+      // original 5 (MC-027, MC-029, MC-030, MC-032, MC-035) did not actually
+      // correspond to the ZX210LC-7/ZX225USR-7/ZX250LC-7/ZX300LC-7/ZX350LC-7
+      // models named below; these are the correct machine IDs for those
+      // models, matching neo4j/scripts/relabel_internal_parts.py.
+      { machineId: 'MC-033', model: 'ZX210LC-7', level: 'MODEL/RANGE' },
+      { machineId: 'MC-036', model: 'ZX225USR-7', level: 'MODEL/RANGE' },
+      { machineId: 'MC-037', model: 'ZX250LC-7', level: 'MODEL/RANGE' },
+      { machineId: 'MC-038', model: 'ZX300LC-7', level: 'MODEL/RANGE' },
+      { machineId: 'MC-039', model: 'ZX350-7G', level: 'MODEL/RANGE' },
+      { machineId: 'MC-040', model: 'ZX350LC-7', level: 'MODEL/RANGE' },
+      { machineId: 'MC-041', model: 'ZX375US-7', level: 'MODEL/RANGE' },
     ],
   },
   {
@@ -476,17 +497,24 @@ const newFamilyParts = [
     category: 'Drivetrain',
     type: 'Swing Bearing',
     description: 'Massive precision machined steel slewing ring gear assembly with internal gear teeth and induction-hardened raceways. Connects upperstructure to lower frame under heavy load.',
-    source: 'Hitachi Construction Machinery / Zaxis-7 Excavators',
+    source: 'Internally generated — not an HCME publication (see neo4j SRC-048)',
     image: hitachi_swing_bearingImage,
-    imageSource: 'Hitachi Construction Machinery / Precision Internal Gear Slewing Ring Bearing',
+    imageSource: 'Internally sourced image — not official Hitachi/HCME publication photography',
     attributes: ['genuine', 'heavy-duty', 'available'],
     recordClass: 'ORDERABLE_OEM_PART',
     fitment: [
-      { machineId: 'MC-027', model: 'ZX210LC-7', level: 'MODEL/RANGE' },
-      { machineId: 'MC-029', model: 'ZX225USR-7', level: 'MODEL/RANGE' },
-      { machineId: 'MC-030', model: 'ZX250LC-7', level: 'MODEL/RANGE' },
-      { machineId: 'MC-032', model: 'ZX300LC-7', level: 'MODEL/RANGE' },
-      { machineId: 'MC-035', model: 'ZX350LC-7', level: 'MODEL/RANGE' },
+      // Machine IDs verified directly against data/machineCatalogue.js — the
+      // original 5 (MC-027, MC-029, MC-030, MC-032, MC-035) did not actually
+      // correspond to the ZX210LC-7/ZX225USR-7/ZX250LC-7/ZX300LC-7/ZX350LC-7
+      // models named below; these are the correct machine IDs for those
+      // models, matching neo4j/scripts/relabel_internal_parts.py.
+      { machineId: 'MC-033', model: 'ZX210LC-7', level: 'MODEL/RANGE' },
+      { machineId: 'MC-036', model: 'ZX225USR-7', level: 'MODEL/RANGE' },
+      { machineId: 'MC-037', model: 'ZX250LC-7', level: 'MODEL/RANGE' },
+      { machineId: 'MC-038', model: 'ZX300LC-7', level: 'MODEL/RANGE' },
+      { machineId: 'MC-039', model: 'ZX350-7G', level: 'MODEL/RANGE' },
+      { machineId: 'MC-040', model: 'ZX350LC-7', level: 'MODEL/RANGE' },
+      { machineId: 'MC-041', model: 'ZX375US-7', level: 'MODEL/RANGE' },
     ],
   },
   {
@@ -497,17 +525,24 @@ const newFamilyParts = [
     category: 'Drivetrain',
     type: 'Travel Motor',
     description: 'Integrated axial piston travel motor with multi-stage planetary gear reduction box. Provides high tractive torque and dual-speed travel for crawler excavator undercarriages.',
-    source: 'Hitachi Construction Machinery / Zaxis-7 Excavators',
+    source: 'Internally generated — not an HCME publication (see neo4j SRC-048)',
     image: hitachi_final_drive_motorImage,
-    imageSource: 'Hitachi Construction Machinery / Planetary Gearbox Final Drive Travel Motor',
+    imageSource: 'Internally sourced image — not official Hitachi/HCME publication photography',
     attributes: ['genuine', 'high-torque', 'available'],
     recordClass: 'ORDERABLE_OEM_PART',
     fitment: [
-      { machineId: 'MC-027', model: 'ZX210LC-7', level: 'MODEL/RANGE' },
-      { machineId: 'MC-029', model: 'ZX225USR-7', level: 'MODEL/RANGE' },
-      { machineId: 'MC-030', model: 'ZX250LC-7', level: 'MODEL/RANGE' },
-      { machineId: 'MC-032', model: 'ZX300LC-7', level: 'MODEL/RANGE' },
-      { machineId: 'MC-035', model: 'ZX350LC-7', level: 'MODEL/RANGE' },
+      // Machine IDs verified directly against data/machineCatalogue.js — the
+      // original 5 (MC-027, MC-029, MC-030, MC-032, MC-035) did not actually
+      // correspond to the ZX210LC-7/ZX225USR-7/ZX250LC-7/ZX300LC-7/ZX350LC-7
+      // models named below; these are the correct machine IDs for those
+      // models, matching neo4j/scripts/relabel_internal_parts.py.
+      { machineId: 'MC-033', model: 'ZX210LC-7', level: 'MODEL/RANGE' },
+      { machineId: 'MC-036', model: 'ZX225USR-7', level: 'MODEL/RANGE' },
+      { machineId: 'MC-037', model: 'ZX250LC-7', level: 'MODEL/RANGE' },
+      { machineId: 'MC-038', model: 'ZX300LC-7', level: 'MODEL/RANGE' },
+      { machineId: 'MC-039', model: 'ZX350-7G', level: 'MODEL/RANGE' },
+      { machineId: 'MC-040', model: 'ZX350LC-7', level: 'MODEL/RANGE' },
+      { machineId: 'MC-041', model: 'ZX375US-7', level: 'MODEL/RANGE' },
     ],
   },
   {

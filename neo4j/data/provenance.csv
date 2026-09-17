@@ -46,3 +46,4 @@ SRC-044,Hitachi Construction Machinery,Login-gated application,Global e-Service,
 SRC-045,HCME,Login-gated application,HCME Webshop,All,Parts ordering - ACCESS RESTRICTED (login/register required),2026-09-10,No
 SRC-046,HCME,Login-gated application,HCME Dealer Portal,All,Dealer systems - ACCESS RESTRICTED (login required),2026-09-10,No
 SRC-047,HCME,Official robots.txt,robots.txt,All,Crawl policy verification,2026-09-10,Yes
+SRC-048,Internal (HCME After-Sales Parts Store),Internally generated / AI-illustrated — not an HCME publication,N/A — not sourced from a published HCME page,Zaxis-7 Excavators,Parts catalogue — internally added concept components,2026-09-17,No
