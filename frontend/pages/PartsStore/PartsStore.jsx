@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { Fragment, useEffect, useMemo, useState } from 'react'
 import './PartsStore.css'
 
 import { partsStoreCatalogue } from '../../data/partsStoreCatalogue'
@@ -71,6 +71,33 @@ function normalize(text) {
 // for an exact single machine (that rule doesn't hold across a whole type).
 function matchesMachineType(part, machineIds) {
   return Boolean(part.fitment && part.fitment.some((f) => machineIds.has(f.machineId)))
+}
+
+/**
+ * The real compatible-machine list for a part, grouped by the fitment
+ * evidence level, for display when no specific machine is selected. Before
+ * this, the drawer's only compatibility line was "Select a machine to check
+ * applicability" even for parts (most attachments, for instance) that
+ * already carry a full fitment array — real data sitting unused because the
+ * UI only ever read it against one chosen machine. Nothing here invents a
+ * fitment fact: it only reads the array that was already there and resolves
+ * each machineId to its real model via MACHINES. A part with no fitment
+ * array at all still gets nothing here — that stays a genuine gap, not a
+ * guess.
+ */
+function fitmentSummary(product) {
+  if (!product.fitment || product.fitment.length === 0) return null
+  const byLevel = { 'EXACT MODEL': [], 'MODEL/RANGE': [], CATEGORY: [] }
+  for (const f of product.fitment) {
+    const machine = MACHINES.find((m) => m.id === f.machineId)
+    if (machine && byLevel[f.level]) byLevel[f.level].push(machine.model)
+  }
+  const groups = [
+    { label: 'Exact model', models: byLevel['EXACT MODEL'] },
+    { label: 'Model range', models: byLevel['MODEL/RANGE'] },
+    { label: 'Category-level', models: byLevel.CATEGORY },
+  ].filter((g) => g.models.length > 0)
+  return groups.length > 0 ? groups : null
 }
 
 function productRecords() {
@@ -395,6 +422,12 @@ function DetailDrawer({ product, enrichment, cart, setCart, selectedMachine, onC
   // no partNumber, or one Neo4j has no fitment data for, simply has nothing
   // here; the rest of this drawer is unaffected either way.
   const verified = product.partNumber ? enrichment?.[product.partNumber] : null
+  // Without a selected machine, rel.text is just "Select a machine to check
+  // applicability" — true, but it throws away a real fitment array if the
+  // part has one (most attachments and non-showcase parts do). Show that
+  // real list instead when it exists; the per-machine relationshipFor
+  // behaviour is untouched once a machine actually is selected.
+  const summary = !selectedMachine ? fitmentSummary(product) : null
   return (
     <div className="ps-drawer" role="dialog" aria-modal="true">
       <button type="button" className="ps-drawer__close" onClick={onClose}>Close</button>
@@ -415,8 +448,19 @@ function DetailDrawer({ product, enrichment, cart, setCart, selectedMachine, onC
             <dt>Category</dt><dd>{product.category}</dd>
             {product.type && <><dt>Part type</dt><dd>{product.type}</dd></>}
             <dt>Part number</dt><dd>{product.partNumber || 'Not supplied'}</dd>
-            <dt>Compatibility</dt><dd>{rel.text}</dd>
-            <dt>Relationship level</dt><dd>{levelLabel[rel.level]}</dd>
+            {summary ? (
+              summary.map((g) => (
+                <Fragment key={g.label}>
+                  <dt>Compatible machines ({g.label})</dt>
+                  <dd>{g.models.join(', ')}</dd>
+                </Fragment>
+              ))
+            ) : (
+              <>
+                <dt>Compatibility</dt><dd>{rel.text}</dd>
+                <dt>Relationship level</dt><dd>{levelLabel[rel.level]}</dd>
+              </>
+            )}
             <dt>Availability</dt><dd>Quote required. No live stock feed.</dd>
             <dt>Price</dt><dd>Not supplied</dd>
             {verified && (
