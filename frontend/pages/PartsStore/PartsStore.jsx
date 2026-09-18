@@ -1,10 +1,11 @@
-import { Fragment, useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import './PartsStore.css'
 
 import { partsStoreCatalogue } from '../../data/partsStoreCatalogue'
-import { FRAMES_PER_PART } from '../../data/partsCatalogue'
+import { FRAMES_PER_PART, partAttributes } from '../../data/partsCatalogue'
 import { MACHINES, VISUAL_CATEGORIES } from '../../data/machineCatalogue'
 import { PartIcon } from '../../sections/PartsShowcase/PartIcons'
+import { DetailIcon } from './DetailIcons'
 import { groupForCategory, levelLabel, relationshipFor } from './compatibility'
 import { SiteHeader } from '../../components/SiteHeader/SiteHeader'
 
@@ -428,50 +429,128 @@ function DetailDrawer({ product, enrichment, cart, setCart, selectedMachine, onC
   // real list instead when it exists; the per-machine relationshipFor
   // behaviour is untouched once a machine actually is selected.
   const summary = !selectedMachine ? fitmentSummary(product) : null
+
+  // One real photo per part today (partsStoreCatalogue.js has never carried
+  // more than one) — `images` stays an array so a future part with a real
+  // multi-angle set renders a thumbnail strip automatically, without this
+  // needing to change. Nothing here invents extra angles from one photo.
+  const images = product.image ? [product.image] : []
+
+  const compatibilityFacts = summary
+    ? summary.map((g) => ({ key: g.label, label: `Compatible machines (${g.label})`, value: g.models.join(', ') }))
+    : [
+        { key: 'compat', label: 'Compatibility', value: rel.text },
+        { key: 'level', label: 'Relationship level', value: levelLabel[rel.level] },
+      ]
+
+  const facts = [
+    { key: 'category', icon: 'category', label: 'Category', value: product.category },
+    ...(product.type ? [{ key: 'type', icon: 'category', label: 'Part type', value: product.type }] : []),
+    { key: 'partNumber', icon: 'partNumber', label: 'Part number', value: product.partNumber || 'Not supplied' },
+    ...compatibilityFacts.map((f) => ({ ...f, icon: 'compatibility' })),
+    ...(verified
+      ? [{
+          key: 'verified',
+          icon: 'compatibility',
+          label: 'Compatible machines (verified)',
+          value: verified.compatibleMachines.map((m) => m.model).join(', '),
+        }]
+      : []),
+    { key: 'availability', icon: 'availability', label: 'Availability', value: 'Quote required. No live stock feed.' },
+    // Genuine Hitachi OEM parts are priced through an authorised dealer, not
+    // published publicly (hitachicm.com's own parts pages carry none) — see
+    // the commit that added this drawer for how that was checked, not
+    // assumed. "Not supplied" states that plainly rather than leaving it to
+    // look like an oversight.
+    { key: 'price', icon: 'price', label: 'Price', value: 'Not supplied — genuine parts are dealer-quoted, not publicly listed' },
+  ]
+
   return (
-    <div className="ps-drawer" role="dialog" aria-modal="true">
-      <button type="button" className="ps-drawer__close" onClick={onClose}>Close</button>
-      <h2>{product?.name}</h2>
-      <div className="ps-drawer__grid">
-        <article>
-          {product.image ? (
-            <img src={product.image} alt={product.name} />
-          ) : (
-            <span className="ps-card__pending">
-              <PartIcon name="tag" size={22} />
-              Visual pending
-            </span>
-          )}
-          <h3>{product.name}</h3>
-          <p>{product.description}</p>
-          <dl>
-            <dt>Category</dt><dd>{product.category}</dd>
-            {product.type && <><dt>Part type</dt><dd>{product.type}</dd></>}
-            <dt>Part number</dt><dd>{product.partNumber || 'Not supplied'}</dd>
-            {summary ? (
-              summary.map((g) => (
-                <Fragment key={g.label}>
-                  <dt>Compatible machines ({g.label})</dt>
-                  <dd>{g.models.join(', ')}</dd>
-                </Fragment>
-              ))
-            ) : (
-              <>
-                <dt>Compatibility</dt><dd>{rel.text}</dd>
-                <dt>Relationship level</dt><dd>{levelLabel[rel.level]}</dd>
-              </>
+    <div className="ps-modal-overlay" role="presentation" onClick={onClose}>
+      <div className="ps-modal" role="dialog" aria-modal="true" onClick={(event) => event.stopPropagation()}>
+        <button type="button" className="ps-modal__close" onClick={onClose} aria-label="Close">×</button>
+
+        <header className="ps-modal__header">
+          <p className="ps-modal__eyebrow">Part details</p>
+          <h2 className="ps-modal__title">{product?.name}</h2>
+          <p className="ps-modal__lede">{product.description}</p>
+        </header>
+
+        <div className="ps-modal__body">
+          <div className="ps-modal__media">
+            <div className="ps-modal__image">
+              {images.length > 0 ? (
+                <img src={images[0]} alt={product.name} />
+              ) : (
+                <span className="ps-card__pending">
+                  <PartIcon name="tag" size={22} />
+                  Visual pending
+                </span>
+              )}
+            </div>
+
+            {images.length > 1 && (
+              <div className="ps-modal__thumbs">
+                {images.map((src, i) => (
+                  <button type="button" key={src} className={i === 0 ? 'is-active' : undefined}>
+                    <img src={src} alt="" />
+                  </button>
+                ))}
+              </div>
             )}
-            <dt>Availability</dt><dd>Quote required. No live stock feed.</dd>
-            <dt>Price</dt><dd>Not supplied</dd>
-            {verified && (
-              <>
-                <dt>Compatible machines (verified)</dt>
-                <dd>{verified.compatibleMachines.map((m) => m.model).join(', ')}</dd>
-              </>
+
+            {product.attributes?.length > 0 && (
+              <ul className="ps-modal__attrs">
+                {product.attributes.map((key) => {
+                  const attr = partAttributes[key]
+                  if (!attr) return null
+                  return (
+                    <li key={key}>
+                      <PartIcon name={attr.icon} size={18} />
+                      <span>{attr.label}</span>
+                    </li>
+                  )
+                })}
+              </ul>
             )}
-          </dl>
-          <button type="button" onClick={() => setCart([...cart, { id: product.id, name: product.name, qty: 1, machine: selectedMachine?.model || null }])}>Add to quote request</button>
-        </article>
+          </div>
+
+          <div className="ps-modal__info">
+            <h3>Key information</h3>
+            <ul className="ps-modal__facts">
+              {facts.map((f) => (
+                <li key={f.key}>
+                  <span className="ps-modal__fact-icon"><DetailIcon name={f.icon} size={18} /></span>
+                  <span className="ps-modal__fact-text">
+                    <strong>{f.label}</strong>
+                    <span>{f.value}</span>
+                  </span>
+                </li>
+              ))}
+            </ul>
+
+            <div className="ps-modal__help">
+              <DetailIcon name="help" size={20} />
+              <div>
+                <strong>Need help finding the right part?</strong>
+                <p>Select a machine model or contact us for expert support.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <footer className="ps-modal__footer">
+          <div className="ps-modal__brand">
+            <strong>HITACHI</strong>
+            <span>Genuine parts<br />Greater uptime</span>
+          </div>
+          <button
+            type="button"
+            onClick={() => setCart([...cart, { id: product.id, name: product.name, qty: 1, machine: selectedMachine?.model || null }])}
+          >
+            Add to quote request →
+          </button>
+        </footer>
       </div>
     </div>
   )

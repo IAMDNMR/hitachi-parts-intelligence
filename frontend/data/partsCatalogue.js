@@ -247,4 +247,11 @@ export const partAttributes = {
   durable: { label: 'Durable', icon: 'durable' },
   serviceable: { label: 'Serviceable', icon: 'serviceable' },
   available: { label: 'Available', icon: 'available' },
+  // Added alongside PT-044..048 (neo4j/scripts/relabel_internal_parts.py),
+  // the first parts to use attribute keys outside the original five.
+  genuine: { label: 'Genuine OEM', icon: 'genuine' },
+  'heavy-duty': { label: 'Heavy-duty', icon: 'heavyduty' },
+  'high-pressure': { label: 'High-pressure', icon: 'highpressure' },
+  'high-torque': { label: 'High-torque', icon: 'hightorque' },
+  'precision-engineered': { label: 'Precision-engineered', icon: 'precision' },
 }
