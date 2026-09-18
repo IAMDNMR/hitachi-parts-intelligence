@@ -676,6 +676,262 @@
   padding: 0.85rem 1.4rem;
 }
 
+.ps-modal button:not(.ps-modal__close):disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Quote cart panel and request form — the same modal shell as Quick View,
+   just narrower, since neither needs a two-column body. */
+.ps-modal--narrow {
+  width: min(520px, 100%);
+}
+
+.ps-quote-cart-list {
+  display: grid;
+  gap: 0;
+  margin: 1rem 0 0;
+  padding: 0;
+  list-style: none;
+  border: 1px solid rgba(15, 23, 42, 0.1);
+  border-radius: 1rem;
+  overflow: hidden;
+}
+
+.ps-quote-cart-list li {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.6rem 0.9rem;
+}
+
+.ps-quote-cart-list li + li {
+  border-top: 1px solid rgba(15, 23, 42, 0.08);
+}
+
+.ps-quote-cart-list__image {
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  width: 2.6rem;
+  height: 2.6rem;
+  border-radius: 0.5rem;
+  background: #f6f7f9;
+  color: #9aa3b2;
+  overflow: hidden;
+}
+
+.ps-quote-cart-list__image img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.ps-quote-cart-list__info {
+  display: grid;
+  gap: 0.1rem;
+  flex: 1;
+  min-width: 0;
+}
+
+.ps-quote-cart-list__info strong {
+  color: #101725;
+  font-size: 0.86rem;
+  font-weight: 700;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ps-quote-cart-list__info small {
+  color: #8a93a3;
+  font-size: 0.74rem;
+  font-weight: 600;
+}
+
+.ps-modal button.ps-quote-cart-list__remove {
+  flex: 0 0 auto;
+  border: 0;
+  background: none;
+  color: #ff5a1f;
+  font-size: 0.72rem;
+  font-weight: 800;
+  cursor: pointer;
+  padding: 0.3rem 0.2rem;
+}
+
+.ps-modal button.ps-modal__secondary {
+  border: 1px solid rgba(15, 23, 42, 0.14);
+  background: #fff;
+  color: #172033;
+}
+
+/* Quantity stepper — used both in Quick View (full size) and the cart list
+   (compact). One control, two sizes, matching "clean, not excessive". */
+.ps-qty-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(15, 23, 42, 0.08);
+  color: #172033;
+  font-size: 0.86rem;
+  font-weight: 800;
+}
+
+.ps-qty {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7rem;
+  border: 1px solid rgba(15, 23, 42, 0.14);
+  border-radius: 999px;
+  padding: 0.3rem 0.5rem;
+}
+
+.ps-qty span[aria-live] {
+  min-width: 1.1rem;
+  text-align: center;
+  font-weight: 800;
+  color: #101725;
+}
+
+.ps-modal .ps-qty button {
+  display: grid;
+  place-items: center;
+  width: 1.6rem;
+  height: 1.6rem;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: #f3f4f6;
+  color: #172033;
+  font-size: 1rem;
+  font-weight: 800;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.ps-modal .ps-qty button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.ps-qty--compact {
+  flex: 0 0 auto;
+  gap: 0.4rem;
+  padding: 0.15rem 0.35rem;
+}
+
+.ps-modal .ps-qty--compact button {
+  width: 1.3rem;
+  height: 1.3rem;
+  font-size: 0.85rem;
+}
+
+.ps-qty--compact span[aria-live] {
+  font-size: 0.82rem;
+}
+
+.ps-quote-form {
+  display: grid;
+  gap: 0.85rem;
+  margin-top: 1rem;
+}
+
+.ps-quote-form__summary {
+  display: grid;
+  gap: 0.25rem;
+  margin: 0.9rem 0 0;
+  padding: 0.7rem 0.9rem;
+  list-style: none;
+  border-radius: 0.7rem;
+  background: #f6f7f9;
+  color: #475569;
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.ps-quote-form label {
+  display: grid;
+  gap: 0.3rem;
+  color: #172033;
+  font-size: 0.8rem;
+  font-weight: 800;
+}
+
+.ps-quote-form input,
+.ps-quote-form textarea {
+  border: 1px solid rgba(15, 23, 42, 0.14);
+  border-radius: 0.6rem;
+  padding: 0.65rem 0.8rem;
+  font-size: 0.9rem;
+  font-weight: 400;
+  color: #172033;
+  resize: vertical;
+}
+
+.ps-quote-form input[aria-invalid="true"] {
+  border-color: #c0362c;
+}
+
+.ps-quote-form__field-error {
+  color: #c0362c;
+  font-size: 0.76rem;
+  font-weight: 700;
+}
+
+.ps-quote-form__error {
+  margin: 0;
+  color: #c0362c;
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.ps-quote-form .ps-modal__footer {
+  margin-top: 0.4rem;
+}
+
+/* Success state — same modal shell, no close button, no backdrop click
+   (it closes itself a moment later). */
+.ps-modal--success {
+  text-align: center;
+  padding: 2.6rem 2rem;
+}
+
+.ps-modal--success .ps-modal__title {
+  margin-top: 0.3rem;
+}
+
+/* "Added to quote request" confirmation — a small toast, not a browser
+   alert, auto-dismissing on its own. */
+.ps-toast {
+  position: fixed;
+  left: 50%;
+  bottom: 2rem;
+  z-index: 70;
+  transform: translateX(-50%);
+  padding: 0.75rem 1.2rem;
+  border-radius: 999px;
+  background: #101725;
+  color: #fff;
+  font-size: 0.84rem;
+  font-weight: 700;
+  box-shadow: 0 18px 40px rgba(10, 14, 24, 0.3);
+  animation: ps-toast-in 220ms ease-out;
+}
+
+@keyframes ps-toast-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, 8px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+
 @media (max-width: 760px) {
   .ps-modal {
     padding: 1.6rem 1.4rem 1.4rem;

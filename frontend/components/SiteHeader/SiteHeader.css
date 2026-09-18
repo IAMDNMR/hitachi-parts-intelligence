@@ -103,9 +103,14 @@
   padding: 0.5rem 0.85rem;
   border: 1px solid rgba(255, 255, 255, 0.16);
   border-radius: 999px;
+  background: none;
   color: #fff;
   font-size: 0.78rem;
   font-weight: 800;
+}
+
+button.site-header__cart {
+  cursor: pointer;
 }
 
 .site-header__cart b {

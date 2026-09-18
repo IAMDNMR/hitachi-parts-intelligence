@@ -43,3 +43,21 @@ export async function withSession(work) {
     await session.close()
   }
 }
+
+/**
+ * Same as withSession, but for the handful of routes that actually write
+ * (today: quote-request.js, creating a PartsInquiry). Every other route in
+ * this project is read-only by design; this exists so that stays visible at
+ * a glance rather than every route defaulting to write access.
+ */
+export async function withWriteSession(work) {
+  const session = getDriver().session({
+    database: process.env.NEO4J_DATABASE || 'neo4j',
+    defaultAccessMode: neo4j.session.WRITE,
+  })
+  try {
+    return await work(session)
+  } finally {
+    await session.close()
+  }
+}

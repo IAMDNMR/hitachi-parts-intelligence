@@ -12,7 +12,7 @@ import './SiteHeader.css'
  * ordinary document flow. Everything else — markup, copy, colour, the nav
  * and cart — is identical.
  */
-export function SiteHeader({ position = 'fixed', current, cartCount = undefined, onBrandClick }) {
+export function SiteHeader({ position = 'fixed', current, cartCount = undefined, onBrandClick, onCartClick = undefined }) {
   const go = (event, hash) => {
     event.preventDefault()
     window.location.hash = hash
@@ -44,9 +44,15 @@ export function SiteHeader({ position = 'fixed', current, cartCount = undefined,
       </nav>
 
       {typeof cartCount === 'number' && (
-        <div className="site-header__cart" aria-label={`${cartCount} cart items`}>
-          Cart <b>{cartCount}</b>
-        </div>
+        onCartClick ? (
+          <button type="button" className="site-header__cart" aria-label={`${cartCount} cart items — open quote cart`} onClick={onCartClick}>
+            Cart <b>{cartCount}</b>
+          </button>
+        ) : (
+          <div className="site-header__cart" aria-label={`${cartCount} cart items`}>
+            Cart <b>{cartCount}</b>
+          </div>
+        )
       )}
     </header>
   )

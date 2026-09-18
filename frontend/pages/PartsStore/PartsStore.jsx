@@ -160,10 +160,26 @@ export function PartsStore({ onHome }) {
   const [view, setView] = useState('grid')
   const [detail, setDetail] = useState(null)
   const [cart, setCart] = useState(loadCart)
+  // Three small, independent states for the quote-request flow: which panel
+  // is open (cart list, or the customer-details form), and how the last
+  // submit attempt went (for the form's own inline feedback — 'sending' |
+  // 'error' | 'success' | null).
+  const [quoteCartOpen, setQuoteCartOpen] = useState(false)
+  const [quoteFormOpen, setQuoteFormOpen] = useState(false)
+  const [quoteStatus, setQuoteStatus] = useState(null)
+  // A small "Added to quote request" confirmation — cleared on its own
+  // after a couple of seconds, same pattern for whichever button set it.
+  const [toast, setToast] = useState(null)
 
   useEffect(() => {
     localStorage.setItem(CART_KEY, JSON.stringify(cart))
   }, [cart])
+
+  useEffect(() => {
+    if (!toast) return undefined
+    const timer = setTimeout(() => setToast(null), 2200)
+    return () => clearTimeout(timer)
+  }, [toast])
 
   const machineOptions = useMemo(
     () => MACHINES.filter((m) => !machineType || m.visualCategory === machineType),
@@ -223,17 +239,61 @@ export function PartsStore({ onHome }) {
     })
   }, [category, categoryExact, machineType, machineTypeIds, products, query, selectedMachine, sort])
 
-  const addToCart = (product) => {
+  // Single path for every "add" action on the page (product card, Quick
+  // View) — the card's default is qty=1; Quick View passes whatever its own
+  // quantity selector is set to. Adding a part already in the cart adds to
+  // its existing quantity rather than creating a second row.
+  const addToCart = (product, qty = 1) => {
     setCart((items) => {
       const existing = items.find((item) => item.id === product.id)
-      if (existing) return items.map((item) => item.id === product.id ? { ...item, qty: item.qty + 1 } : item)
-      return [...items, { id: product.id, name: product.name, qty: 1, machine: selectedMachine?.model || null }]
+      if (existing) return items.map((item) => item.id === product.id ? { ...item, qty: item.qty + qty } : item)
+      return [
+        ...items,
+        {
+          id: product.id,
+          name: product.name,
+          qty,
+          machine: selectedMachine?.model || null,
+          image: product.image || null,
+          // Carried through to /api/quote-request so a submitted inquiry
+          // can link back to the real Part node — see api/_lib/quoteRequest.js.
+          partNumber: product.partNumber || null,
+        },
+      ]
     })
+    setToast(`Added ${product.name} to quote request`)
   }
 
   const applyMachineType = (id) => {
     setMachineType(id)
     setMachineId('')
+  }
+
+  const submitQuoteRequest = async (details) => {
+    setQuoteStatus('sending')
+    try {
+      const res = await fetch('/api/quote-request', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...details, items: cart }),
+      })
+      if (!res.ok) throw new Error('request failed')
+      // Cleared immediately so the same items can't be submitted twice —
+      // the success message stays on screen briefly (QuoteRequestForm's
+      // own 'success' view) before everything closes.
+      setCart([])
+      setQuoteStatus('success')
+      setTimeout(() => {
+        setQuoteFormOpen(false)
+        setQuoteCartOpen(false)
+        setQuoteStatus(null)
+      }, 1600)
+    } catch {
+      // Neo4j being unreachable (or any other failure) never loses the
+      // cart or breaks the store — the form stays open with a plain error
+      // so the visitor can just try Send again.
+      setQuoteStatus('error')
+    }
   }
 
   return (
@@ -242,6 +302,7 @@ export function PartsStore({ onHome }) {
         position="sticky"
         current="parts-store"
         cartCount={cart.reduce((sum, item) => sum + item.qty, 0)}
+        onCartClick={() => setQuoteCartOpen(true)}
         onBrandClick={(event) => {
           event.preventDefault()
           onHome()
@@ -373,12 +434,34 @@ export function PartsStore({ onHome }) {
         <DetailDrawer
           product={products.find((p) => p.id === detail)}
           enrichment={enrichment}
-          cart={cart}
-          setCart={setCart}
           selectedMachine={selectedMachine}
+          onAddToCart={addToCart}
           onClose={() => setDetail(null)}
         />
       )}
+
+      {quoteCartOpen && !quoteFormOpen && (
+        <QuoteCartPanel
+          cart={cart}
+          setCart={setCart}
+          onClose={() => setQuoteCartOpen(false)}
+          onRequestQuote={() => setQuoteFormOpen(true)}
+        />
+      )}
+
+      {quoteFormOpen && (
+        <QuoteRequestForm
+          cart={cart}
+          status={quoteStatus}
+          onClose={() => {
+            setQuoteFormOpen(false)
+            setQuoteStatus(null)
+          }}
+          onSubmit={submitQuoteRequest}
+        />
+      )}
+
+      {toast && <div className="ps-toast" role="status">{toast}</div>}
     </main>
   )
 }
@@ -417,7 +500,8 @@ function ProductCard({ product, selectedMachine, onDetail, onCart }) {
   )
 }
 
-function DetailDrawer({ product, enrichment, cart, setCart, selectedMachine, onClose }) {
+function DetailDrawer({ product, enrichment, selectedMachine, onAddToCart, onClose }) {
+  const [qty, setQty] = useState(1)
   const rel = relationshipFor(product, selectedMachine)
   // Exact Part Number match only — see api/_lib/enrichment.js. A part with
   // no partNumber, or one Neo4j has no fitment data for, simply has nothing
@@ -539,18 +623,200 @@ function DetailDrawer({ product, enrichment, cart, setCart, selectedMachine, onC
           </div>
         </div>
 
+        <div className="ps-qty-row">
+          <span>Quantity</span>
+          <span className="ps-qty">
+            <button type="button" onClick={() => setQty((q) => Math.max(1, q - 1))} disabled={qty <= 1} aria-label="Decrease quantity">−</button>
+            <span aria-live="polite">{qty}</span>
+            <button type="button" onClick={() => setQty((q) => q + 1)} aria-label="Increase quantity">+</button>
+          </span>
+        </div>
+
         <footer className="ps-modal__footer">
           <div className="ps-modal__brand">
             <strong>HITACHI</strong>
             <span>Genuine parts<br />Greater uptime</span>
           </div>
-          <button
-            type="button"
-            onClick={() => setCart([...cart, { id: product.id, name: product.name, qty: 1, machine: selectedMachine?.model || null }])}
-          >
+          <button type="button" onClick={() => onAddToCart(product, qty)}>
             Add to quote request →
           </button>
         </footer>
+      </div>
+    </div>
+  )
+}
+
+/**
+ * The cart's own view — reachable now that the header's Cart badge is
+ * clickable (components/SiteHeader). Reuses the Quick View's modal shell
+ * (.ps-modal*) rather than a new visual system, per "use the existing
+ * UI/design wherever possible". Lists exactly what's already in `cart` —
+ * no price, no stock, nothing this project doesn't actually have.
+ */
+function QuoteCartPanel({ cart, setCart, onClose, onRequestQuote }) {
+  const removeItem = (id) => setCart(cart.filter((item) => item.id !== id))
+  const changeQty = (id, delta) =>
+    setCart(cart.map((item) => (item.id === id ? { ...item, qty: Math.max(1, item.qty + delta) } : item)))
+
+  return (
+    <div className="ps-modal-overlay" role="presentation" onClick={onClose}>
+      <div className="ps-modal ps-modal--narrow" role="dialog" aria-modal="true" onClick={(event) => event.stopPropagation()}>
+        <button type="button" className="ps-modal__close" onClick={onClose} aria-label="Close">×</button>
+        <header className="ps-modal__header">
+          <p className="ps-modal__eyebrow">Quote cart</p>
+          <h2 className="ps-modal__title">{cart.length === 0 ? 'No parts added yet' : `${cart.length} part${cart.length === 1 ? '' : 's'} added`}</h2>
+        </header>
+
+        {cart.length > 0 && (
+          <ul className="ps-quote-cart-list">
+            {cart.map((item) => (
+              <li key={item.id}>
+                <span className="ps-quote-cart-list__image">
+                  {item.image ? <img src={item.image} alt="" /> : <PartIcon name="tag" size={18} />}
+                </span>
+                <span className="ps-quote-cart-list__info">
+                  <strong>{item.name}</strong>
+                  <small>
+                    Part number: {item.partNumber || '—'}
+                    {item.machine && ` · For ${item.machine}`}
+                  </small>
+                </span>
+                <span className="ps-qty ps-qty--compact">
+                  <button type="button" onClick={() => changeQty(item.id, -1)} disabled={item.qty <= 1} aria-label={`Decrease quantity of ${item.name}`}>−</button>
+                  <span aria-live="polite">{item.qty}</span>
+                  <button type="button" onClick={() => changeQty(item.id, 1)} aria-label={`Increase quantity of ${item.name}`}>+</button>
+                </span>
+                <button type="button" className="ps-quote-cart-list__remove" onClick={() => removeItem(item.id)} aria-label={`Remove ${item.name}`}>Remove</button>
+              </li>
+            ))}
+          </ul>
+        )}
+
+        <footer className="ps-modal__footer">
+          <button type="button" className="ps-modal__secondary" onClick={onClose}>Keep browsing</button>
+          <button type="button" onClick={onRequestQuote} disabled={cart.length === 0}>Request Quote →</button>
+        </footer>
+      </div>
+    </div>
+  )
+}
+
+/**
+ * The customer-details form. Submitting calls /api/quote-request, which
+ * writes (:PartsInquiry)-[:REQUESTS]->(:RequestedPart)-[:FOR_PART]->(:Part)
+ * — see api/_lib/quoteRequest.js. Only name and email are required; phone
+ * and note are asked for but optional, since requiring them would block a
+ * real inquiry over information this project has no way to insist on.
+ */
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+
+/** Field-level validation — name/email/phone required, note is not. */
+function validateQuoteDetails({ name, email, phone }) {
+  const errors = {}
+  if (!name.trim()) errors.name = 'Name is required.'
+  if (!email.trim()) errors.email = 'Email is required.'
+  else if (!EMAIL_PATTERN.test(email.trim())) errors.email = 'Enter a valid email address.'
+  if (!phone.trim()) errors.phone = 'Phone is required.'
+  return errors
+}
+
+function QuoteRequestForm({ cart, status, onClose, onSubmit }) {
+  const [name, setName] = useState('')
+  const [email, setEmail] = useState('')
+  const [phone, setPhone] = useState('')
+  const [note, setNote] = useState('')
+  // Errors only ever show after the visitor has tried to submit once —
+  // showing "Name is required" before they've typed anything reads as the
+  // form scolding them for existing.
+  const [attempted, setAttempted] = useState(false)
+
+  const errors = validateQuoteDetails({ name, email, phone })
+  const hasErrors = Object.keys(errors).length > 0
+
+  const handleSubmit = (event) => {
+    event.preventDefault()
+    setAttempted(true)
+    if (hasErrors || cart.length === 0) return
+    onSubmit({ name, email, phone, note })
+  }
+
+  if (status === 'success') {
+    return (
+      <div className="ps-modal-overlay" role="presentation">
+        <div className="ps-modal ps-modal--narrow ps-modal--success" role="dialog" aria-modal="true">
+          <p className="ps-modal__eyebrow">Request quote</p>
+          <h2 className="ps-modal__title">Quote request sent</h2>
+          <p className="ps-modal__lede">We&rsquo;ve received your request and will be in touch shortly.</p>
+        </div>
+      </div>
+    )
+  }
+
+  return (
+    <div className="ps-modal-overlay" role="presentation" onClick={onClose}>
+      <div className="ps-modal ps-modal--narrow" role="dialog" aria-modal="true" onClick={(event) => event.stopPropagation()}>
+        <button type="button" className="ps-modal__close" onClick={onClose} aria-label="Close">×</button>
+        <header className="ps-modal__header">
+          <p className="ps-modal__eyebrow">Request quote</p>
+          <h2 className="ps-modal__title">Your details</h2>
+        </header>
+
+        <ul className="ps-quote-form__summary">
+          {cart.map((item) => (
+            <li key={item.id}>{item.name} × {item.qty}</li>
+          ))}
+        </ul>
+
+        <form className="ps-quote-form" onSubmit={handleSubmit} noValidate>
+          <label>
+            Name
+            <input
+              value={name}
+              onChange={(event) => setName(event.target.value)}
+              autoComplete="name"
+              aria-invalid={attempted && Boolean(errors.name)}
+            />
+            {attempted && errors.name && <span className="ps-quote-form__field-error">{errors.name}</span>}
+          </label>
+          <label>
+            Email
+            <input
+              type="email"
+              value={email}
+              onChange={(event) => setEmail(event.target.value)}
+              autoComplete="email"
+              aria-invalid={attempted && Boolean(errors.email)}
+            />
+            {attempted && errors.email && <span className="ps-quote-form__field-error">{errors.email}</span>}
+          </label>
+          <label>
+            Phone
+            <input
+              value={phone}
+              onChange={(event) => setPhone(event.target.value)}
+              autoComplete="tel"
+              aria-invalid={attempted && Boolean(errors.phone)}
+            />
+            {attempted && errors.phone && <span className="ps-quote-form__field-error">{errors.phone}</span>}
+          </label>
+          <label>
+            Purpose / Note
+            <textarea rows={3} value={note} onChange={(event) => setNote(event.target.value)} />
+          </label>
+
+          {status === 'error' && (
+            <p className="ps-quote-form__error">
+              We couldn&rsquo;t send your request right now. Please try again.
+            </p>
+          )}
+
+          <footer className="ps-modal__footer">
+            <button type="button" className="ps-modal__secondary" onClick={onClose}>Cancel</button>
+            <button type="submit" disabled={status === 'sending'}>
+              {status === 'sending' ? 'Sending…' : 'Send Request →'}
+            </button>
+          </footer>
+        </form>
       </div>
     </div>
   )
