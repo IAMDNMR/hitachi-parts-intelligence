@@ -42,12 +42,10 @@ Terminology (existing project terms): **REAL** · **SOURCE_DERIVED** · **DERIVE
 | **Critical paths** | PT-007: none | `Assembly.criticality = 'high'` | filter | count | Yes | **Yes** | **SYNTHETIC_DEMO** |
 | **Compliance status** | PT-007: GAPS_FOUND | `_COMPLIANCE_Q` | requirement without `HAS_CERTIFICATION` edge = gap | 3 states | Yes | **Yes** (except battery regulation) | SYNTHETIC_DEMO |
 | **Supplier risk** | NOT_CONNECTED | `_VERIFIED_PART_SUPPLIERS_Q` | real SAP links only → none exist | 2 states | Yes | No | NOT_CONNECTED (correct) |
-| **KPI: order traceability** | 2 of 5 (40 %) | `kpis.order_traceability` | orders with request+allocation+part+shipment+dealer+service link | 0–100 % | Yes | Yes (demo/test orders) | SYNTHETIC_DEMO / TEST_DATA |
+| **KPI: order traceability** | 2 of 2 (100 %), 3 test orders excluded | `kpis.order_traceability` | seeded demo orders (browser-test orders excluded) with request+allocation+part+shipment+dealer+service link | 0–100 % | Yes | Yes (demo/test orders) | SYNTHETIC_DEMO / TEST_DATA |
 | **KPI: master-data consistency** | 2,313 of 2,341 (98.8 %) | `kpis.master_data_consistency` | 7 completeness checks summed | 0–100 % | Yes | No | DERIVED (dominated by 1,720 suppliers) |
-| **KPI: supplier-to-part coverage** | 0 of 60 (0 %) | `kpis.supplier_part_coverage` | parts with a link to a real SAP supplier | 0–100 % | Yes | No | REAL (correctly 0) |
-| **KPI: share of orders with known status** | 6 of 6 (100 %) | `kpis.orders_with_known_status` | status ∈ {CREATED, ACCEPTED, CANCELLED} and lookup resolves | 0–100 % | Yes | Yes | SYNTHETIC_DEMO |
-| **KPI: stock-out exposure** (DEMO) | 29 of 60 (48.3 %) | `kpis.stock_out_exposure` | parts with no/zero demo snapshot | 0–100 % | Yes | **Yes** | **SYNTHETIC_DEMO — reflects the seed** |
-| **KPI: customs flag (rule check)** | 1 of 1 | `kpis.customs_flag_detection` | non-EU destination has `CustomsContext` | — | Yes | Yes | SYNTHETIC_DEMO |
+| **KPI: supplier-to-part coverage** | 0 of 60 real (0 %); demo links 60 of 60 shown separately | `kpis.supplier_part_coverage` | parts with a link to a real SAP supplier | 0–100 % | Yes | No | REAL (correctly 0) |
+| **KPI: stock-out exposure** (DEMO) | 6 of 37 (16.2 %) | `kpis.stock_out_exposure` | orderable parts (product-line families excluded) with no/zero demo snapshot | 0–100 % | Yes | **Yes** | **SYNTHETIC_DEMO — reflects the seed** |
 | **"Workflow Execution · 3.71s"** | 0.19–9 s | `pipeline.timings_ms` | wall-clock `perf_counter` | ≥ 0 | No (measured) | No | REAL (latency) |
 | **"answer by Gemini / graph rules"** | "answer by Gemini from graph evidence" | `pipeline.answer` | which writer produced the wording | 2 values | — | — | LLM_GENERATED **text only** (§6.6) |
 
@@ -153,6 +151,8 @@ systems (stock, price, orders, shipments, service). Operational data below is SY
 
 ## 5. KPI audit (what the UI can show)
 
+> **Update:** the panel now shows three headline KPIs (order traceability, master-data consistency, supplier-to-part coverage) plus one DEMO-only KPI (stock-out). "Share of orders with a known status" (always 100 %) and "Customs flag detection" (1 of 1) were removed as uninformative; test-session orders are excluded from traceability; stock-out excludes product-line family records; supplier coverage shows the real 0 % and the demo link coverage on a separate line.
+
 The KPI panel is the only place labelled "KPI". Frontend: `frontend/pages/PartsStore/PartsAnalysis.tsx` (`KpiPanel`) → `GET /api/v1/intelligence/kpis` →
 `backend/app/modules/intelligence/kpis.py::all_kpis`. All are deterministic Cypher + Python counts; **no weights; no LLM**.
 
@@ -161,9 +161,7 @@ The KPI panel is the only place labelled "KPI". Frontend: `frontend/pages/PartsS
 | Order traceability rate | Share of non-cancelled orders with a full chain | `_CHAIN_Q` (Order, FulfilmentRequest, Allocation, Part, Shipment, DealerBranch, ServiceJob) | `/kpis` | `numerator / denominator` | full = all six links present; cancelled excluded | none | 0–100 % | SYNTHETIC_DEMO / TEST_DATA |
 | Master-data consistency | Completeness of catalogue, dealer, supplier, machine links | `_MASTER_Q` | `/kpis` | `Σ passing / Σ total` over 7 checks | parts with name+category+source; parts with fitment; parts typed; dealers with coordinates; dealers linked to City/Country; SAP suppliers linked; machines typed | equal per record (so suppliers, 1,720 of 2,341, dominate) | 0–100 % | DERIVED |
 | Supplier-to-part coverage | Parts with a real supplier link | `_SUPPLIER_COVERAGE_Q` | `/kpis` | `with_real / parts` | `SUPPLIED_BY` to a `HCME_SAP_SUPPLIER_MASTER` supplier | none | 0–100 % | REAL (0 %) |
-| Share of orders with a known status | Orders whose status is valid and resolvable | `context.get_order_status` | `/kpis` | `known / orders` | status ∈ {CREATED, ACCEPTED, CANCELLED} | none | 0–100 % | SYNTHETIC_DEMO |
 | Stock-out exposure (DEMO) | Parts with no/zero stock | `_STOCK_Q` | `/kpis` | `no-stock / parts` | sum of snapshot quantities; parts with no snapshot count as no stock | none | 0–100 % | SYNTHETIC_DEMO |
-| Customs flag detection (rule check) | Non-EU shipments carrying customs context | `_CUSTOMS_Q` | `/kpis` | `flagged / needs` | destination ∉ EU27 and ≠ origin country | none | — | SYNTHETIC_DEMO |
 
 Removed earlier and **not** computed: order-status resolution time, cross-catalog matching accuracy.
 

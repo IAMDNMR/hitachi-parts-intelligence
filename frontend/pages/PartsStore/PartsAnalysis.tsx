@@ -230,10 +230,13 @@ interface Kpi {
   caveat?: string
   needs?: string | null
   demo_only?: boolean
+  excluded_test_orders?: number
+  demo_numerator?: number
+  demo_pct?: number | null
 }
 
 export function KpiPanel({ onClose }: { onClose: () => void }) {
-  const [d, setD] = useState<{ note: string; kpis: Kpi[]; demo_only: Kpi[]; rule_checks: Kpi[] } | null>(null)
+  const [d, setD] = useState<{ note: string; kpis: Kpi[]; demo_only: Kpi[] } | null>(null)
   const [err, setErr] = useState(false)
   useEffect(() => {
     let off = false
@@ -266,8 +269,6 @@ export function KpiPanel({ onClose }: { onClose: () => void }) {
           {d?.kpis.map((k) => <KpiCard key={k.kpi} k={k} />)}
           {d && d.demo_only.length > 0 && <h4 className="pix-kpi__group">Demo only</h4>}
           {d?.demo_only.map((k) => <KpiCard key={k.kpi} k={k} />)}
-          {d && d.rule_checks.length > 0 && <h4 className="pix-kpi__group">Rule checks (too little data to be a KPI)</h4>}
-          {d?.rule_checks.map((k) => <KpiCard key={k.kpi} k={k} />)}
         </div>
       </div>
     </div>
@@ -275,17 +276,23 @@ export function KpiPanel({ onClose }: { onClose: () => void }) {
 }
 
 function KpiCard({ k }: { k: Kpi }) {
+  const real = !k.demo_only && !(k.data_source ?? '').startsWith('SYNTHETIC')
   return (
     <div className={`pix-kpi ${k.demo_only ? 'pix-kpi--off' : ''}`}>
       <div className="pix-kpi__top">
-        <strong>{k.kpi}{k.demo_only ? ' (DEMO)' : ''}</strong>
+        <strong>{k.kpi}</strong>
         <span className="pix-kpi__val">{!k.measurable ? 'not measurable' : `${k.value_pct}%`}</span>
       </div>
       {k.numerator != null && k.denominator != null && <p className="pix-muted">{k.numerator} of {k.denominator}</p>}
-      <p className="pix-muted">Method: {k.method}</p>
-      {k.data_source && <p className="pix-muted">Data: {k.data_source}</p>}
-      {k.caveat && <p className="pix-muted">Caveat: {k.caveat}</p>}
-      {k.needs && <p className="pix-muted">Needs: {k.needs}</p>}
+      {k.demo_numerator != null && (
+        <p className="pix-muted">Demo supplier links (SYNTHETIC_DEMO): {k.demo_numerator} of {k.denominator} ({k.demo_pct}%)</p>
+      )}
+      <p className="pix-muted">{k.method}</p>
+      {k.excluded_test_orders ? <p className="pix-muted">{k.excluded_test_orders} test-session orders are not counted.</p> : null}
+      <p className="pix-kpi__basis">
+        <span className={`pix-chip ${real ? 'pix-chip--real' : 'pix-chip--demo'}`}>{real ? 'REAL data' : k.demo_only ? 'DEMO only' : 'SYNTHETIC_DEMO data'}</span>
+        {k.needs ? <span className="pix-muted"> Needs: {k.needs}</span> : null}
+      </p>
     </div>
   )
 }

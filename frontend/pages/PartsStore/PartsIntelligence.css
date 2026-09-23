@@ -1023,3 +1023,4 @@
 .pix-legend { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.5rem; }
 .pix-chip--off { background: #eceff3; color: #4b5563; border: 1px dashed #9aa3af; }
 .pix-prov--tab { padding: 0.5rem 1.4rem 0; }
+.pix-kpi__basis { display: flex; flex-wrap: wrap; gap: 0.4rem; align-items: center; margin: 0.4rem 0 0; }

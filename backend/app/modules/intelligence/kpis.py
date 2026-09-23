@@ -1,20 +1,15 @@
 """
-Parts Intelligence KPIs calculable from the CURRENT graph (Phase 11).
+Parts Intelligence KPIs calculable from the CURRENT graph.
 
-Each KPI returns numerator/denominator, method, data source (real vs SYNTHETIC_DEMO) and a `measurable` flag; a KPI the
-data cannot support is returned as measurable=false with the reason - never a made-up number.
+Headline KPIs: order traceability, master-data consistency, supplier-to-part coverage. `demo_only`: stock-out exposure.
+Each returns numerator/denominator, a short method, its data basis (REAL / SYNTHETIC_DEMO) and `measurable`; a KPI the data cannot support
+is returned as measurable=false with what it needs - never a made-up number.
 
-Headline KPIs: order traceability, master-data consistency, supplier-to-part coverage, share of orders with a known status.
-`demo_only`: stock-out exposure (demo stock covers only some parts). `rule_checks`: customs flag detection (too few shipments to headline).
-Removed: order-status resolution time (measured lookup speed, not a business outcome) and cross-catalog matching accuracy (one catalogue,
-no ground truth - it returns when a second catalogue and a labelled mapping exist).
+Removed from the panel because they carried no information on the current data: "share of orders with a known status" (always 100 %),
+"customs flag detection" (one demo shipment), order-status resolution time and cross-catalog matching accuracy.
 """
 from typing import Any, Dict
 
-from app.modules.intelligence import context as intelligence_context
-
-EU27 = {"AT", "BE", "BG", "HR", "CY", "CZ", "DK", "EE", "FI", "FR", "DE", "GR", "HU", "IE", "IT", "LV", "LT", "LU", "MT",
-        "NL", "PL", "PT", "RO", "SK", "SI", "ES", "SE"}
 
 _CHAIN_Q = """
 MATCH (o:Order) WHERE o.testRunId IS NULL
@@ -24,7 +19,7 @@ OPTIONAL MATCH (o)-[:FOR_PART]->(p:Part)
 OPTIONAL MATCH (o)-[:HAS_SHIPMENT]->(s:Shipment)
 OPTIONAL MATCH (s)-[:SHIPPED_TO]->(d:DealerBranch)
 OPTIONAL MATCH (s)-[:HAS_SERVICE_JOB]->(sj:ServiceJob)
-RETURN o.id AS id, o.status AS status, fr IS NOT NULL AS request, al IS NOT NULL AS allocation, p IS NOT NULL AS part,
+RETURN o.id AS id, o.status AS status, o.provenance AS provenance, fr IS NOT NULL AS request, al IS NOT NULL AS allocation, p IS NOT NULL AS part,
        s IS NOT NULL AS shipment, d IS NOT NULL AS dealer, sj IS NOT NULL AS service
 """
 
@@ -59,56 +54,30 @@ RETURN parts, with_any, with_real, sole, real_suppliers, real_linked
 """
 
 _STOCK_Q = """
-MATCH (p:Part) WHERE p.testRunId IS NULL AND p.part_id STARTS WITH 'PT-'
+MATCH (p:Part) WHERE p.testRunId IS NULL AND p.part_id STARTS WITH 'PT-' AND coalesce(p.record_class, '') <> 'PRODUCT_LINE_PART_FAMILY'
 CALL { WITH p OPTIONAL MATCH (p)-[:HAS_SYNTHETIC_INVENTORY]->(i:InventorySnapshot)
        RETURN sum(i.quantity) AS qty, count(i) AS snaps }
 RETURN p.part_id AS id, CASE WHEN snaps = 0 THEN null ELSE qty END AS qty,
        EXISTS { (:Assembly {criticality:'high'})-[:CONTAINS_PART]->(p) } AS critical
 """
 
-_CUSTOMS_Q = """
-MATCH (dep:Depot) WITH head(collect(dep.country)) AS origin
-MATCH (s:Shipment) WHERE s.testRunId IS NULL
-OPTIONAL MATCH (s)-[:SHIPPED_TO]->(d:DealerBranch)
-RETURN s.shipment_id AS id, origin, d.country AS destination, EXISTS { (s)-[:HAS_CUSTOMS_CONTEXT]->(:CustomsContext) } AS flagged
-"""
-
-
 def _pct(n: int, d: int):
     return round(100.0 * n / d, 1) if d else None
 
 
 def order_traceability(session) -> Dict[str, Any]:
+    """Only seeded demo orders are measured. Orders created while testing the Parts Store (provenance INTERNAL_TEST_WORKFLOW) stop part-way by
+    design, so counting them would make the KPI move with every test session."""
     rows = session.run(_CHAIN_Q).data()
-    live = [r for r in rows if r["status"] != "CANCELLED"]
+    live = [r for r in rows if r["status"] != "CANCELLED" and r["provenance"] != "INTERNAL_TEST_WORKFLOW"]
+    excluded = sum(1 for r in rows if r["status"] != "CANCELLED" and r["provenance"] == "INTERNAL_TEST_WORKFLOW")
     links = ["request", "allocation", "part", "shipment", "dealer", "service"]
     full = [r for r in live if all(r[k] for k in links)]
     return {"kpi": "Order traceability rate", "measurable": bool(live), "numerator": len(full), "denominator": len(live),
-            "value_pct": _pct(len(full), len(live)),
-            "per_link_pct": {k: _pct(sum(1 for r in live if r[k]), len(live)) for k in links},
-            "method": "graph-based: non-cancelled Order linked to FulfilmentRequest, Allocation, Part, Shipment, DealerBranch and ServiceJob",
-            "data_source": "SYNTHETIC_DEMO demo orders plus browser-created orders; not ERP data",
+            "value_pct": _pct(len(full), len(live)), "excluded_test_orders": excluded,
+            "method": "orders linked end to end: request, allocation, part, shipment, dealer, service job",
+            "data_source": "SYNTHETIC_DEMO seeded orders (not ERP data)",
             "not_traceable": [r["id"] for r in live if r not in full]}
-
-
-KNOWN_ORDER_STATUSES = {"CREATED", "ACCEPTED", "CANCELLED"}  # the Order state machine (docs/business-process/PROCESS_STATES.md)
-
-
-def orders_with_known_status(session) -> Dict[str, Any]:
-    """Share of orders that carry a valid status AND whose status the graph can resolve for a user asking 'what is the status of order X'."""
-    rows = session.run("MATCH (o:Order) WHERE o.testRunId IS NULL RETURN o.id AS id, o.status AS status").data()
-    known = 0
-    for r in rows:
-        try:
-            res = intelligence_context.get_order_status(session, r["id"])
-        except Exception:
-            res = None
-        if res and r["status"] in KNOWN_ORDER_STATUSES:
-            known += 1
-    return {"kpi": "Share of orders with a known status", "measurable": bool(rows), "numerator": known, "denominator": len(rows),
-            "value_pct": _pct(known, len(rows)),
-            "method": "rule-based: order status is one of CREATED / ACCEPTED / CANCELLED and the status lookup resolves it",
-            "data_source": "demo and browser-created orders; becomes meaningful on real order data"}
 
 
 def master_data_consistency(session) -> Dict[str, Any]:
@@ -122,7 +91,7 @@ def master_data_consistency(session) -> Dict[str, Any]:
     return {"kpi": "Master-data consistency rate", "measurable": total > 0, "numerator": ok, "denominator": total,
             "value_pct": _pct(ok, total),
             "checks": [{"check": n, "passing": a, "of": b, "pct": _pct(a, b)} for n, a, b in checks],
-            "method": "rule-based completeness/link checks (the full 42-check audit is phase10_data_audit.py)",
+            "method": "completeness checks on parts, dealers, suppliers and machines (full audit: phase10_data_audit.py)",
             "data_source": "REAL catalogue, dealer and SAP supplier-master data"}
 
 
@@ -131,9 +100,10 @@ def supplier_part_coverage(session) -> Dict[str, Any]:
     return {"kpi": "Supplier-to-part coverage", "measurable": c["parts"] > 0,
             "numerator": c["with_real"], "denominator": c["parts"], "value_pct": _pct(c["with_real"], c["parts"]),
             "with_any_supplier_pct": _pct(c["with_any"], c["parts"]), "demo_only_parts": c["with_any"] - c["with_real"],
+            "demo_numerator": c["with_any"] - c["with_real"], "demo_pct": _pct(c["with_any"] - c["with_real"], c["parts"]),
             "sole_sourced_parts": c["sole"], "real_suppliers": c["real_suppliers"], "real_suppliers_linked_to_parts": c["real_linked"],
-            "method": "graph-based: catalogue parts with a SUPPLIED_BY link to a REAL SAP-master supplier (headline) vs any supplier",
-            "data_source": "headline is REAL and is 0% because the supplier master has no part numbers; the any-supplier figure is SYNTHETIC_DEMO",
+            "method": "parts linked to a real SAP supplier (headline); demo links shown separately",
+            "data_source": "REAL headline is 0 % because the SAP supplier master has no part numbers; the demo figure is SYNTHETIC_DEMO",
             "needs": "SAP purchasing / source-list data with supplier number + material number"}
 
 
@@ -146,28 +116,13 @@ def stock_out_exposure(session) -> Dict[str, Any]:
             "value_pct": _pct(len(out), len(rows)),
             "critical_parts": len(crit), "critical_without_stock": len(crit_out), "critical_without_stock_pct": _pct(len(crit_out), len(crit)),
             "unknown_stock_part_ids": [r["id"] for r in rows if r["qty"] is None][:20],
-            "method": "graph-based: catalogue parts with no (or zero) stock; 'critical' = part sits in a high-criticality assembly",
-            "data_source": "DEMO ONLY: SYNTHETIC_DEMO stock snapshots exist for only some parts, so this figure reflects the demo seed, not HCME stock"}
-
-
-def customs_flag_detection(session) -> Dict[str, Any]:
-    rows = session.run(_CUSTOMS_Q).data()
-    needs = [r for r in rows if r["destination"] and r["origin"] and r["destination"] not in EU27 and r["destination"] != r["origin"]]
-    hit = [r for r in needs if r["flagged"]]
-    false_flags = [r for r in rows if r["flagged"] and r not in needs]
-    return {"kpi": "Customs flag detection rate", "measurable": bool(needs), "numerator": len(hit), "denominator": len(needs),
-            "value_pct": _pct(len(hit), len(needs)), "shipments": len(rows), "false_flags": len(false_flags),
-            "method": "rule-based: shipment from the EU depot to a dealer outside the EU customs union should carry a CustomsContext",
-            "data_source": "SYNTHETIC_DEMO shipments and CustomsContext; no customs-authority or HS-code data",
-            "caveat": "Only a handful of demo shipments exist, so this validates the rule, not real customs performance.",
-            "needs": None if needs else "shipments to non-EU destinations"}
+            "method": "orderable parts (not product-line families) with no or zero stock",
+            "data_source": "DEMO ONLY: SYNTHETIC_DEMO stock snapshots exist for only some parts, so this reflects the demo seed, not HCME stock"}
 
 
 def all_kpis(session) -> Dict[str, Any]:
     return {
         "note": "Calculated live from the current graph. Demo/sample data; no live ERP, carrier, stock or customs integration.",
-        "kpis": [order_traceability(session), master_data_consistency(session), supplier_part_coverage(session),
-                 orders_with_known_status(session)],
+        "kpis": [order_traceability(session), master_data_consistency(session), supplier_part_coverage(session)],
         "demo_only": [stock_out_exposure(session)],
-        "rule_checks": [customs_flag_detection(session)],  # not a headline KPI: too few shipments to mean anything
     }

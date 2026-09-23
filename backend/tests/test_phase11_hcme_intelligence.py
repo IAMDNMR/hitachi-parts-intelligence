@@ -15,7 +15,7 @@ from fastapi.testclient import TestClient
 
 from app.db.neo4j.connection import get_neo4j_driver
 from app.main import app
-from app.modules.intelligence import assistant, disruption, embeddings, interchangeability as ic, kpis
+from app.modules.intelligence import assistant, disruption, embeddings, interchangeability as ic
 from app.modules.intelligence.providers import DeterministicLLMProvider, EmbeddingProvider
 
 client = TestClient(app)
@@ -313,23 +313,19 @@ def test_graph_insights_and_mitigation_paths_use_the_gate():
 
 # ---------------------------------------------------------------- KPIs
 
-def test_kpi_set_matches_what_hcme_data_supports(session):
+def test_kpi_set_is_short_meaningful_and_labelled(session):
     out = client.get(f"{API}/kpis").json()
     by = {k["kpi"]: k for k in out["kpis"]}
-    assert set(by) == {"Order traceability rate", "Master-data consistency rate", "Supplier-to-part coverage", "Share of orders with a known status"}
-    for k in out["kpis"]:
+    assert set(by) == {"Order traceability rate", "Master-data consistency rate", "Supplier-to-part coverage"}
+    for k in out["kpis"] + out["demo_only"]:
         assert k["method"] and k.get("data_source") and "numerator" in k and "denominator" in k
-    assert by["Supplier-to-part coverage"]["numerator"] == 0 and by["Supplier-to-part coverage"]["with_any_supplier_pct"] > 0
+    cov = by["Supplier-to-part coverage"]
+    assert cov["numerator"] == 0 and cov["demo_numerator"] > 0     # real 0 %, demo links shown separately
     assert by["Master-data consistency rate"]["value_pct"] > 90
+    assert "excluded_test_orders" in by["Order traceability rate"]
     assert [k["kpi"] for k in out["demo_only"]] == ["Stock-out exposure"] and out["demo_only"][0]["demo_only"] is True
-    assert [k["kpi"] for k in out["rule_checks"]] == ["Customs flag detection rate"]
-    text = str(out)
-    assert "Cross-catalog" not in text and "resolution time" not in text.lower()
-
-
-def test_customs_is_a_rule_check_only(session):
-    k = kpis.customs_flag_detection(session)
-    assert k["false_flags"] == 0 and "GB" not in kpis.EU27 and "NL" in kpis.EU27 and k["caveat"]
+    assert set(out) == {"note", "kpis", "demo_only"}
+    assert "Customs" not in str(out) and "known status" not in str(out)
 
 
 # ---------------------------------------------------------------- Phase 12: unverified store items run the demonstration lifecycle with a labelled DEMO- reference

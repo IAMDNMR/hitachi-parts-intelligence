@@ -20,7 +20,7 @@ Data legend used in the UI and here:
 | Impact analysis | Which machine models use a part | Fitment (real) |
 | Question catalogue | 34 questions whose answers were run and checked, stored in the graph and wired to the real nodes | — |
 | Fallback | Every answer still works when Gemini is unavailable | — |
-| KPIs (real basis) | Master-data consistency 98.8% (2,313 of 2,341 checks); supplier-to-part coverage 0% (0 of 60); order traceability and known-status on the orders that exist | Catalogue, dealers, supplier master |
+| KPIs (real basis) | Master-data consistency 98.8% (2,313 of 2,341 checks); supplier-to-part coverage 0% (0 of 60); order traceability on the seeded demo orders | Catalogue, dealers, supplier master |
 | Honest gaps | Supplier risk says NOT_CONNECTED; RFQ says stock, price and lead time NOT_CONNECTED; compliance never says PASS on demo evidence; no invented customers | — |
 
 ## B. What is still demo-only (SYNTHETIC_DEMO)
@@ -28,10 +28,10 @@ Data legend used in the UI and here:
 | Item | Where it shows up | Why it is demo |
 |---|---|---|
 | Assemblies, BOM quantities, assembly criticality (1,206 assemblies) | Impact › critical paths, disruption | Built from real fitment with invented quantities and criticality rules |
-| Supplier → part links (73 links, 10 demo suppliers, 47 parts) | Supplier dependency, supplier-unavailable scenario | No SAP purchasing data; all flagged `synthetic=true` |
+| Supplier → part links (73 links, 10 demo suppliers, all 60 parts) | Supplier dependency, supplier-unavailable scenario | No SAP purchasing data; all flagged `synthetic=true` |
 | Compliance assignment and certificates (which assembly needs which regulation, which part holds which certificate, expiry dates) | Compliance tab, candidate compliance status | Regulation names are real EU instruments; the assignment and certificates are invented. Result is `UNVERIFIED`, never `PASS` |
 | Stock snapshots (39, for 37 of 60 parts) | Stock-out exposure (marked DEMO), candidate stock | No stock feed |
-| Orders, shipments, customs context | Order traceability, order status, customs rule check | Demo orders plus orders created while testing the Parts Store (5 orders, 4 shipments today) |
+| Orders, shipments, customs context | Order traceability | Demo orders plus orders created while testing the Parts Store (5 orders, 4 shipments today) |
 | Transport options (Road/Rail/Air) | Fulfilment options | Deterministic synthetic European transport data |
 | Demo part references (`DEMO-...`) for store items without a verified HCME part number (12 with unverified numbers, product families, attachments, unidentified items) | Cart → Continue to demo order → Stage 1–7 lifecycle | Not official part numbers; labelled "DEMO PART REFERENCE — NOT AN OFFICIAL HCME PART NUMBER", never shown as verified. Real numbers (C1–C2 below) replace them |
 
@@ -69,7 +69,7 @@ REAL / SYNTHETIC_DEMO / NOT_CONNECTED chips, and disruption results list the pro
 
 ### C7. Real orders and shipments (where required)
 - **Fields:** order number, part, quantity, status history, dealer, shipment/carrier/dates, delivery confirmation, service completion.
-- **Unlocks:** order traceability and status KPIs on real volume (today 2 of 4 orders traceable, all demo), open-order impact in disruption, customs flag rate on real cross-border shipments (needs origin, destination, HS code).
+- **Unlocks:** order traceability KPI on real volume (today 2 of 2 seeded demo orders), open-order impact in disruption, a customs flag on real cross-border shipments (needs origin, destination, HS code).
 
 ### C8. Also needed for specific features
 | Data | Unlocks |
