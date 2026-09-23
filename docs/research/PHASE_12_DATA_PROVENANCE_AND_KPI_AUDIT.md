@@ -44,8 +44,8 @@ Terminology (existing project terms): **REAL** · **SOURCE_DERIVED** · **DERIVE
 | **Supplier risk** | NOT_CONNECTED | `_VERIFIED_PART_SUPPLIERS_Q` | real SAP links only → none exist | 2 states | Yes | No | NOT_CONNECTED (correct) |
 | **KPI: order traceability** | 2 of 2 (100 %), 3 test orders excluded | `kpis.order_traceability` | seeded demo orders (browser-test orders excluded) with request+allocation+part+shipment+dealer+service link | 0–100 % | Yes | Yes (demo/test orders) | SYNTHETIC_DEMO / TEST_DATA |
 | **KPI: master-data consistency** | 2,313 of 2,341 (98.8 %) | `kpis.master_data_consistency` | 7 completeness checks summed | 0–100 % | Yes | No | DERIVED (dominated by 1,720 suppliers) |
-| **KPI: supplier-to-part coverage** | 0 of 60 real (0 %); demo links 60 of 60 shown separately | `kpis.supplier_part_coverage` | parts with a link to a real SAP supplier | 0–100 % | Yes | No | REAL (correctly 0) |
-| **KPI: stock-out exposure** (DEMO) | 6 of 37 (16.2 %) | `kpis.stock_out_exposure` | orderable parts (product-line families excluded) with no/zero demo snapshot | 0–100 % | Yes | **Yes** | **SYNTHETIC_DEMO — reflects the seed** |
+| **KPI: supplier-to-part coverage** | 60 of 60 (100 %) demo links; real SAP links 0 shown as a second line | `kpis.supplier_part_coverage` | parts with a link to a real SAP supplier | 0–100 % | Yes | No | REAL (correctly 0) |
+| **KPI: stock-out exposure** (DEMO) | 29 of 60 (48.3 %) | `kpis.stock_out_exposure` | parts with no/zero demo snapshot (every catalogue part is orderable through the demo order) | 0–100 % | Yes | **Yes** | **SYNTHETIC_DEMO — reflects the seed** |
 | **"Workflow Execution · 3.71s"** | 0.19–9 s | `pipeline.timings_ms` | wall-clock `perf_counter` | ≥ 0 | No (measured) | No | REAL (latency) |
 | **"answer by Gemini / graph rules"** | "answer by Gemini from graph evidence" | `pipeline.answer` | which writer produced the wording | 2 values | — | — | LLM_GENERATED **text only** (§6.6) |
 

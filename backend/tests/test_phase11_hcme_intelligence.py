@@ -320,7 +320,7 @@ def test_kpi_set_is_short_meaningful_and_labelled(session):
     for k in out["kpis"] + out["demo_only"]:
         assert k["method"] and k.get("data_source") and "numerator" in k and "denominator" in k
     cov = by["Supplier-to-part coverage"]
-    assert cov["numerator"] == 0 and cov["demo_numerator"] > 0     # real 0 %, demo links shown separately
+    assert cov["numerator"] > 0 and cov["real_numerator"] == 0     # demo links are the headline; real SAP links counted separately
     assert by["Master-data consistency rate"]["value_pct"] > 90
     assert "excluded_test_orders" in by["Order traceability rate"]
     assert [k["kpi"] for k in out["demo_only"]] == ["Stock-out exposure"] and out["demo_only"][0]["demo_only"] is True

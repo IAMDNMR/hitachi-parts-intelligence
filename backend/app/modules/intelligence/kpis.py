@@ -54,7 +54,7 @@ RETURN parts, with_any, with_real, sole, real_suppliers, real_linked
 """
 
 _STOCK_Q = """
-MATCH (p:Part) WHERE p.testRunId IS NULL AND p.part_id STARTS WITH 'PT-' AND coalesce(p.record_class, '') <> 'PRODUCT_LINE_PART_FAMILY'
+MATCH (p:Part) WHERE p.testRunId IS NULL AND p.part_id STARTS WITH 'PT-'
 CALL { WITH p OPTIONAL MATCH (p)-[:HAS_SYNTHETIC_INVENTORY]->(i:InventorySnapshot)
        RETURN sum(i.quantity) AS qty, count(i) AS snaps }
 RETURN p.part_id AS id, CASE WHEN snaps = 0 THEN null ELSE qty END AS qty,
@@ -98,12 +98,12 @@ def master_data_consistency(session) -> Dict[str, Any]:
 def supplier_part_coverage(session) -> Dict[str, Any]:
     c = session.run(_SUPPLIER_COVERAGE_Q).single()
     return {"kpi": "Supplier-to-part coverage", "measurable": c["parts"] > 0,
-            "numerator": c["with_real"], "denominator": c["parts"], "value_pct": _pct(c["with_real"], c["parts"]),
+            "numerator": c["with_any"], "denominator": c["parts"], "value_pct": _pct(c["with_any"], c["parts"]),
+            "real_numerator": c["with_real"], "real_pct": _pct(c["with_real"], c["parts"]),
             "with_any_supplier_pct": _pct(c["with_any"], c["parts"]), "demo_only_parts": c["with_any"] - c["with_real"],
-            "demo_numerator": c["with_any"] - c["with_real"], "demo_pct": _pct(c["with_any"] - c["with_real"], c["parts"]),
-            "sole_sourced_parts": c["sole"], "real_suppliers": c["real_suppliers"], "real_suppliers_linked_to_parts": c["real_linked"],
-            "method": "parts linked to a real SAP supplier (headline); demo links shown separately",
-            "data_source": "REAL headline is 0 % because the SAP supplier master has no part numbers; the demo figure is SYNTHETIC_DEMO",
+                        "sole_sourced_parts": c["sole"], "real_suppliers": c["real_suppliers"], "real_suppliers_linked_to_parts": c["real_linked"],
+            "method": "parts linked to a supplier (demo links); real SAP links counted separately",
+            "data_source": "SYNTHETIC_DEMO supplier links (the SAP supplier master has no part numbers yet)",
             "needs": "SAP purchasing / source-list data with supplier number + material number"}
 
 
@@ -116,7 +116,7 @@ def stock_out_exposure(session) -> Dict[str, Any]:
             "value_pct": _pct(len(out), len(rows)),
             "critical_parts": len(crit), "critical_without_stock": len(crit_out), "critical_without_stock_pct": _pct(len(crit_out), len(crit)),
             "unknown_stock_part_ids": [r["id"] for r in rows if r["qty"] is None][:20],
-            "method": "orderable parts (not product-line families) with no or zero stock",
+            "method": "catalogue parts with no or zero stock",
             "data_source": "DEMO ONLY: SYNTHETIC_DEMO stock snapshots exist for only some parts, so this reflects the demo seed, not HCME stock"}
 
 

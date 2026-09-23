@@ -231,8 +231,8 @@ interface Kpi {
   needs?: string | null
   demo_only?: boolean
   excluded_test_orders?: number
-  demo_numerator?: number
-  demo_pct?: number | null
+  real_numerator?: number
+  real_pct?: number | null
 }
 
 export function KpiPanel({ onClose }: { onClose: () => void }) {
@@ -284,8 +284,8 @@ function KpiCard({ k }: { k: Kpi }) {
         <span className="pix-kpi__val">{!k.measurable ? 'not measurable' : `${k.value_pct}%`}</span>
       </div>
       {k.numerator != null && k.denominator != null && <p className="pix-muted">{k.numerator} of {k.denominator}</p>}
-      {k.demo_numerator != null && (
-        <p className="pix-muted">Demo supplier links (SYNTHETIC_DEMO): {k.demo_numerator} of {k.denominator} ({k.demo_pct}%)</p>
+      {k.real_numerator != null && (
+        <p className="pix-muted">Real SAP supplier links: {k.real_numerator} of {k.denominator} (needs SAP source list)</p>
       )}
       <p className="pix-muted">{k.method}</p>
       {k.excluded_test_orders ? <p className="pix-muted">{k.excluded_test_orders} test-session orders are not counted.</p> : null}
