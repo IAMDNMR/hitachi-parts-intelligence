@@ -1,0 +1,652 @@
+{
+  "generated_at": "2026-09-23T21:36:41+00:00",
+  "database": "fb580139.databases.neo4j.io",
+  "label_classification": {
+    "Allocation": {
+      "NOT_CONNECTED": 2,
+      "SYNTHETIC_DEMO": 3
+    },
+    "Application": {
+      "SOURCE_DERIVED": 29
+    },
+    "Assembly": {
+      "SYNTHETIC_DEMO": 1206
+    },
+    "Attachment": {
+      "SOURCE_DERIVED": 17
+    },
+    "AuditRecord": {
+      "INTERNAL_REFERENCE_ONLY": 806
+    },
+    "CatalogEntry": {
+      "SYNTHETIC_DEMO": 3
+    },
+    "Category": {
+      "SOURCE_DERIVED": 17
+    },
+    "Channel": {
+      "SOURCE_DERIVED": 2
+    },
+    "City": {
+      "UNKNOWN": 926
+    },
+    "ComplianceRequirement": {
+      "SYNTHETIC_DEMO": 5,
+      "UNKNOWN": 1
+    },
+    "Country": {
+      "UNKNOWN": 56
+    },
+    "Customer": {
+      "UNKNOWN": 2
+    },
+    "CustomsContext": {
+      "SYNTHETIC_DEMO": 1
+    },
+    "DealerBranch": {
+      "SOURCE_DERIVED": 182
+    },
+    "Depot": {
+      "SOURCE_DERIVED": 1
+    },
+    "DigitalService": {
+      "SOURCE_DERIVED": 8
+    },
+    "FulfilmentOption": {
+      "SYNTHETIC_DEMO": 26
+    },
+    "FulfilmentRequest": {
+      "SYNTHETIC_DEMO": 3,
+      "NOT_CONNECTED": 5
+    },
+    "IdempotencyRecord": {
+      "INTERNAL_REFERENCE_ONLY": 43
+    },
+    "Intent": {
+      "UNKNOWN": 29
+    },
+    "InventoryCache": {
+      "SYNTHETIC_DEMO": 13
+    },
+    "InventoryLedger": {
+      "NOT_CONNECTED": 1
+    },
+    "InventorySnapshot": {
+      "SYNTHETIC_DEMO": 39
+    },
+    "Machine": {
+      "SOURCE_DERIVED": 77
+    },
+    "MachineType": {
+      "UNKNOWN": 12
+    },
+    "Order": {
+      "SYNTHETIC_DEMO": 5
+    },
+    "Part": {
+      "SOURCE_DERIVED": 60
+    },
+    "PartType": {
+      "UNKNOWN": 32
+    },
+    "PartsInquiry": {},
+    "QuestionCategory": {
+      "UNKNOWN": 6
+    },
+    "QuestionTemplate": {
+      "UNKNOWN": 34
+    },
+    "RelationshipType": {
+      "UNKNOWN": 3
+    },
+    "RequestedPart": {
+      "UNKNOWN": 17
+    },
+    "Service": {
+      "SOURCE_DERIVED": 22
+    },
+    "ServiceEvent": {
+      "SYNTHETIC_DEMO": 29
+    },
+    "ServiceJob": {
+      "SYNTHETIC_DEMO": 7
+    },
+    "Shipment": {
+      "SYNTHETIC_DEMO": 4
+    },
+    "ShipmentEvent": {
+      "SYNTHETIC_DEMO": 9
+    },
+    "Specification": {
+      "SOURCE_DERIVED": 1635
+    },
+    "Supplier": {
+      "SYNTHETIC_DEMO": 10,
+      "REAL": 1720
+    }
+  },
+  "summary": {
+    "duplicate_parts": 0,
+    "duplicate_dealers": 0,
+    "invalid_machine_fitment": 0,
+    "missing_provenance": 0,
+    "non_european_records": 0,
+    "dealer_coordinates_outside_europe": 4,
+    "unsupported_pricing": 0,
+    "non_eur_currency": 0,
+    "unsupported_delivery_transit": 0,
+    "unsupported_carrier": 0,
+    "unsupported_inventory": 0,
+    "invented_source_location": 0,
+    "test_data_orders": 0,
+    "test_data_part_numbers": 0,
+    "test_customers": 0,
+    "synthetic_without_flag": 0,
+    "real_marked_synthetic": 0,
+    "orphan_orders": 0,
+    "orphan_fulfilment_requests": 3,
+    "fulfilment_option_not_linked": 0,
+    "order_destination_not_a_dealer": 0,
+    "invalid_shipment_dates": 0,
+    "invalid_service_dates": 0,
+    "shipment_not_delivered_to_dealer": 0,
+    "part_without_fitment": 0,
+    "part_without_supplier": 0,
+    "machine_without_bom": 0,
+    "inconsistent_order_state": 0,
+    "confirmed_confidence_from_mock": 23,
+    "bom_fitment_mismatch": 0,
+    "demo_relationship_without_flag": 0,
+    "supplier_missing_number": 0,
+    "supplier_duplicate_number": 0,
+    "supplier_missing_name": 0,
+    "supplier_invalid_country": 0,
+    "supplier_missing_city_country_link": 0,
+    "supplier_duplicate_name": 22,
+    "city_missing_country_edge": 0,
+    "real_supplier_marked_synthetic": 0,
+    "unsupported_supplier_to_part": 0,
+    "unsupported_supplier_to_dealer": 0,
+    "unsupported_supplier_to_depot": 0
+  },
+  "issues": [
+    {
+      "id": "DQ-01",
+      "category": "duplicate_parts",
+      "severity": "HIGH",
+      "description": "Part numbers used by more than one Part node",
+      "count": 0,
+      "record_ids": [],
+      "truncated": false,
+      "action": "Merge or relabel duplicates"
+    },
+    {
+      "id": "DQ-02",
+      "category": "duplicate_dealers",
+      "severity": "MEDIUM",
+      "description": "DealerBranch records with the same name and city",
+      "count": 0,
+      "record_ids": [],
+      "truncated": false,
+      "action": "Review — may be distinct branches at one site"
+    },
+    {
+      "id": "DQ-03",
+      "category": "invalid_machine_fitment",
+      "severity": "HIGH",
+      "description": "Fitment relationships without source or confidence",
+      "count": 0,
+      "record_ids": [],
+      "truncated": false,
+      "action": "Add provenance or remove fitment"
+    },
+    {
+      "id": "DQ-04",
+      "category": "missing_provenance",
+      "severity": "HIGH",
+      "description": "Canonical records with no source_id",
+      "count": 0,
+      "record_ids": [],
+      "truncated": false,
+      "action": "Trace source or mark UNKNOWN"
+    },
+    {
+      "id": "DQ-05",
+      "category": "non_european_records",
+      "severity": "HIGH",
+      "description": "Customer-facing records (dealers, depot) outside Europe — SAP suppliers may be global",
+      "count": 0,
+      "record_ids": [],
+      "truncated": false,
+      "action": "Remove from HCME Europe scope"
+    },
+    {
+      "id": "DQ-06",
+      "category": "dealer_coordinates_outside_europe",
+      "severity": "MEDIUM",
+      "description": "Dealers whose lat/long falls outside a Europe bounding box",
+      "count": 4,
+      "record_ids": [
+        "DLR-043 Hitachi CM Nederland (null,5.325018294410186)",
+        "DLR-066 Intertrac, S.A. Tenerife (28.4556761,-16.3272913)",
+        "DLR-116 MATERIELS et SERVICES (4.906134,-52.325048)",
+        "DLR-130 Reunion Poids Lourds Ocean Indien (-21.0259536,55.2640538)"
+      ],
+      "truncated": false,
+      "action": "Correct coordinates — nearest-dealer depends on them"
+    },
+    {
+      "id": "DQ-07",
+      "category": "unsupported_pricing",
+      "severity": "CRITICAL",
+      "description": "Fulfilment options with a transport price not backed by a source and not labelled synthetic",
+      "count": 0,
+      "record_ids": [],
+      "truncated": false,
+      "action": "Values come from integrations/mocks/shipping_rate_mock.py — relabel SYNTHETIC_DEMO or remove"
+    },
+    {
+      "id": "DQ-08",
+      "category": "non_eur_currency",
+      "severity": "CRITICAL",
+      "description": "Monetary values in a currency other than EUR",
+      "count": 0,
+      "record_ids": [],
+      "truncated": false,
+      "action": "Convert or remove"
+    },
+    {
+      "id": "DQ-09",
+      "category": "unsupported_delivery_transit",
+      "severity": "CRITICAL",
+      "description": "Fulfilment options claiming transit days / ETA with CONFIRMED confidence but produced by a mock",
+      "count": 0,
+      "record_ids": [],
+      "truncated": false,
+      "action": "Values come from integrations/mocks/routing_mock.py — must not be CONFIRMED"
+    },
+    {
+      "id": "DQ-10",
+      "category": "unsupported_carrier",
+      "severity": "HIGH",
+      "description": "Carrier codes with no carrier source",
+      "count": 0,
+      "record_ids": [],
+      "truncated": false,
+      "action": "Relabel SYNTHETIC_DEMO or remove"
+    },
+    {
+      "id": "DQ-11",
+      "category": "unsupported_inventory",
+      "severity": "CRITICAL",
+      "description": "Inventory quantities produced by the mock integration and not labelled synthetic",
+      "count": 0,
+      "record_ids": [],
+      "truncated": false,
+      "action": "Mock source (integrations/mocks/inventory_mock.py) — relabel or remove"
+    },
+    {
+      "id": "DQ-12",
+      "category": "invented_source_location",
+      "severity": "HIGH",
+      "description": "Stock/allocation sources that are not a real Depot, DealerBranch or synthetic Supplier",
+      "count": 0,
+      "record_ids": [],
+      "truncated": false,
+      "action": "e.g. REGIONAL-DEPOT-AMS does not exist; real depot is Oosterhout"
+    },
+    {
+      "id": "DQ-13",
+      "category": "test_data_orders",
+      "severity": "CRITICAL",
+      "description": "Orders created by API/E2E test runs (INTERNAL_TEST_WORKFLOW, not synthetic)",
+      "count": 0,
+      "record_ids": [],
+      "truncated": false,
+      "action": "Delete via cleanup script"
+    },
+    {
+      "id": "DQ-14",
+      "category": "test_data_part_numbers",
+      "severity": "CRITICAL",
+      "description": "Operational records referencing test part numbers (PN6-TEST*, TEST-*)",
+      "count": 0,
+      "record_ids": [],
+      "truncated": false,
+      "action": "Delete via cleanup script"
+    },
+    {
+      "id": "DQ-15",
+      "category": "test_customers",
+      "severity": "HIGH",
+      "description": "Customer / inquiry records that are test identities",
+      "count": 0,
+      "record_ids": [],
+      "truncated": false,
+      "action": "Delete"
+    },
+    {
+      "id": "DQ-16",
+      "category": "synthetic_without_flag",
+      "severity": "HIGH",
+      "description": "Records with data_source SYNTHETIC_DEMO but synthetic not true",
+      "count": 0,
+      "record_ids": [],
+      "truncated": false,
+      "action": "Set synthetic=true"
+    },
+    {
+      "id": "DQ-17",
+      "category": "real_marked_synthetic",
+      "severity": "CRITICAL",
+      "description": "Canonical source records flagged synthetic (explicit DEMO_PART fixtures PT-901..904 are labelled and excluded)",
+      "count": 0,
+      "record_ids": [],
+      "truncated": false,
+      "action": "Remove synthetic flag"
+    },
+    {
+      "id": "DQ-18",
+      "category": "orphan_orders",
+      "severity": "HIGH",
+      "description": "Orders with no link to a Part and no allocation",
+      "count": 0,
+      "record_ids": [],
+      "truncated": false,
+      "action": "Link or delete"
+    },
+    {
+      "id": "DQ-19",
+      "category": "orphan_fulfilment_requests",
+      "severity": "MEDIUM",
+      "description": "FulfilmentRequests with no order and no allocation",
+      "count": 3,
+      "record_ids": [
+        "freq-d66f5170-2702-4b9f-9afa-63751543abf7",
+        "freq-0ae877df-598e-466a-a327-955da3e66e15",
+        "freq-80ea8410-8e70-46cd-bae3-9d8c7e0e6ec2"
+      ],
+      "truncated": false,
+      "action": "Delete if test, else keep as abandoned request"
+    },
+    {
+      "id": "DQ-20",
+      "category": "fulfilment_option_not_linked",
+      "severity": "MEDIUM",
+      "description": "FulfilmentOptions whose fulfilmentRequestId points to no FulfilmentRequest",
+      "count": 0,
+      "record_ids": [],
+      "truncated": false,
+      "action": "Delete"
+    },
+    {
+      "id": "DQ-21",
+      "category": "order_destination_not_a_dealer",
+      "severity": "HIGH",
+      "description": "Orders whose destination is not a real DealerBranch",
+      "count": 0,
+      "record_ids": [],
+      "truncated": false,
+      "action": "Fix destination or delete"
+    },
+    {
+      "id": "DQ-22",
+      "category": "invalid_shipment_dates",
+      "severity": "HIGH",
+      "description": "Shipments delivered before shipped, or DELIVERED without delivered_at",
+      "count": 0,
+      "record_ids": [],
+      "truncated": false,
+      "action": "Fix dates"
+    },
+    {
+      "id": "DQ-23",
+      "category": "invalid_service_dates",
+      "severity": "HIGH",
+      "description": "Service jobs with completion before install / install before receipt",
+      "count": 0,
+      "record_ids": [],
+      "truncated": false,
+      "action": "Fix dates"
+    },
+    {
+      "id": "DQ-24",
+      "category": "shipment_not_delivered_to_dealer",
+      "severity": "MEDIUM",
+      "description": "Shipments with no SHIPPED_TO DealerBranch",
+      "count": 0,
+      "record_ids": [],
+      "truncated": false,
+      "action": "Link or delete"
+    },
+    {
+      "id": "DQ-25",
+      "category": "part_without_fitment",
+      "severity": "LOW",
+      "description": "Parts not fitted to any Machine",
+      "count": 0,
+      "record_ids": [],
+      "truncated": false,
+      "action": "Acceptable for generic fluids/paint; review others"
+    },
+    {
+      "id": "DQ-26",
+      "category": "part_without_supplier",
+      "severity": "MEDIUM",
+      "description": "Parts with no supplier relationship (Supplier Risk tab cannot render)",
+      "count": 0,
+      "record_ids": [],
+      "truncated": false,
+      "action": "Seed SYNTHETIC_DEMO supply relationships (Task 7)"
+    },
+    {
+      "id": "DQ-27",
+      "category": "machine_without_bom",
+      "severity": "MEDIUM",
+      "description": "Machines with fitments but no BOM quantities (Impact tab 'Total BOM qty' cannot render)",
+      "count": 0,
+      "record_ids": [],
+      "truncated": false,
+      "action": "Seed SYNTHETIC_DEMO BOM (Task 6)"
+    },
+    {
+      "id": "DQ-28",
+      "category": "inconsistent_order_state",
+      "severity": "MEDIUM",
+      "description": "ACCEPTED orders with no allocation",
+      "count": 0,
+      "record_ids": [],
+      "truncated": false,
+      "action": "Fix state or delete"
+    },
+    {
+      "id": "DQ-29",
+      "category": "confirmed_confidence_from_mock",
+      "severity": "HIGH",
+      "description": "Operational records claiming confidence CONFIRMED although produced by a mock integration",
+      "count": 23,
+      "record_ids": [
+        "FulfilmentOption:fopt-e62b61ae-4b38-4c35-8213-c2932a3cd8a9",
+        "FulfilmentOption:fopt-cde77f3c-d098-41ad-90b5-7bece0756e74",
+        "FulfilmentOption:fopt-0e187624-2dd4-419c-9a84-aeaf2e9b2da7",
+        "FulfilmentOption:fopt-1e622c5f-e4aa-4ba6-9447-af53307754f6",
+        "FulfilmentOption:fopt-7db41efe-5984-4309-ba34-5a156da9f329",
+        "FulfilmentOption:fopt-68fb4af9-d0fc-48d3-8c83-2254e1049ff7",
+        "FulfilmentOption:fopt-7c71587f-5a70-4404-b78e-2353516f269b",
+        "FulfilmentOption:fopt-8110d582-62be-4220-95c7-0e0939a113b0",
+        "FulfilmentOption:fopt-3a749f07-e8cf-44f3-a26b-9dbae893daf9",
+        "FulfilmentOption:fopt-97cf91a8-3a6d-4c56-b587-ce068c4e2bc3",
+        "FulfilmentOption:fopt-fd7558bc-a736-4452-bd14-4b614d52d18b",
+        "FulfilmentOption:fopt-9e7ee4a1-0379-4ee0-8535-381598d19fdc",
+        "FulfilmentOption:fopt-3a342287-cbdc-40e9-8d13-30464b921e98",
+        "FulfilmentOption:fopt-44dc5a19-a252-4bdf-b6bb-fae2eeebe384",
+        "FulfilmentOption:fopt-3dd13270-b56c-4c7e-8cf9-5a26b1090904",
+        "FulfilmentOption:fopt-bcb584b8-ff29-4561-8a4d-ef403c83a455",
+        "FulfilmentOption:fopt-040cdcd6-e0f5-4537-97ee-32e96570abe3",
+        "FulfilmentOption:fopt-0664ba47-4055-49e7-94a3-d7ca10a4948f",
+        "FulfilmentOption:fopt-312dda0c-f058-4d82-a0ed-8da3b20b0f9d",
+        "FulfilmentOption:fopt-467c9c3a-0a0f-4d6a-9759-7ae32bc31c60",
+        "FulfilmentOption:fopt-6eda868b-5f10-419e-8c72-e31140050884",
+        "FulfilmentOption:fopt-46de19da-b4ea-4486-b352-3ca3991f2d5e",
+        "FulfilmentOption:fopt-6db50cee-e0c0-4d5a-84c0-13b34d762b9c"
+      ],
+      "truncated": false,
+      "action": "Downgrade to SYNTHETIC_DEMO"
+    },
+    {
+      "id": "DQ-30",
+      "category": "bom_fitment_mismatch",
+      "severity": "HIGH",
+      "description": "BOM lines without a matching fitment, or fitments without a BOM line",
+      "count": 0,
+      "record_ids": [],
+      "truncated": false,
+      "action": "Re-run seed_phase10_demo_data.py --step bom"
+    },
+    {
+      "id": "DQ-31",
+      "category": "demo_relationship_without_flag",
+      "severity": "HIGH",
+      "description": "Phase 10 demo relationships not labelled SYNTHETIC_DEMO",
+      "count": 0,
+      "record_ids": [],
+      "truncated": false,
+      "action": "Set synthetic=true, data_source='SYNTHETIC_DEMO'"
+    },
+    {
+      "id": "DQ-32",
+      "category": "supplier_missing_number",
+      "severity": "CRITICAL",
+      "description": "Suppliers with no supplier_number (unusable as a key)",
+      "count": 0,
+      "record_ids": [],
+      "truncated": false,
+      "action": "Investigate source row"
+    },
+    {
+      "id": "DQ-33",
+      "category": "supplier_duplicate_number",
+      "severity": "CRITICAL",
+      "description": "Supplier numbers used by more than one Supplier node",
+      "count": 0,
+      "record_ids": [],
+      "truncated": false,
+      "action": "supplier_number must be unique — re-run import_sap_suppliers.py"
+    },
+    {
+      "id": "DQ-34",
+      "category": "supplier_missing_name",
+      "severity": "HIGH",
+      "description": "Suppliers with no name",
+      "count": 0,
+      "record_ids": [],
+      "truncated": false,
+      "action": "Investigate source row"
+    },
+    {
+      "id": "DQ-35",
+      "category": "supplier_invalid_country",
+      "severity": "HIGH",
+      "description": "Suppliers with no 2-letter ISO country code",
+      "count": 0,
+      "record_ids": [],
+      "truncated": false,
+      "action": "Investigate source row"
+    },
+    {
+      "id": "DQ-36",
+      "category": "supplier_missing_city_country_link",
+      "severity": "HIGH",
+      "description": "Real suppliers not linked to a City/Country",
+      "count": 0,
+      "record_ids": [],
+      "truncated": false,
+      "action": "Re-run import_sap_suppliers.py"
+    },
+    {
+      "id": "DQ-37",
+      "category": "supplier_duplicate_name",
+      "severity": "LOW",
+      "description": "Same supplier name under different supplier numbers (retained by design, flagged)",
+      "count": 22,
+      "record_ids": [
+        "0000101318",
+        "0000101515",
+        "0000101768",
+        "0000102260",
+        "0000102706",
+        "0000103907",
+        "0000103959",
+        "0000104488",
+        "0000106577",
+        "0000107085",
+        "0000107086",
+        "0000107124",
+        "0000108283",
+        "0000108300",
+        "0000108440",
+        "0000108759",
+        "0000108942",
+        "0000109032",
+        "0000109034",
+        "0000109225",
+        "0000109320",
+        "0000109398"
+      ],
+      "truncated": false,
+      "action": "Manual review only — distinct SAP accounts are kept, not merged"
+    },
+    {
+      "id": "DQ-38",
+      "category": "city_missing_country_edge",
+      "severity": "HIGH",
+      "description": "City nodes with no IN_COUNTRY edge (breaks country roll-ups)",
+      "count": 0,
+      "record_ids": [],
+      "truncated": false,
+      "action": "Investigate import script"
+    },
+    {
+      "id": "DQ-39",
+      "category": "real_supplier_marked_synthetic",
+      "severity": "CRITICAL",
+      "description": "Real SAP supplier-master records flagged synthetic",
+      "count": 0,
+      "record_ids": [],
+      "truncated": false,
+      "action": "Real client data must never be classified SYNTHETIC_DEMO"
+    },
+    {
+      "id": "DQ-40",
+      "category": "unsupported_supplier_to_part",
+      "severity": "CRITICAL",
+      "description": "Part-[:SUPPLIED_BY]->Supplier where the Supplier is a REAL (non-synthetic) supplier",
+      "count": 0,
+      "record_ids": [],
+      "truncated": false,
+      "action": "The supplier master has no part numbers — never link a real supplier to a Part without an authoritative supplier-part source"
+    },
+    {
+      "id": "DQ-41",
+      "category": "unsupported_supplier_to_dealer",
+      "severity": "CRITICAL",
+      "description": "Direct Supplier-[:SUPPLIES]->DealerBranch or similar relationships (never inferred from shared city)",
+      "count": 0,
+      "record_ids": [],
+      "truncated": false,
+      "action": "Delete — dealer/supplier co-location is LOCATED_IN -> City only, never a direct edge"
+    },
+    {
+      "id": "DQ-42",
+      "category": "unsupported_supplier_to_depot",
+      "severity": "CRITICAL",
+      "description": "Direct Supplier-[:SUPPLIES]->Depot relationships (never inferred)",
+      "count": 0,
+      "record_ids": [],
+      "truncated": false,
+      "action": "Delete — no authoritative supplier-to-depot source exists"
+    }
+  ],
+  "total_issue_records": 52,
+  "failing_checks": 4
+}

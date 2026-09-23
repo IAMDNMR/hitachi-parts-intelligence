@@ -2,8 +2,8 @@ import assert from 'node:assert/strict'
 import { existsSync } from 'node:fs'
 import test, { describe } from 'node:test'
 
-import { MACHINES, VISUAL_CATEGORIES, categoryById, machinesInCategory } from '../data/machineCatalogue.js'
-import { infoRows, nameParts, storyLine } from '../sections/Machinery/showcase.js'
+import { MACHINES, VISUAL_CATEGORIES, categoryById, machinesInCategory } from '../data/machineCatalogue.ts'
+import { infoRows, nameParts, storyLine } from '../sections/Machinery/showcase.ts'
 
 const onDisk = (url) => existsSync(new URL(`../public${url}`, import.meta.url))
 

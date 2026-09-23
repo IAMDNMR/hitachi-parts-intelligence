@@ -1,8 +1,8 @@
 import assert from 'node:assert/strict'
 import test, { describe } from 'node:test'
 
-import { LANDCROS } from '../data/landcros.js'
-import { MACHINES } from '../data/machineCatalogue.js'
+import { LANDCROS } from '../data/landcros.ts'
+import { MACHINES } from '../data/machineCatalogue.ts'
 
 /**
  * LANDCROS is hand-written data, so these hold it to the same rules as the

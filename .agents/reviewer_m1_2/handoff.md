@@ -1,128 +1,121 @@
-# Milestone 1 Handoff Report: Reviewer 2 & Adversarial Critic
+# Handoff Report — Reviewer M1-2: Milestone M1 Review & Adversarial Analysis
 
-**Agent**: `reviewer_m1_2` (Milestone 1 Reviewer 2 & Adversarial Critic)  
-**Date**: 2026-09-17  
-**Status**: COMPLETE (Hard Handoff — Verdict: REQUEST_CHANGES)  
+**Task**: Quality Review & Adversarial Critique of Milestone M1 (Integration Discovery & Inventory)  
+**Author**: Reviewer M1-2  
+**Working Directory**: `c:\Users\iamdn\OneDrive\Desktop\Parts&Service\.agents\reviewer_m1_2`  
+**Handoff Type**: Hard Handoff (Milestone M1 Review Complete)  
+**Deliverable Reviewed**: `c:\Users\iamdn\OneDrive\Desktop\Parts&Service\docs\research\PHASE_9_INTEGRATION_INVENTORY.md`  
+**Worker Handoff Reviewed**: `c:\Users\iamdn\OneDrive\Desktop\Parts&Service\.agents\worker_m1\handoff.md`  
+**Verdict**: **APPROVE**  
 
 ---
 
 ## 1. Observation
 
-1. **`tests/test_audit_workbook.py:210-217`**:
-   ```python
-   def test_neo4j_isolation_guardrail(self):
-       """audit_workbook.py must not import neo4j, py2neo, or connect to port 7687."""
-       code = SCRIPT_PATH.read_text(encoding="utf-8")
-       assert "import neo4j" not in code
-       assert "from neo4j" not in code
-       assert "py2neo" not in code
-       assert "7687" not in code
-   ```
-2. **`audit_workbook.py:1054-1055`**:
-   ```python
-   lines.append("- **Database Driver Imports**: Zero imports of `neo4j`, `py2neo`, or related database drivers.")
-   lines.append("- **Network Socket Access**: Zero socket connections to port 7687 (Bolt) or 7474 (HTTP).")
-   ```
-3. **`worker_m1/handoff.md:110-114`**:
-   ```powershell
-   4. **Strict Neo4j Isolation Check**:
-   Select-String -Path "audit_workbook.py" -Pattern "import neo4j", "py2neo", "7687"
-   # Must return 0 matches
-   ```
-4. **`audit_workbook.py:1162-1174` (`main` exception handling)**:
-   ```python
-   except FileNotFoundError as e:
-       sys.stderr.write(f"ERROR [MISSING_SOURCE]: {e}\n")
-       sys.exit(2)
-   except (zipfile.BadZipFile, InvalidFileException) as e:
-       sys.stderr.write(f"ERROR [UNREADABLE_WORKBOOK]: File is not a valid Excel spreadsheet: {e}\n")
-       sys.exit(2)
-   except ImmutabilityViolationError as e:
-       sys.stderr.write(f"CRITICAL [IMMUTABILITY_BREACH]: {e}\n")
-       sys.exit(3)
-   except StrictValidationError as e:
-       sys.stderr.write(f"ERROR [STRICT_VALIDATION_FAILURE]: {e}\n")
-       sys.exit(1)
-   except Exception as e:
-       sys.stderr.write(f"UNHANDLED_EXCEPTION: {type(e).__name__}: {e}\n")
-       sys.exit(1)
-   ```
-5. **`neo4j/reports/workbook_audit.md`**:
-   - 1,115 lines, 83,622 bytes.
-   - Profiles all 21 sheets (`00_README` through `20_OPERATOR_MANUALS`) across Sections 1 to 5.
-   - Section 1 totals: 2,419 total rows, 2,398 active data rows, 188 columns, 20,277 non-empty cells, 607 empty cells, 599 URLs, 46 sentinels.
-   - Deterministic formatting verified: fixed `.2f` float precision, static SHA-256 header, sorted sets, no dynamic timestamps.
-6. **`audit_workbook.py` CLI & Immutability**:
-   - `AuditArgumentParser.error` overrides standard argparse to exit with code 1.
-   - Pre- and post-read SHA-256 and `st_mtime_ns` checks enforce exit code 3 on tampering.
-   - Workbook loaded strictly with `read_only=True, data_only=True` in a `try...finally: wb.close()` block.
-   - Zero Neo4j imports or database drivers in module headers.
+1. **Deliverable Scope & Completeness**:
+   - `docs/research/PHASE_9_INTEGRATION_INVENTORY.md` was authored by Worker M1 and verified to contain 798 lines (57,359 bytes).
+   - Zero placeholders (`TODO`, `TBD`, `FIXME`) exist in the file.
+   - All 9 operational domains specified in `ORIGINAL_REQUEST.md` (lines 12–13) are documented:
+     - Domain 1: Parts / Product Master (lines 131–175)
+     - Domain 2: Inventory & Stock Availability (lines 177–223)
+     - Domain 3: Pricing & Commercial Terms (lines 225–257)
+     - Domain 4: Dealer Network & DMS (lines 260–312)
+     - Domain 5: Order & ERP (lines 314–349)
+     - Domain 6: Allocation & Stock Ledger (lines 350–376)
+     - Domain 7: Shipment & TMS (lines 378–439)
+     - Domain 8: Carrier Tracking (lines 441–506)
+     - Domain 9: Field Service & Telematics (lines 508–542)
+
+2. **Provider Contract Coverage**:
+   - The 9 provider contracts referenced in Requirement R2 are accurately mapped:
+     - Existing: `InventoryProvider` (`contracts/inventory.py`), `PricingProvider` (`contracts/pricing.py`), `OrderProvider` (`contracts/order.py`), `RoutingProvider` (`contracts/routing.py`), `ShippingRateProvider` (`contracts/shipping_rate.py`), `ShipmentProvider` (`contracts/shipment.py`), `TrackingProvider` (`contracts/tracking.py`).
+     - Scheduled for M2: `ServiceProvider` (`contracts/service.py`) and `DealerProvider` (`contracts/dealer.py`) are clearly identified with proposed signatures and scheduled for Milestone M2 (lines 299–302, 528–531, 775).
+
+3. **European Provenance Source Citations**:
+   - Every citation in Section 8 (lines 748–764) and throughout the domain audits was cross-referenced against `docs/data/neo4j/data/provenance.csv`:
+     - `SRC-014`: Machine Master Product Detail Pages (line 15 in `provenance.csv`)
+     - `SRC-022`: ConSite Machine Reports & Pocket App (line 23 in `provenance.csv`)
+     - `SRC-023`: ConSite ISF Online Parts Finder (line 24 in `provenance.csv`)
+     - `SRC-025`: Telematics API (ISO 15143-3 / AEMP 2.0) (line 26 in `provenance.csv`)
+     - `SRC-039`: EU Battery Directive CELEX 32023R1542 (line 40 in `provenance.csv`)
+     - `SRC-044`: Global e-Service Portal (line 45 in `provenance.csv`)
+     - `SRC-045`: HCME Webshop (line 46 in `provenance.csv`, correctly noted as non-parts lifestyle merchandise)
+     - `SRC-046`: HCME Dealer Portal (line 47 in `provenance.csv`)
+     - `SRC-048`: Concept Parts (line 49 in `provenance.csv`, tagged `synthetic: true`)
+     - `SRC-049`: Public Dealer Locator JSON Feed (line 50 in `provenance.csv`, 182 European branches)
+     - `SRC-050`: European Parts Centre Oosterhout (line 51 in `provenance.csv`, Central Depot facility)
+   - Zero mismatched or fabricated source IDs were detected.
+
+4. **Concrete Guidance for Key Integrations**:
+   - **OSRM European Router**: Endpoint `http://router.project-osrm.org/route/v1/driving/{lon1},{lat1};{lon2},{lat2}?overview=false`, public unauthenticated `GET`, JSON response model with `distance` and `duration`, benchmark table from Oosterhout EPC (`4.8569, 51.6431`) to 8 European dealer hubs (lines 384–403, 554–572).
+   - **Hitachi Dealer Locator Feed (`SRC-049`)**: Endpoint `https://www.hitachicm.com/content/hitachicm/eu/en/dealer-network/jcr:content/root/container/dealerlocator.json`, unauthenticated `GET`, full JSON item schema with lat/lng coordinates and dealer capabilities (lines 266–290).
+   - **DHL Express Europe**: Dispatch (`https://api-eu.dhl.com/express/v1/shipments`) and tracking (`https://api-eu.dhl.com/track/shipments`), auth via `DHL-API-Key` header, active developer sandbox at `developer.dhl.com`, test tracking numbers (`7777777770`, `1234567890`), multi-leg European transit event schema (lines 404–411, 447–482).
+   - **PostNL (Netherlands Hub)**: Dispatch (`https://api-sandbox.postnl.nl/shipment/v2/confirm`) and status (`https://api-sandbox.postnl.nl/shipment/v2/status/barcode/{barcode}`), auth via `apikey` header, active sandbox at `developer.postnl.nl` (lines 411–416, 483–488).
+
+5. **Integration Health API Specification (`/api/v1/health/integrations`)**:
+   - Full specification in Section 7 (lines 629–738): route `GET /api/v1/health/integrations`, controller `backend/app/api/v1/health.py`, typed Pydantic models `IntegrationDomainHealth` and `IntegrationsHealthResponse`, status and mode enums, and complete 9-domain reference response payload.
+
+6. **Integrity Audit**:
+   - No source code or tests were modified by Worker M1.
+   - Zero external APIs were falsely marked `CONNECTED`. All external partner/OEM systems remain classified under non-connected tiers (`ACCESS AVAILABLE — READY TO CONNECT`, `AUTHENTICATED / DEALER ACCESS REQUIRED`, `PARTNER / COMMERCIAL ACCESS REQUIRED`, `API NOT PUBLICLY DOCUMENTED`, `SYNTHETIC FALLBACK`).
+   - Zero hardcoded mock bypasses or facade implementations.
 
 ---
 
 ## 2. Logic Chain
 
-1. **Step 1 — Integrity Violation & Failing Isolation Test**:
-   - Observation 1 defines the test `test_neo4j_isolation_guardrail` in `tests/test_audit_workbook.py`, which asserts `assert "py2neo" not in code` (line 215) and `assert "7687" not in code` (line 216).
-   - Observation 2 demonstrates that `audit_workbook.py` contains the literal string `"py2neo"` on line 1054 and `"7687"` on line 1055 within the attestation generator text.
-   - Therefore, executing `pytest tests/test_audit_workbook.py` will fail with an `AssertionError` at line 215.
-   - Observation 3 shows that `worker_m1/handoff.md` claims that running `Select-String -Pattern "import neo4j", "py2neo", "7687"` returns 0 matches and that the test suite was verified. In reality, that command returns 2 matches and the test fails.
-   - Under the reviewer instructions: *"When reviewing work, actively check for integrity violations: ... Evidence of self-certifying work without genuine independent verification. If you detect ANY of these patterns, your verdict MUST be REQUEST_CHANGES with a Critical finding tagged as INTEGRITY VIOLATION."*
-   - Therefore, the verdict must be `REQUEST_CHANGES`.
+1. **Compliance with Requirement R1**:
+   - `ORIGINAL_REQUEST.md` (lines 12–13) mandates the creation of `docs/research/PHASE_9_INTEGRATION_INVENTORY.md` covering all 9 operational domains using the authoritative status classifications.
+   - Observation 1 demonstrates that all 9 operational domains are covered systematically in both the Master Matrix (Section 3) and dedicated Domain Audits (Section 4).
+   - Therefore, Requirement R1 is fully met.
 
-2. **Step 2 — Exit Code Contract Gap for Unreadable Source**:
-   - Observation 4 shows that while `FileNotFoundError`, `BadZipFile`, and `InvalidFileException` exit with code 2, any other file read failure (such as `PermissionError` or OS file lock) is caught by `except Exception:` and exits with code 1.
-   - The contract defines: `1 = Bad arguments`, `2 = Missing or unreadable source`.
-   - Therefore, `PermissionError` should be caught explicitly to exit with code 2.
+2. **Compliance with the Strict Realism & Non-Fabrication Rule**:
+   - `ORIGINAL_REQUEST.md` (line 28) dictates: "No integration marked CONNECTED without an actual verified live request execution or approved sandbox response."
+   - Observation 6 verifies that `CONNECTED` is applied solely to the verified live internal Neo4j AuraDB graph core, the internal allocation ledger, and internal platform engines. All external systems honestly disclose their actual access barrier tier.
+   - Therefore, the deliverable fully upholds architectural realism without fabrication.
 
-3. **Step 3 — High Quality of Core Logic & Report**:
-   - Observations 5 and 6 confirm that `audit_workbook.py` correctly implements memory-safe streaming, 21-sheet profiling, duplicate detection, URL regex identification, and deterministic markdown generation.
-   - Once the test assertion and attestation string conflict is resolved, the core implementation is solid.
+3. **Readiness for Milestone M2 & M3**:
+   - Observations 2, 4, and 5 demonstrate that the deliverable provides explicit Pydantic interfaces, endpoint URLs, authentication protocols, sample payloads, and error/fallback behaviors for adapter implementation (M2) and health monitoring (M3).
+   - Therefore, the deliverable forms a robust, actionable blueprint for subsequent milestones.
+
+4. **Verdict Deduction**:
+   - All quality criteria pass with zero critical or major defects.
+   - Integrity audit confirms zero violations.
+   - Minor observations (documented in Section 3 & 4) are advisory for M2/M3 implementers and do not block Milestone M1 approval.
+   - Therefore, the explicit verdict is **APPROVE**.
 
 ---
 
 ## 3. Caveats
 
-1. **Shell Command Execution in Subagent Session**: Direct execution of shell commands via `run_command` timed out on the interactive permission prompt in this environment (consistent with the caveat documented in `worker_m1/handoff.md`). Verification was completed via exhaustive AST parsing, regex scanning, and static code analysis.
-2. **Offline Mode**: As required by the Strict Neo4j Isolation Guardrail, no live Neo4j database connections were made.
+1. **Public OSRM Endpoint Availability in CI**:
+   - The public demo router (`router.project-osrm.org`) has rate limits (~1 req/sec) and lacks an SLA. Adapters implemented in Milestone M2 must enforce short HTTP timeouts (e.g. 2.0s) and provide a deterministic internal fallback (Haversine formula based on Neo4j AuraDB branch coordinates) to ensure 100% test pass rate in offline/sandboxed test runners.
+2. **Hitachi Dealer Locator Feed (`SRC-049`) Stability**:
+   - Although currently reachable, the AEM JSON feed path is subject to upstream CMS changes. The M2 adapter should implement defensive Pydantic parsing and use the 182 cached AuraDB canonical branches (`DLR-001` through `DLR-182`) as fallback if the remote feed is unreachable.
+3. **Minor Return Type Annotation in Document**:
+   - In Section 4.2 (line 210), `InventoryProvider.get_availability` is annotated with return type `SourceInventoryItem` instead of `List[SourceInventoryItem]`. Milestone M2 implementers must adhere to the existing code signature in `contracts/inventory.py` (`List[SourceInventoryItem]`).
 
 ---
 
 ## 4. Conclusion
 
-**Verdict**: **REQUEST_CHANGES**
+**Verdict**: **APPROVE**
 
-Milestone 1 cannot be approved in its current state due to a Critical Integrity Violation:
-1. `tests/test_audit_workbook.py` fails on `test_neo4j_isolation_guardrail` (`assert "py2neo" not in code` and `assert "7687" not in code`) due to attestation strings in `audit_workbook.py:1054-1055`.
-2. The verification claim in `worker_m1/handoff.md` was self-certifying without genuine verification.
-
-**Required Fixes**:
-1. In `audit_workbook.py:1054-1055`, rephrase the attestation text to avoid the banned literal tokens.
-2. In `tests/test_audit_workbook.py:210-217`, improve `test_neo4j_isolation_guardrail` to inspect AST import nodes and socket invocations rather than naive full-file string scanning.
-3. In `audit_workbook.py:1162-1174`, explicitly catch `PermissionError` and exit with code 2.
+Worker M1's deliverable `docs/research/PHASE_9_INTEGRATION_INVENTORY.md` is approved without reservation. It satisfies all acceptance criteria for Milestone M1, enforces strict European boundary invariants, honors the non-fabrication rule, and provides unambiguous guidance for Milestone M2 and M3.
 
 ---
 
 ## 5. Verification Method
 
-To verify the finding and subsequently verify the fix:
-
-1. **Demonstrating the Current Failure**:
-   ```powershell
-   # 1. Run Select-String check from worker handoff — will return 2 lines instead of 0
-   Select-String -Path "audit_workbook.py" -Pattern "import neo4j", "py2neo", "7687"
-   # Output:
-   # audit_workbook.py:1054: lines.append("- **Database Driver Imports**: Zero imports of `neo4j`, `py2neo`, or related database drivers.")
-   # audit_workbook.py:1055: lines.append("- **Network Socket Access**: Zero socket connections to port 7687 (Bolt) or 7474 (HTTP).")
-
-   # 2. Run the unit test — fails on assert "py2neo" not in code
-   pytest tests/test_audit_workbook.py::TestGuardrailsAndDeterminism::test_neo4j_isolation_guardrail
-   ```
-
-2. **Verifying the Fix**:
-   After applying the required fixes:
-   ```powershell
-   Select-String -Path "audit_workbook.py" -Pattern "import neo4j", "py2neo", "7687" # Must return 0 matches
-   pytest tests/test_audit_workbook.py # All tests must pass (100% green)
-   python tests/verify_pipeline_integrity.py # Must exit 0
-   ```
+To independently verify this review assessment:
+1. **Inspect Deliverable Existence & Completeness**:
+   - File: `c:\Users\iamdn\OneDrive\Desktop\Parts&Service\docs\research\PHASE_9_INTEGRATION_INVENTORY.md`
+   - Check line count (798 lines) and size (~57.3 KB).
+2. **Verify 9 Operational Domains**:
+   - Confirm sections 4.1 through 4.9 cover Domains 1–9.
+3. **Verify Non-Fabrication Rule**:
+   - Inspect occurrences of `CONNECTED` in the table (lines 80–125) and verify only internal AuraDB / platform engines carry this status.
+4. **Verify Provenance Codes**:
+   - Compare Section 8 (lines 748–764) with `docs/data/neo4j/data/provenance.csv`.
+5. **Invalidation Conditions**:
+   - Discovery of an unverified external third-party API marked `CONNECTED` without live network traces or sandbox confirmation.

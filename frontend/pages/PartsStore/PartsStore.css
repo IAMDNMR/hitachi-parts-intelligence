@@ -401,6 +401,22 @@
   text-transform: none;
 }
 
+.ps-badge--unverified {
+  margin-left: 0.4rem;
+  color: #991b1b;
+  background: #fee2e2;
+  border: 1px solid #fca5a5;
+}
+
+/* In the Quick View header the badge follows the <h2> title directly (a
+   block element, not another inline badge), so the shared .ps-badge
+   margin-left does nothing there — it needs its own top spacing instead of
+   sitting flush against the title. */
+.ps-modal__title + .ps-badge--unverified {
+  margin-left: 0;
+  margin-top: 0.5rem;
+}
+
 .ps-card__actions {
   align-self: end;
   padding: 0.8rem 1rem 1rem;
@@ -700,9 +716,9 @@
 
 .ps-quote-cart-list li {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 0.7rem;
-  padding: 0.6rem 0.9rem;
+  padding: 0.75rem 0.9rem;
 }
 
 .ps-quote-cart-list li + li {
@@ -713,12 +729,13 @@
   display: grid;
   place-items: center;
   flex: 0 0 auto;
-  width: 2.6rem;
-  height: 2.6rem;
+  width: 2.8rem;
+  height: 2.8rem;
   border-radius: 0.5rem;
   background: #f6f7f9;
   color: #9aa3b2;
   overflow: hidden;
+  margin-top: 0.15rem;
 }
 
 .ps-quote-cart-list__image img {
@@ -729,14 +746,14 @@
 
 .ps-quote-cart-list__info {
   display: grid;
-  gap: 0.1rem;
+  gap: 0.15rem;
   flex: 1;
   min-width: 0;
 }
 
 .ps-quote-cart-list__info strong {
   color: #101725;
-  font-size: 0.86rem;
+  font-size: 0.88rem;
   font-weight: 700;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -744,20 +761,123 @@
 }
 
 .ps-quote-cart-list__info small {
-  color: #8a93a3;
+  color: #64748b;
   font-size: 0.74rem;
   font-weight: 600;
+}
+
+.ps-cart-missing-pn {
+  color: #d97706;
+  font-weight: 700;
+}
+
+.ps-cart-item-status {
+  margin-top: 0.15rem;
+}
+
+.ps-cart-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.15rem 0.5rem;
+  border-radius: 0.35rem;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.ps-cart-badge--ready {
+  background: #ecfdf5;
+  color: #059669;
+  border: 1px solid rgba(5, 150, 105, 0.25);
+}
+
+.ps-cart-badge--warning {
+  background: #fffbeb;
+  color: #b45309;
+  border: 1px solid rgba(217, 119, 6, 0.3);
+}
+
+.ps-cart-badge--ambiguous {
+  background: #fff7ed;
+  color: #c2410c;
+  border: 1px solid rgba(234, 88, 12, 0.35);
+}
+
+.ps-cart-item-note {
+  margin: 0.3rem 0 0;
+  font-size: 0.7rem;
+  line-height: 1.35;
+  color: #64748b;
+  max-width: 320px;
 }
 
 .ps-modal button.ps-quote-cart-list__remove {
   flex: 0 0 auto;
   border: 0;
   background: none;
-  color: #ff5a1f;
+  color: #64748b;
   font-size: 0.72rem;
-  font-weight: 800;
+  font-weight: 700;
   cursor: pointer;
   padding: 0.3rem 0.2rem;
+  align-self: center;
+}
+.ps-modal button.ps-quote-cart-list__remove:hover {
+  color: #b91c1c;
+}
+
+.ps-modal button.ps-quote-cart-list__fulfil {
+  flex: 0 0 auto;
+  align-self: center;
+  border: 1px solid rgba(255, 90, 31, 0.3);
+  background: rgba(255, 90, 31, 0.08);
+  color: #ff5a1f;
+  font-size: 0.74rem;
+  font-weight: 800;
+  cursor: pointer;
+  padding: 0.4rem 0.7rem;
+  border-radius: 0.45rem;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+.ps-modal button.ps-quote-cart-list__fulfil:hover:not(:disabled) {
+  background: #ff5a1f;
+  color: #ffffff;
+  border-color: #ff5a1f;
+}
+.ps-modal button.ps-quote-cart-list__fulfil:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.ps-modal button.ps-quote-cart-list__inquire {
+  flex: 0 0 auto;
+  align-self: center;
+  border: 1px solid rgba(217, 119, 6, 0.4);
+  background: rgba(245, 158, 11, 0.1);
+  color: #b45309;
+  font-size: 0.74rem;
+  font-weight: 800;
+  cursor: pointer;
+  padding: 0.4rem 0.7rem;
+  border-radius: 0.45rem;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+.ps-modal button.ps-quote-cart-list__inquire:hover {
+  background: #d97706;
+  color: #ffffff;
+  border-color: #d97706;
+}
+
+.ps-modal button.ps-modal__inquire-all {
+  background: #f59e0b;
+  color: #ffffff;
+  border: 1px solid #d97706;
+}
+.ps-modal button.ps-modal__inquire-all:hover {
+  background: #d97706;
 }
 
 .ps-modal button.ps-modal__secondary {
@@ -1004,4 +1124,555 @@
   .ps-grid--list .ps-card {
     grid-template-columns: 1fr;
   }
+}
+
+/* Parts Intelligence — entry promo on the Parts Store page ------------- */
+.pi-promo {
+  position: relative;
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 1.6rem;
+  max-width: 1240px;
+  margin: 2.2rem auto 0;
+  padding: 1.7rem 2rem;
+  border-radius: 1.1rem;
+  color: #fff;
+  background:
+    radial-gradient(circle at 14% -20%, rgba(255, 90, 31, 0.5), transparent 60%),
+    linear-gradient(115deg, #0b0f18 0%, #121826 48%, #1a1030 100%);
+  box-shadow: 0 22px 60px rgba(8, 12, 20, 0.28);
+}
+.pi-promo__glow {
+  position: absolute;
+  inset: -40% -10% auto auto;
+  width: 420px;
+  height: 420px;
+  background: radial-gradient(circle, rgba(255, 122, 47, 0.35), transparent 70%);
+  filter: blur(10px);
+  pointer-events: none;
+}
+.pi-promo__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  justify-self: start;
+  padding: 0.35rem 0.7rem;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #ffd9c4;
+  background: rgba(255, 122, 47, 0.16);
+  border: 1px solid rgba(255, 154, 92, 0.4);
+}
+.pi-promo__spark {
+  color: #ff9a5c;
+}
+.pi-promo__copy {
+  position: relative;
+  z-index: 1;
+}
+.pi-promo__copy h2 {
+  margin: 0 0 0.35rem;
+  font-size: 1.35rem;
+  letter-spacing: -0.01em;
+}
+.pi-promo__copy p {
+  margin: 0;
+  max-width: 620px;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 0.96rem;
+  line-height: 1.45;
+}
+.pi-promo__copy strong {
+  color: #ffb385;
+}
+.pi-promo__cta {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.85rem 1.4rem;
+  border-radius: 0.7rem;
+  font-weight: 700;
+  white-space: nowrap;
+  color: #fff;
+  text-decoration: none;
+  background: linear-gradient(120deg, #ff5a1f, #ff8a3d);
+  box-shadow: 0 12px 30px rgba(255, 90, 31, 0.35);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.pi-promo__cta:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 16px 36px rgba(255, 90, 31, 0.45);
+}
+.pi-promo__arrow {
+  transition: transform 0.15s ease;
+}
+.pi-promo__cta:hover .pi-promo__arrow {
+  transform: translateX(3px);
+}
+
+@media (max-width: 860px) {
+  .pi-promo {
+    grid-template-columns: 1fr;
+    justify-items: start;
+  }
+}
+
+/* Parts Intelligence — dedicated screen (frontend/pages/PartsStore/PartsIntelligenceScreen.tsx) */
+
+/* Parts Intelligence — search panel & result cards (shared by the promo's
+   destination screen; PartsIntelligence.tsx) */
+
+@keyframes pi-shimmer {
+  from { background-position: 120% 0; }
+  to { background-position: -20% 0; }
+}
+
+@keyframes pi-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.45; }
+}
+
+/* Graph Insights -------------------------------------------------------- */
+
+/* Synthetic-data marker — the one visual distinction between real HCME
+   Europe facts and demo/KPI operational data anywhere in Graph Insights.
+   Deliberately loud (not a quiet grey pill) so it can't be mistaken for a
+   normal status badge or missed at a glance. */
+.gi-synthetic-tag {
+  display: inline-flex;
+  align-items: center;
+  margin-left: 0.5rem;
+  padding: 0.18rem 0.5rem;
+  border-radius: 0.35rem;
+  border: 1px dashed #a3620a;
+  background: repeating-linear-gradient(
+    135deg,
+    rgba(163, 98, 10, 0.1),
+    rgba(163, 98, 10, 0.1) 6px,
+    rgba(163, 98, 10, 0.18) 6px,
+    rgba(163, 98, 10, 0.18) 12px
+  );
+  color: #7a4b0a;
+  font-size: 0.64rem;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  vertical-align: middle;
+}
+
+/* Availability / Fulfilment / Allocation & Order (Phase 4/5/6) ---------- */
+/* These panels previously used Tailwind utility classes with no Tailwind
+   build in this project, so every className was inert and icons/badges
+   rendered at unconstrained native size. Real CSS, HCME dark-card language
+   (matches .pi-workflow-card), orange accent instead of amber/emerald. */
+
+.avail-panel,
+.fulfil-panel,
+.alloc-panel {
+  margin-top: 1.5rem;
+  padding: 1.2rem 1.3rem;
+  border-radius: 0.9rem;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  background: rgba(15, 23, 42, 0.02);
+  color: #121821;
+}
+
+.avail-panel__head,
+.fulfil-panel__head,
+.alloc-panel__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding-bottom: 0.75rem;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid rgba(15, 23, 42, 0.08);
+}
+
+.avail-panel__head h4,
+.fulfil-panel__head h4,
+.alloc-panel__head h4 {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0;
+  font-size: 0.98rem;
+  font-weight: 800;
+  color: #ff5a1f;
+}
+
+.avail-panel__head h4 svg,
+.fulfil-panel__head h4 svg,
+.alloc-panel__head h4 svg {
+  flex: none;
+}
+
+.avail-panel__phase {
+  font-size: 0.7rem;
+  font-family: ui-monospace, monospace;
+  color: rgba(18, 24, 33, 0.45);
+}
+
+.fulfil-panel__stage {
+  margin: 0.2rem 0 0;
+  font-size: 0.76rem;
+  color: rgba(18, 24, 33, 0.5);
+}
+.fulfil-panel__stage span {
+  font-family: ui-monospace, monospace;
+  font-weight: 800;
+  color: #ff5a1f;
+}
+
+.fulfil-panel__count {
+  padding: 0.3rem 0.65rem;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-family: ui-monospace, monospace;
+  color: rgba(18, 24, 33, 0.6);
+  background: rgba(15, 23, 42, 0.05);
+  border: 1px solid rgba(15, 23, 42, 0.1);
+  white-space: nowrap;
+}
+
+.avail-form {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+@media (max-width: 720px) {
+  .avail-form { grid-template-columns: 1fr; }
+}
+
+.avail-field label {
+  display: block;
+  margin-bottom: 0.3rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: rgba(18, 24, 33, 0.55);
+}
+
+.avail-field input,
+.avail-field select {
+  width: 100%;
+  padding: 0.55rem 0.7rem;
+  border-radius: 0.5rem;
+  border: 1px solid rgba(15, 23, 42, 0.15);
+  background: #fff;
+  color: #121821;
+}
+.avail-field input:focus,
+.avail-field select:focus {
+  outline: 2px solid rgba(255, 90, 31, 0.35);
+  outline-offset: 1px;
+}
+
+.avail-field--submit {
+  display: flex;
+  align-items: end;
+}
+
+.avail-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  padding: 0.6rem 1.1rem;
+  border: 0;
+  border-radius: 0.55rem;
+  font-weight: 700;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+}
+.avail-btn:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+.avail-btn--primary {
+  width: 100%;
+  color: #fff;
+  background: linear-gradient(120deg, #ff5a1f, #ff8a3d);
+}
+.avail-btn--confirm {
+  color: #fff;
+  background: #1a7f4b;
+}
+.avail-btn--small {
+  padding: 0.4rem 0.75rem;
+  font-size: 0.76rem;
+  color: #121821;
+  background: rgba(15, 23, 42, 0.08);
+}
+.avail-btn--small.is-chosen {
+  color: #fff;
+  background: #ff5a1f;
+}
+
+.avail-spinner {
+  animation: avail-spin 0.8s linear infinite;
+}
+@keyframes avail-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.avail-alert {
+  padding: 0.6rem 0.85rem;
+  border-radius: 0.55rem;
+  font-size: 0.84rem;
+  margin-bottom: 1rem;
+}
+.avail-alert--error {
+  color: #991b1b;
+  background: rgba(179, 38, 30, 0.08);
+  border: 1px solid rgba(179, 38, 30, 0.25);
+}
+
+.avail-results h5 {
+  margin: 0 0 0.6rem;
+  font-size: 0.8rem;
+  font-weight: 800;
+  color: rgba(18, 24, 33, 0.6);
+}
+.avail-results__list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+.avail-result {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.75rem 0.9rem;
+  border-radius: 0.6rem;
+  background: #fff;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+}
+.avail-result__name {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-weight: 700;
+}
+.avail-result__meta {
+  font-size: 0.72rem;
+  font-family: ui-monospace, monospace;
+  color: rgba(18, 24, 33, 0.45);
+}
+.avail-result__provider {
+  margin-top: 0.2rem;
+  font-size: 0.74rem;
+  color: rgba(18, 24, 33, 0.5);
+}
+.avail-result__status {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.avail-result__qty { text-align: right; }
+.avail-result__unconfirmed {
+  display: block;
+  font-size: 0.72rem;
+  font-family: ui-monospace, monospace;
+  color: rgba(18, 24, 33, 0.5);
+}
+.avail-result__available {
+  display: block;
+  font-size: 0.86rem;
+  font-weight: 800;
+}
+
+.avail-tag,
+.fulfil-tag {
+  display: inline-flex;
+  padding: 0.25rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.66rem;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  border: 1px solid transparent;
+  white-space: nowrap;
+}
+.avail-tag--available, .fulfil-tag--confirmed { color: #1a7f4b; background: rgba(26, 127, 75, 0.1); border-color: rgba(26, 127, 75, 0.25); }
+.avail-tag--stale, .fulfil-tag--partial { color: #a3620a; background: rgba(163, 98, 10, 0.1); border-color: rgba(163, 98, 10, 0.25); }
+.avail-tag--unavailable { color: #b3261e; background: rgba(179, 38, 30, 0.1); border-color: rgba(179, 38, 30, 0.25); }
+.avail-tag--unknown, .fulfil-tag--unconfirmed { color: #55606e; background: rgba(85, 96, 110, 0.1); border-color: rgba(85, 96, 110, 0.25); }
+.fulfil-tag--split { color: #4338ca; background: rgba(67, 56, 202, 0.1); border-color: rgba(67, 56, 202, 0.25); }
+
+.avail-loading-note {
+  margin-top: 1rem;
+  padding: 0.9rem;
+  border-radius: 0.6rem;
+  background: rgba(15, 23, 42, 0.04);
+  text-align: center;
+  font-size: 0.84rem;
+  color: rgba(18, 24, 33, 0.55);
+}
+
+.fulfil-confirmed {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  padding: 0.85rem 1rem;
+  border-radius: 0.6rem;
+  background: rgba(26, 127, 75, 0.08);
+  border: 1px solid rgba(26, 127, 75, 0.25);
+  color: #14532d;
+  font-size: 0.84rem;
+  margin-bottom: 1rem;
+}
+.fulfil-confirmed svg { flex: none; margin-top: 0.15rem; color: #1a7f4b; }
+.fulfil-confirmed__code {
+  font-family: ui-monospace, monospace;
+  padding: 0.1rem 0.4rem;
+  border-radius: 0.3rem;
+  background: rgba(26, 127, 75, 0.15);
+}
+
+.fulfil-options {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  margin-bottom: 1rem;
+}
+.fulfil-option {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.9rem;
+  padding: 0.9rem 1rem;
+  border-radius: 0.7rem;
+  border: 1px solid rgba(15, 23, 42, 0.1);
+  background: #fff;
+  cursor: pointer;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+.fulfil-option:hover { border-color: rgba(15, 23, 42, 0.2); }
+.fulfil-option.is-chosen {
+  border-color: #ff5a1f;
+  box-shadow: 0 0 0 1px rgba(255, 90, 31, 0.25);
+  background: rgba(255, 90, 31, 0.04);
+}
+.fulfil-option.is-locked { cursor: default; }
+
+.fulfil-option__main {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+}
+.fulfil-option__title {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+.fulfil-option__source { font-weight: 800; font-size: 0.86rem; }
+.fulfil-option__type { font-size: 0.72rem; font-family: ui-monospace, monospace; color: rgba(18, 24, 33, 0.45); }
+.fulfil-option__details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.9rem;
+  margin-top: 0.35rem;
+  font-size: 0.74rem;
+  color: rgba(18, 24, 33, 0.55);
+}
+.fulfil-option__details strong { color: #121821; }
+
+.fulfil-option__aside {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  flex: none;
+}
+.fulfil-option__cost {
+  text-align: right;
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+.fulfil-option__cost span { font-size: 0.68rem; color: rgba(18, 24, 33, 0.45); }
+.fulfil-option__cost strong { font-family: ui-monospace, monospace; }
+
+.fulfil-proceed {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 0.8rem;
+  border-top: 1px solid rgba(15, 23, 42, 0.08);
+}
+
+.alloc-summary {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+  font-size: 0.76rem;
+}
+@media (max-width: 640px) {
+  .alloc-summary { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+.alloc-summary span { display: block; color: rgba(18, 24, 33, 0.45); }
+.alloc-summary strong { font-family: ui-monospace, monospace; font-weight: 700; }
+.alloc-summary__truncate {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.alloc-order-step {
+  padding-top: 1rem;
+  margin-top: 0.5rem;
+  border-top: 1px solid rgba(15, 23, 42, 0.08);
+}
+.alloc-order-step p {
+  margin: 0 0 0.75rem;
+  font-size: 0.76rem;
+  color: rgba(18, 24, 33, 0.55);
+}
+
+.alloc-order-result {
+  padding-top: 1rem;
+  margin-top: 0.5rem;
+  border-top: 1px solid rgba(15, 23, 42, 0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  font-size: 0.86rem;
+}
+.alloc-order-result__row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.alloc-order-result__id {
+  font-family: ui-monospace, monospace;
+  font-size: 0.72rem;
+  color: rgba(18, 24, 33, 0.45);
+}
+.alloc-order-result__price {
+  font-size: 0.76rem;
+  color: rgba(18, 24, 33, 0.55);
+}
+.alloc-order-result__price span { font-family: ui-monospace, monospace; color: #121821; }
+.alloc-order-result__note {
+  font-size: 0.72rem;
+  color: #a3620a;
+  background: rgba(163, 98, 10, 0.08);
+  border: 1px solid rgba(163, 98, 10, 0.2);
+  border-radius: 0.5rem;
+  padding: 0.5rem 0.7rem;
 }

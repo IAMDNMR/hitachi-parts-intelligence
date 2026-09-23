@@ -1,19 +1,15 @@
-# Progress — explorer_survey_3 (Pipeline & Integrity Explorer)
-Last visited: 2026-09-17T12:37:15+02:00
+# Progress: Test Suites, Baselines & Verification Environment Investigator
 
-## Current Status
-- Investigation complete.
-- `report.md` created with comprehensive findings across all 4 assigned mission areas.
-- `handoff.md` created following the 5-component handoff protocol.
-- `BRIEFING.md` updated.
-- Ready to send completion message to the project orchestrator.
+Last visited: 2026-09-23T11:11:45Z
 
-## Milestones
-- [x] Step 0: Briefing and environment initialization
-- [x] Step 1: Source Workbook inspection & schema mapping
-- [x] Step 2: Architecture for audit_workbook.py
-- [x] Step 3: Architecture for export_clean_data.py & transformations
-- [x] Step 4: Determinism strategy & byte-for-byte reproducibility
-- [x] Step 5: Referential integrity graph & validation matrix (14 CSVs, 16 Excel sheets)
-- [x] Step 6: Verification harness & milestone recommendation for orchestrator
-- [x] Step 7: Final report.md and handoff.md generation
+## Checklist
+- [x] Read ORIGINAL_REQUEST.md thoroughly
+- [x] Backend pytest suite: verify baseline 98 backend tests, test file locations, test runners, poetry/venv configurations, commands to run
+- [x] Phase 6 allocation concurrency stress tests: locate exact test file/script, runner commands, concurrency configuration (15/15 x 3 runs with 0 deadlocks)
+- [x] Frontend unit tests (82 tests?), vitest/jest setup, package.json scripts, tsc --noEmit, and vite build (npm run build)
+- [x] Live Neo4j AuraDB graph integrity check script: find script checking 0 orphan events, 0 duplicate canonical records, 0 non-EU records, 0 real nodes marked synthetic
+- [x] Headless browser console sweep: locate script or runner for checking 0 console errors and 0 page errors
+- [x] Check environment variables (.env files, Neo4j credentials, etc.) needed to run these verification checks
+- [x] Document exact commands, expected outputs, execution times, and quirks
+- [x] Write analysis.md and handoff.md
+- [x] Send completion message to parent

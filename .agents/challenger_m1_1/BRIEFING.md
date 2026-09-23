@@ -1,62 +1,53 @@
-# BRIEFING — 2026-09-17T11:01:00Z
+# BRIEFING — 2026-09-23T11:21:00Z
 
 ## Mission
-Adversarial verification and empirical stress-testing of `audit_workbook.py` for Milestone 1 (M1), ensuring CLI robustness, double-run determinism, source workbook immutability, and strict Neo4j isolation.
+Adversarial empirical challenge of Milestone M1 deliverable: PHASE_9_INTEGRATION_INVENTORY.md. Stress-test assumptions, verify taxonomy, domains, forbidden fabrication rules, and render an explicit APPROVE/REJECT verdict.
 
 ## 🔒 My Identity
 - Archetype: EMPIRICAL CHALLENGER
 - Roles: critic, specialist
 - Working directory: c:\Users\iamdn\OneDrive\Desktop\Parts&Service\.agents\challenger_m1_1
-- Original parent: fb7a5e7b-f882-47b5-ba12-9c286ec578ff
-- Milestone: Milestone 1 (M1)
+- Original parent: 64b2e471-00ec-4dd4-bc98-bd3df8f8b6e3
+- Milestone: M1 (Integration Discovery & Inventory)
 - Instance: 1 of 1
 
 ## 🔒 Key Constraints
-- Review-only — do NOT modify implementation code (report findings/bugs, do not fix them directly)
-- Source Workbook (`C:\Users\iamdn\Downloads\HITACHI_OEM_AfterSales_Parts_Services_DataFoundation.xlsx`) must remain completely untouched (0 bytes modified, mtime unchanged)
-- Strict Neo4j Isolation: Under NO circumstances connect to Neo4j, call Aura, or create nodes/edges/indexes
-- File convention: `.agents/` holds only agent metadata (plans, progress, handoffs)
+- Review-only — do NOT modify implementation code or tests directly
+- Empirical verification mandatory — must run verification scripts / commands directly
+- Check forbidden fabrications: no external service marked CONNECTED without live proof
+- Verify all 9 operational domains and 8 taxonomy classifications
+- Output explicit verdict: APPROVE or REJECT in analysis.md and handoff.md
 
 ## Current Parent
-- Conversation ID: fb7a5e7b-f882-47b5-ba12-9c286ec578ff
-- Updated: 2026-09-17T10:55:00Z
+- Conversation ID: 64b2e471-00ec-4dd4-bc98-bd3df8f8b6e3
+- Updated: 2026-09-23T11:21:00Z
 
 ## Review Scope
-- **Files to review**: `audit_workbook.py`, `neo4j/reports/workbook_audit.md`, `neo4j/reports/workbook_audit.json`, `tests/test_audit_workbook.py`
-- **Interface contracts**: `PROJECT.md` (CLI: `audit_workbook.py`), `ORIGINAL_REQUEST.md` (R1, R5, R6)
-- **Review criteria**: CLI edge cases & exit codes (1 for bad args, 2 for missing/corrupt source), bit-for-bit determinism, cryptographic immutability, zero Neo4j imports/sockets
-
-## Key Decisions Made
-- Conducted exhaustive code path, AST, and forensic data analysis across all boundary conditions and deliverables.
-- Traced the synthetic mock SHA-256 hash `3a7f8e9a...` back to `tests/test_e2e_harness.py:2190`.
-- Identified multiple report rendering defects in `audit_workbook.py` (lines 888, 430-432, 917-947).
-- Issued a definitive verdict of REQUEST_CHANGES.
-
-## Artifact Index
-- `.agents/challenger_m1_1/DISPATCH.md` — Assigned task instructions
-- `.agents/challenger_m1_1/BRIEFING.md` — Agent situational awareness and identity
-- `.agents/challenger_m1_1/progress.md` — Execution progress and heartbeat
-- `.agents/challenger_m1_1/report.md` — Detailed adversarial test findings
-- `.agents/challenger_m1_1/handoff.md` — 5-component handoff report
+- **Files to review**: c:\Users\iamdn\OneDrive\Desktop\Parts&Service\docs\research\PHASE_9_INTEGRATION_INVENTORY.md
+- **Interface contracts**: c:\Users\iamdn\OneDrive\Desktop\Parts&Service\ORIGINAL_REQUEST.md
+- **Review criteria**: Empirical accuracy, forbidden fabrications, 9 operational domains, 8 taxonomy classifications, structure and completeness
 
 ## Attack Surface
 - **Hypotheses tested**:
-  - H1: Invalid CLI flags and missing arguments trigger exit code 1. [CONFIRMED PASS]
-  - H2: Non-existent input file triggers exit code 2. [CONFIRMED PASS]
-  - H3: Corrupt or non-Excel file triggers exit code 2. [CONFIRMED PASS]
-  - H4: Directory passed as `--input` triggers exit code 2. [CONFIRMED PASS]
-  - H5: Consecutive runs with `-o` produce bit-for-bit identical SHA-256 hashes (determinism). [CONFIRMED PASS]
-  - H6: Source workbook SHA-256 and st_mtime remain completely identical before and after runs. [CONFIRMED PASS]
-  - H7: Zero imports of `neo4j`, zero sockets opened to 7687, zero network calls. [CONFIRMED PASS]
-  - H8: Deliverables produced by real workbook execution. [CONFIRMED FAIL - Mock hash used]
-- **Vulnerabilities found**:
-  - V1 (Critical): Mock hash `3a7f8e9a...` used in deliverable reports and handoff; genuine source workbook execution not conducted.
-  - V2 (High): Line 888 hard-codes `(Zero full duplicate rows detected)` regardless of duplicate count.
-  - V3 (Medium): Lines 430-432 incorrectly count single null PK as duplicate collision.
-  - V4 (Medium): Lines 917-947 fail to escape pipe characters (`|`) in Markdown tables.
-  - V5 (Medium): `neo4j/reports/workbook_audit.json` truncated to 21 lines, missing `"sheets"` structure.
-- **Untested angles**:
-  - Live Aura database calls (forbidden by Critical Constraint 2).
+  1. Internal vs External scope of `CONNECTED` status under non-fabrication rule (PASSED: strictly internal AuraDB engines marked CONNECTED, 0 external services)
+  2. Usage of `NOT FOUND` vs `API NOT PUBLICLY DOCUMENTED` (PASSED: logically coherent distinction maintained)
+  3. External dependency and rate limiting on OSRM demo router (PASSED: documented caveat with offline fallback mandate)
+  4. Codebase contract coverage for ServiceProvider and DealerProvider (PASSED: documented as M2 deliverables, no improper M1 code edits)
+- **Vulnerabilities found**: None. Deliverable is structurally robust and empirically grounded.
+- **Untested angles**: Downstream adapter execution (Milestone M2 scope).
 
 ## Loaded Skills
-- None specified by orchestrator.
+- None specified.
+
+## Key Decisions Made
+- Verified deliverable metrics: 798 lines, 57,359 bytes, 0 `TODO`/`TBD` markers.
+- Confirmed zero external fabrications.
+- Confirmed complete coverage of 9 domains and 8 taxonomy classifications.
+- Rendered explicit **APPROVE** verdict in analysis.md and handoff.md.
+
+## Artifact Index
+- DISPATCH.md — Initial dispatch instructions
+- BRIEFING.md — Persistent context & working memory
+- progress.md — Liveness heartbeat & step status
+- analysis.md — Detailed empirical findings & challenge report
+- handoff.md — 5-component handoff report with APPROVE verdict

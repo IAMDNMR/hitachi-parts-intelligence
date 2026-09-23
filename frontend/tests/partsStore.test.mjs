@@ -1,10 +1,10 @@
 import assert from 'node:assert/strict'
 import test, { describe } from 'node:test'
 
-import { partsCatalogue } from '../data/partsCatalogue.js'
-import { partsStoreCatalogue } from '../data/partsStoreCatalogue.js'
-import { MACHINES } from '../data/machineCatalogue.js'
-import { groupForCategory, levelLabel, relationshipFor } from '../pages/PartsStore/compatibility.js'
+import { partsCatalogue } from '../data/partsCatalogue.ts'
+import { partsStoreCatalogue } from '../data/partsStoreCatalogue.ts'
+import { MACHINES } from '../data/machineCatalogue.ts'
+import { groupForCategory, levelLabel, relationshipFor } from '../pages/PartsStore/compatibility.ts'
 
 /**
  * Two catalogues, two different jobs. partsCatalogue.js is the homepage's
@@ -56,7 +56,7 @@ describe('partsStoreCatalogue (Parts Store)', () => {
     // parts + 13 attachments = 45. Every id below must trace to a real
     // 4_PARTS, 5_MACHINE_PARTS, or 3_ATTACHMENTS row — there is no fixed
     // "target count" this is padded out to.
-    assert.equal(partsStoreCatalogue.length, 50)
+    assert.equal(partsStoreCatalogue.length, 57)
     assert.equal(
       partsStoreCatalogue.some((p) => p.id === 'traction-battery'),
       false,
@@ -164,8 +164,20 @@ describe('partsStoreCatalogue (Parts Store)', () => {
     }
   })
 
-  test('every product carries a verified photorealistic image', () => {
+  test('every verified product carries a photorealistic image; unverified/quarantined records honestly have none', () => {
     for (const part of partsStoreCatalogue) {
+      if (part.provenanceStatus) {
+        // PT-044..053 (internally generated) and PT-054..060 (source
+        // mismatch) are explicitly not verified HCME OEM records — see
+        // ProvenanceWarning in PartsStore.tsx. A real photo is fine if one
+        // legitimately exists (some of PT-044..048 have real stock photos —
+        // the photo isn't what's unverified, the OEM/orderable claim is),
+        // but one is never REQUIRED here, and if absent it must render the
+        // honest "Visual pending" placeholder rather than a broken/invented
+        // image reference — never fabricate one to pass this check.
+        if (part.image) assert.ok(part.imageSource, `${part.id} has an image but no imageSource`)
+        continue
+      }
       assert.ok(part.image, `${part.id} is missing an image asset`)
       assert.ok(part.imageSource, `${part.id} is missing an imageSource`)
       assert.doesNotMatch(part.imageSource, /Visual pending|placeholder/i, `${part.id} still has placeholder/pending`)

@@ -8,7 +8,7 @@ import {
   groupsInCategory,
   machineById,
   machinesInCategory,
-} from '../data/machineCatalogue.js'
+} from '../data/machineCatalogue.ts'
 
 /**
  * The machine universe the Machinery section draws.

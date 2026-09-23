@@ -1,0 +1,51 @@
+Source ID,Source Organisation,Source Type,Page Title,Machine / Category,Data Domain,Date Accessed,Official Source
+SRC-001,Hitachi Construction Machinery (Europe) NV,Official website - home,HitachiCM Europe - Home,All,Navigation / site structure,2026-09-10,Yes
+SRC-002,HCME,Official XML sitemap,EU sitemap,All,Complete URL inventory / catalogue completeness,2026-09-10,Yes
+SRC-003,HCME,Official category page,Machinery,All machine categories,Category hierarchy,2026-09-10,Yes
+SRC-004,HCME,Official category page,Excavators,Excavators,Category hierarchy + descriptions,2026-09-10,Yes
+SRC-005,HCME,Official category page,Mini excavators,Mini Excavators,Category description / applications,2026-09-10,Yes
+SRC-006,HCME,Official category page,Medium excavators,Medium Excavators,Category description / applications,2026-09-10,Yes
+SRC-007,HCME,Official category page,Large excavators,Large Excavators,Category description / applications,2026-09-10,Yes
+SRC-008,HCME,Official category page,Wheeled excavators,Wheeled Excavators,Category description / applications / attachments,2026-09-10,Yes
+SRC-009,HCME,Official category page,Special applications,Special Applications,Category description / applications,2026-09-10,Yes
+SRC-010,HCME,Official category page,Electric excavators,Electric Excavators,Overlay category / electric maintenance differences,2026-09-10,Yes
+SRC-011,HCME,Official category page,Wheel loaders,Wheel Loaders,Category description / applications / attachments,2026-09-10,Yes
+SRC-012,HCME,Official category page,Rigid dump trucks,Rigid Dump Trucks,Category description / applications,2026-09-10,Yes
+SRC-013,HCME,Official segment page,Mining and quarrying,Mining segment,Application segment / ConSite applicability,2026-09-10,Yes
+SRC-014,HCME,Official product detail pages (77 pages),Product detail pages,All 77 products,Machine master + specifications + attachments narrative,2026-09-10,Yes
+SRC-015,HCME,Official after-sales page,Service,All,Service capabilities / Global e-Service applicability,2026-09-10,Yes
+SRC-016,HCME,Official after-sales page,Support Chain,All,After-sales programme definition,2026-09-10,Yes
+SRC-017,HCME,Official after-sales page,Service & Parts,All,Combined parts + service overview,2026-09-10,Yes
+SRC-018,HCME,Official after-sales page,Extended warranty and service contracts,All,Warranty terms / covered components,2026-09-10,Yes
+SRC-019,HCME,Official after-sales page,Technical support & training,All,Technical support / training,2026-09-10,Yes
+SRC-020,HCME,Official digital service page,Fleet management,Zaxis + ZW,Global e-Service applicability,2026-09-10,Yes
+SRC-021,HCME,Official digital service page,Online dashboard (Owner’s Site),Zaxis + ZW,Owner’s Site capability,2026-09-10,Yes
+SRC-022,HCME,Official digital service page,Machine reports & apps (ConSite),"Zaxis, EX, EH, ZW",ConSite / ConSite Oil / ConSite Pocket,2026-09-10,Yes
+SRC-023,HCME,Official digital service page,Online Parts Finder (ConSite ISF),All,Parts catalogue tool,2026-09-10,Yes
+SRC-024,HCME,Official digital service page,Fleet Management System - LANDCROS Connect,Mixed fleet,Fleet management platform,2026-09-10,Yes
+SRC-025,HCME,Official digital service page,Telematics API,All,Telematics data frequency / integration,2026-09-10,Yes
+SRC-026,HCME,Official parts page,Parts,All,Parts programme overview,2026-09-10,Yes
+SRC-027,HCME,Official parts page,Filters,All,Filter parts,2026-09-10,Yes
+SRC-028,HCME,Official parts page,Ground engaging tools,Mini to ultra-large,GET range + machine applicability,2026-09-10,Yes
+SRC-029,HCME,Official parts page,Wheel loader and excavator buckets,Excavators + wheel loaders,Bucket attachments,2026-09-10,Yes
+SRC-030,HCME,Official parts page,Undercarriage,Crawler excavators,Undercarriage + Hitachi Selected Parts,2026-09-10,Yes
+SRC-031,HCME,Official parts page,Remanufactured components,Excavators + wheel loaders,Reman programme,2026-09-10,Yes
+SRC-032,HCME,Official parts page,Performance Parts,Excavators + wheel loaders,Performance Parts range + European Parts Depot,2026-09-10,Yes
+SRC-033,HCME,Official parts page,High-quality Machinery Paint,All,Paint products,2026-09-10,Yes
+SRC-034,HCME,Official consumables page,Fluids,All,Lubricant range,2026-09-10,Yes
+SRC-035,HCME,Official consumables page,Hitachi Genuine Engine Oil,"ZX-6/-7, ZW-6/-7, Zaxis-3 and older",Engine oil grades + applicability,2026-09-10,Yes
+SRC-036,HCME,Official consumables page,Hitachi Genuine Hydraulic Oil,All excavators,Hydraulic oil + change intervals,2026-09-10,Yes
+SRC-037,HCME,Official consumables page,Hitachi Genuine Grease,40-120 tonne machines,Grease + pump system fit,2026-09-10,Yes
+SRC-038,HCME,Official consumables page,AdBlue®,Stage IV/V SCR machines,AdBlue handling / storage,2026-09-10,Yes
+SRC-039,HCME,Official compliance page (PART NUMBERS),Battery compliance,41 model groups,OEM battery part numbers + machine fitment,2026-09-10,Yes
+SRC-040,HCME,Official after-sales page,Hitachi Premium Rental,8-50 t excavators + wheel loaders,Rental service,2026-09-10,Yes
+SRC-041,HCME,Official after-sales page,Hitachi Premium Used,Excavators + wheel loaders,Used machine warranty terms,2026-09-10,Yes
+SRC-042,HCME,Official dealer page,Dealer network,All,Service delivery channel,2026-09-10,Yes
+SRC-043,HCME,Official financing page,Financing solutions (ZAXIS Finance),Zaxis + ZW,Financing / extended warranty bundling,2026-09-10,Yes
+SRC-044,Hitachi Construction Machinery,Login-gated application,Global e-Service,All connected machines,Telematics portal - ACCESS RESTRICTED (login required),2026-09-10,No
+SRC-045,HCME,Login-gated application,HCME Webshop,All,Parts ordering - ACCESS RESTRICTED (login/register required),2026-09-10,No
+SRC-046,HCME,Login-gated application,HCME Dealer Portal,All,Dealer systems - ACCESS RESTRICTED (login required),2026-09-10,No
+SRC-047,HCME,Official robots.txt,robots.txt,All,Crawl policy verification,2026-09-10,Yes
+SRC-048,Internal (HCME After-Sales Parts Store),Internally generated / AI-illustrated — not an HCME publication,N/A — not sourced from a published HCME page,Zaxis-7 Excavators,Parts catalogue — internally added concept components,2026-09-17,No
+SRC-049,Hitachi Construction Machinery (Europe) NV,Official website - dealer locator JSON feed (public network request made by the page itself),Dealer Network,All (filtered to geographic Europe only),Dealer network - name/address/contact/coordinates,2026-09-23,Yes
+SRC-050,Hitachi Construction Machinery (Europe) NV,Official website - Onsite news article (https://www.hitachicm.com/eu/en/onsite/article/a-future-proof-parts-warehouse/),A future-proof parts warehouse to meet growing demand,All,European Parts Depot facility facts (Oosterhout NL) - existence/size/storage-location-count/stocked-SKU-count as published 2024-07-09; NOT live inventory,2026-09-23,Yes

@@ -1,0 +1,54 @@
+.ng {
+  margin-top: 1rem;
+  background: #fff;
+  border: 1px solid var(--pix-line);
+  border-radius: 14px;
+  padding: 1rem 1rem 0.75rem;
+}
+
+.ng svg { display: block; }
+
+.ng-node rect {
+  fill: #fff;
+  stroke: var(--pix-line);
+  stroke-width: 1.5;
+}
+.ng-node__type { font-size: 9px; letter-spacing: 0.04em; text-transform: uppercase; fill: var(--pix-muted); }
+.ng-node__label { font-size: 12px; font-weight: 600; fill: var(--pix-ink); }
+
+.ng-node--real rect { stroke: var(--pix-orange); }
+.ng-node--derived rect { stroke: var(--pix-muted); stroke-dasharray: 4 3; }
+.ng-node--synthetic rect { stroke: var(--pix-amber); fill: var(--pix-amber-soft); }
+.ng-node--unknown rect { stroke: var(--pix-red); fill: var(--pix-red-soft); }
+
+.ng-edge line { stroke: var(--pix-line); stroke-width: 1.5; }
+.ng-edge--real line { stroke: #cbd3dd; }
+.ng-edge--derived line { stroke: var(--pix-muted); stroke-dasharray: 5 4; }
+.ng-edge--synthetic line { stroke: var(--pix-amber); stroke-dasharray: 2 3; }
+
+.ng-edge rect { fill: #fff; stroke: var(--pix-line); }
+.ng-edge text { font-size: 9px; fill: var(--pix-muted); }
+.ng-edge--synthetic text { fill: #a15c07; }
+.ng-edge--derived text { fill: var(--pix-muted); }
+
+.ng-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.9rem;
+  margin: 0.6rem 0 0.3rem;
+  font-size: 0.78rem;
+  color: var(--pix-muted);
+}
+.ng-legend__item { display: inline-flex; align-items: center; gap: 0.35rem; }
+.ng-swatch { display: inline-block; width: 10px; height: 10px; border-radius: 3px; border: 1.5px solid; }
+.ng-swatch--real { border-color: var(--pix-orange); }
+.ng-swatch--derived { border-color: var(--pix-muted); border-style: dashed; }
+.ng-swatch--synthetic { border-color: var(--pix-amber); background: var(--pix-amber-soft); }
+
+.ng-note {
+  margin: 0.4rem 0 0.85rem;
+  font-size: 0.82rem;
+  color: var(--pix-muted);
+  border-top: 1px dashed var(--pix-line);
+  padding-top: 0.6rem;
+}

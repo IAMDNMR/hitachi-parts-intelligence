@@ -1,0 +1,35 @@
+question_id,category,question_template,intent,requested_entity,machine_entity,part_entity,part_category,dealer_entity,supplier_entity,depot_entity,country_filter,city_filter,relationship_path,required_graph_relationships,follow_up_required,follow_up_type,result_type,relationship_display,data_requirement,fallback,data_class,enabled,verified,verified_on
+P01,Parts Search,Which parts fit my medium excavator?,machine_parts_by_category,,medium excavator,,,,,,,,Machine -[:HAS_PART_FITMENT]-> Part,,FALSE,,PART_RESULTS,,SOURCE_DERIVED,,SOURCE_DERIVED,TRUE,TRUE,2026-09-23
+P02,Parts Search,What hydraulic parts fit ZX210LC-7?,machine_parts,,ZX210LC-7,,,,,,,,Machine -[:HAS_PART_FITMENT]-> Part,,FALSE,,PART_RESULTS,,SOURCE_DERIVED,,SOURCE_DERIVED,TRUE,TRUE,2026-09-23
+P03,Parts Search,Find battery parts,part_search,,,,,,,,,,Part,,FALSE,,PART_RESULTS,,SOURCE_DERIVED,,SOURCE_DERIVED,TRUE,TRUE,2026-09-23
+P04,Parts Search,Show track roller parts,part_search,,,,,,,,,,Part,,FALSE,,PART_RESULTS,,SOURCE_DERIVED,,SOURCE_DERIVED,TRUE,TRUE,2026-09-23
+P05,Parts Search,Tell me everything about PT-001.,part_info,,,PT-001,,,,,,,"Part (+ fitment, assemblies, compliance, alternatives)",,FALSE,,PART_RESULTS,,SOURCE_DERIVED,,SOURCE_DERIVED,TRUE,TRUE,2026-09-23
+P06,Parts Search,Are there alternatives for PT-007?,alternatives,,,PT-007,,,,,,,"Part -> (same part type, shared fitment) Part - candidates for engineering review",,FALSE,,PART_RESULTS,,DERIVED,,DERIVED,TRUE,TRUE,2026-09-23
+P07,Parts Search,Are there alternatives for PT-045?,alternatives,,,PT-045,,,,,,,"Part -> (same part type, shared fitment) Part - none exist",,FALSE,,INSUFFICIENT_DATA,,DERIVED,,DERIVED,TRUE,TRUE,2026-09-23
+D01,Dealers,Which dealers are in Netherlands?,dealer_list,,,,,,,,NL,,DealerBranch -[:LOCATED_IN]-> City -[:IN_COUNTRY]-> Country,,FALSE,,DEALER_RESULTS,,SOURCE_DERIVED,,SOURCE_DERIVED,TRUE,TRUE,2026-09-23
+D02,Dealers,Which dealers are in Germany?,dealer_list,,,,,,,,DE,,DealerBranch -[:LOCATED_IN]-> City -[:IN_COUNTRY]-> Country,,FALSE,,DEALER_RESULTS,,SOURCE_DERIVED,,SOURCE_DERIVED,TRUE,TRUE,2026-09-23
+D03,Dealers,Which dealer is closest to Eindhoven?,nearest_dealer,,,,,,,,,,City coordinates -> DealerBranch (distance),,FALSE,,DEALER_RESULTS,,DERIVED,,DERIVED,TRUE,TRUE,2026-09-23
+D04,Dealers,Show me Pellen Machines.,dealer_lookup,,,,,,,,,,DealerBranch,,FALSE,,DEALER_RESULTS,,SOURCE_DERIVED,,SOURCE_DERIVED,TRUE,TRUE,2026-09-23
+D05,Dealers,Which dealers are in Veldhoven?,dealer_list,,,,,,,,,,DealerBranch -[:LOCATED_IN]-> City,,FALSE,,DEALER_RESULTS,,SOURCE_DERIVED,,SOURCE_DERIVED,TRUE,TRUE,2026-09-23
+R01,Relationships,Show me the dealers and suppliers in Netherlands.,dealer_supplier_network,,,,,,,,NL,,DealerBranch/Supplier -[:LOCATED_IN]-> City -[:IN_COUNTRY]-> Country,,FALSE,,NETWORK_RESULTS,,DERIVED,,DERIVED,TRUE,TRUE,2026-09-23
+R02,Relationships,Which suppliers are in the same city as Pellen Machines?,supplier_lookup,,,,,,,,,,DealerBranch -[:LOCATED_IN]-> City <-[:LOCATED_IN]- Supplier,,FALSE,,NETWORK_RESULTS,,DERIVED,,DERIVED,TRUE,TRUE,2026-09-23
+R03,Relationships,Which suppliers are in the same city as the Oosterhout depot?,supplier_lookup,,,,,,,,,,Depot -[:LOCATED_IN]-> City <-[:LOCATED_IN]- Supplier,,FALSE,,NETWORK_RESULTS,,DERIVED,,DERIVED,TRUE,TRUE,2026-09-23
+R04,Relationships,Which cities have both dealers and suppliers?,dealer_supplier_network,,,,,,,,,,DealerBranch -[:LOCATED_IN]-> City <-[:LOCATED_IN]- Supplier,,FALSE,,NETWORK_RESULTS,,DERIVED,,DERIVED,TRUE,TRUE,2026-09-23
+R07,Relationships,Show me the Netherlands dealer and supplier network.,dealer_supplier_network,,,,,,,,NL,,DealerBranch/Supplier -[:LOCATED_IN]-> City -[:IN_COUNTRY]-> Country,,FALSE,,NETWORK_RESULTS,,DERIVED,,DERIVED,TRUE,TRUE,2026-09-23
+R05,Relationships,Show me the supply chain for PT-001.,supply_chain,,,PT-001,,,,,,,Part -> InventorySnapshot -> Depot (demo) / Part -> Supplier (demo),,FALSE,,GRAPH_PATH,,SYNTHETIC_DEMO,,SYNTHETIC_DEMO,TRUE,TRUE,2026-09-23
+R06,Relationships,Where is PT-001 available?,supply_chain,,,PT-001,,,,,,,Part -> InventorySnapshot -> Depot (demo),,FALSE,,GRAPH_PATH,,SYNTHETIC_DEMO,,SYNTHETIC_DEMO,TRUE,TRUE,2026-09-23
+S01,Suppliers,Which suppliers are in Germany?,supplier_lookup,,,,,,,,DE,,Supplier -[:LOCATED_IN]-> City -[:IN_COUNTRY]-> Country,,FALSE,,SUPPLIER_RESULTS,,SOURCE_DERIVED,,SOURCE_DERIVED,TRUE,TRUE,2026-09-23
+S02,Suppliers,Which suppliers are in Netherlands?,supplier_lookup,,,,,,,,NL,,Supplier -[:LOCATED_IN]-> City -[:IN_COUNTRY]-> Country,,FALSE,,SUPPLIER_RESULTS,,SOURCE_DERIVED,,SOURCE_DERIVED,TRUE,TRUE,2026-09-23
+S03,Suppliers,Which suppliers are in Oosterhout?,supplier_lookup,,,,,,,,,,Supplier -[:LOCATED_IN]-> City,,FALSE,,SUPPLIER_RESULTS,,SOURCE_DERIVED,,SOURCE_DERIVED,TRUE,TRUE,2026-09-23
+S07,Suppliers,Which suppliers are in Eindhoven?,supplier_lookup,,,,,,,,,,Supplier -[:LOCATED_IN]-> City,,FALSE,,SUPPLIER_RESULTS,,SOURCE_DERIVED,,SOURCE_DERIVED,TRUE,TRUE,2026-09-23
+S04,Suppliers,Show me supplier 0000100026.,supplier_lookup,,,,,,,,,,Supplier,,FALSE,,SUPPLIER_RESULTS,,SOURCE_DERIVED,,SOURCE_DERIVED,TRUE,TRUE,2026-09-23
+S05,Suppliers,Which countries have suppliers?,supplier_summary,,,,,,,,,,Supplier -[:LOCATED_IN]-> City -[:IN_COUNTRY]-> Country,,FALSE,,SUPPLIER_RESULTS,,SOURCE_DERIVED,,SOURCE_DERIVED,TRUE,TRUE,2026-09-23
+S06,Suppliers,Which suppliers provide buckets for my medium excavator?,machine_supplier_by_part_category,,medium excavator,,,,,,,,Machine -> Part -> [:SUPPLIED_BY] -> Supplier (not recorded),,FALSE,,NO_RELATIONSHIP,,NOT_CONNECTED,,NOT_CONNECTED,TRUE,TRUE,2026-09-23
+M01,Machines & Fleet,What machines do we have?,machine_list,,,,,,,,,,Machine (all categories),,FALSE,,MACHINE_RESULTS,,SOURCE_DERIVED,,SOURCE_DERIVED,TRUE,TRUE,2026-09-23
+M02,Machines & Fleet,Show me the medium excavators.,machine_list,,medium excavator,,,,,,,,Machine -[:OF_TYPE]-> MachineType,,FALSE,,MACHINE_RESULTS,,SOURCE_DERIVED,,SOURCE_DERIVED,TRUE,TRUE,2026-09-23
+M03,Machines & Fleet,Which machines use PT-001?,impact_analysis,,,PT-001,,,,,,,Part <- HAS_PART_FITMENT - Machine,,FALSE,,MACHINE_RESULTS,,SOURCE_DERIVED,,SOURCE_DERIVED,TRUE,TRUE,2026-09-23
+M04,Machines & Fleet,Tell me about ZX210LC-7.,machine_info,,ZX210LC-7,,,,,,,,Machine -[:HAS_PART_FITMENT]-> Part,,FALSE,,MACHINE_RESULTS,,SOURCE_DERIVED,,SOURCE_DERIVED,TRUE,TRUE,2026-09-23
+M05,Machines & Fleet,Are there multi-grade oil alternatives for genuine engine oil?,alternatives,,,,,,,,,,Part (product domain),,FALSE,,INSUFFICIENT_DATA,,SOURCE_DERIVED,,SOURCE_DERIVED,TRUE,TRUE,2026-09-23
+O01,Orders & Service,What is the status of order-demo-001?,order_status,,,,,,,,,,Order -> Shipment -> DealerBranch -> ServiceJob,,FALSE,,ORDER_JOURNEY,,SYNTHETIC_DEMO,,SYNTHETIC_DEMO,TRUE,TRUE,2026-09-23
+O02,Orders & Service,Which dealer receives order-demo-002?,order_status,,,,,,,,,,Order -> Shipment -> DealerBranch,,FALSE,,ORDER_JOURNEY,,SYNTHETIC_DEMO,,SYNTHETIC_DEMO,TRUE,TRUE,2026-09-23
+O03,Orders & Service,Show me the complete journey of order-demo-001.,order_status,,,,,,,,,,Order -> Allocation -> Shipment -> DealerBranch -> ServiceJob,,FALSE,,ORDER_JOURNEY,,SYNTHETIC_DEMO,,SYNTHETIC_DEMO,TRUE,TRUE,2026-09-23

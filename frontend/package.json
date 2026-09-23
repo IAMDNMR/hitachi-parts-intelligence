@@ -6,7 +6,6 @@
   "//": "Every script calls its tool through `node node_modules/...` rather than by name. The project directory is called Parts&Service, and npm puts node_modules/.bin on PATH for a shell that treats the ampersand as a command separator — so a bare `vite` or `tsc` dies with 'Service\\node_modules\\.bin\\' is not recognized. dev and build were already written this way; typecheck and check were not, and had never run.",
   "scripts": {
     "dev": "node node_modules/vite/bin/vite.js",
-    "dev:api": "node server/dev-api.mjs",
     "build": "node node_modules/vite/bin/vite.js build",
     "preview": "node node_modules/vite/bin/vite.js preview",
     "typecheck": "node node_modules/typescript/bin/tsc --noEmit",
@@ -16,7 +15,6 @@
   "dependencies": {
     "dotenv": "^17.4.2",
     "gsap": "^3.12.5",
-    "neo4j-driver": "^6.2.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
   },

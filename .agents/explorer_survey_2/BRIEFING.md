@@ -1,38 +1,53 @@
-# BRIEFING — 2026-09-17T10:41:00Z
+# BRIEFING — 2026-09-23T11:20:00Z
 
 ## Mission
-Deep read-only inspection and comprehensive survey of all 21 sheets in the authoritative source workbook C:\Users\iamdn\Downloads\HITACHI_OEM_AfterSales_Parts_Services_DataFoundation.xlsx.
+Investigate external European integration landscape, existing documentation, HCME interfaces, carrier services, routing, and OEM portals across all 9 operational domains for Phase 9 Real Integrations.
 
 ## 🔒 My Identity
-- Archetype: Teamwork explorer
-- Roles: Workbook Source Explorer (Survey 2)
+- Archetype: explorer
+- Roles: External European Integration Landscape & Documentation Investigator for Phase 9 Real Integrations
 - Working directory: c:\Users\iamdn\OneDrive\Desktop\Parts&Service\.agents\explorer_survey_2
-- Original parent: fb7a5e7b-f882-47b5-ba12-9c286ec578ff
-- Milestone: Milestone 1 - Discovery & Pre-Cleaning Workbook Audit
+- Original parent: 64b2e471-00ec-4dd4-bc98-bd3df8f8b6e3
+- Milestone: Phase 9 Real Integrations Investigation
 
 ## 🔒 Key Constraints
-- Read-only investigation — do NOT implement production cleaning code
-- Source workbook C:\Users\iamdn\Downloads\HITACHI_OEM_AfterSales_Parts_Services_DataFoundation.xlsx MUST remain completely untouched (byte/timestamp check). DO NOT write to it, open it in read-write mode, or touch its metadata.
-- Strict Neo4j Isolation Guardrail: Under NO circumstances connect to Neo4j, call Neo4j Aura, create constraints, indexes, nodes, or edges.
-- All writes must stay within c:\Users\iamdn\OneDrive\Desktop\Parts&Service\.agents\explorer_survey_2
+- Read-only investigation — do NOT implement
+- Never modify source code or tests directly
+- No integration marked CONNECTED without an actual verified live request execution or approved sandbox response
+- Authoritative classification required: CONNECTED, ACCESS AVAILABLE — READY TO CONNECT, AUTHENTICATED / DEALER ACCESS REQUIRED, PARTNER / COMMERCIAL ACCESS REQUIRED, API NOT PUBLICLY DOCUMENTED, NOT FOUND, NOT APPLICABLE, SYNTHETIC FALLBACK
 
 ## Current Parent
-- Conversation ID: fb7a5e7b-f882-47b5-ba12-9c286ec578ff
-- Updated: 2026-09-17T10:40:31Z
+- Conversation ID: 64b2e471-00ec-4dd4-bc98-bd3df8f8b6e3
+- Updated: 2026-09-23T11:04:00Z
 
 ## Investigation State
-- **Explored paths**: `ORIGINAL_REQUEST.md`, `spec_miner_survey_1/report.md`, `explorer_survey_3/report.md`, `frontend/data/machineCatalogue.js`, `frontend/data/partsCatalogue.js`, `frontend/data/partsStoreCatalogue.js`, `frontend/pages/TheGround/data/graph.ts`, `frontend/tests/machinery.test.mjs`, `frontend/tests/partsStore.test.mjs`.
-- **Key findings**: Complete mapping of all 21 source sheets, exact machine catalogue records (77 records, 85 models), primary keys, foreign key hierarchy, sentinel value patterns (`"NOT PUBLICLY STATED"`), noise/URL isolation strategy, parts master segregation (`ORDERABLE_OEM_PART` vs `PRODUCT_LINE_PART_FAMILY`), regression guards against fake parts and manufactured SKUs.
-- **Unexplored areas**: None — Survey complete.
+- **Explored paths**:
+  - `ORIGINAL_REQUEST.md` (R1-R4 requirements, acceptance criteria)
+  - `docs/architecture/` (`INTEGRATION_ARCHITECTURE.md`, `DATA_OWNERSHIP.md`, `SHIPMENT_ARCHITECTURE.md`, `DEALER_ARCHITECTURE.md`, `SERVICE_ARCHITECTURE.md`)
+  - `docs/research/` (`HCME_EUROPE_OPERATIONAL_DATA_AND_KPI_FOUNDATION.md`, `HCME_PRICING_ORDER_INTEGRATION_RESEARCH.md`, `HCME_EUROPE_PARTS_AND_DEALER_DATA_RESEARCH.md`, `PHASE_7_FINAL_CLOSURE_REPORT.md`, `PHASE_8_FINAL_CLOSURE_REPORT.md`)
+  - `backend/app/integrations/` (contracts: inventory, pricing, order, routing, shipment, shipping_rate, tracking; adapters: dhl, neovia, carrier_base; mocks: 7 test providers)
+  - `backend/app/modules/` (fulfilment, shipment, order, service, allocation)
+  - `backend/.env` and `app/config.py`
+  - External documentation and specifications (DHL Express developer portal, PostNL sandbox, OSRM European demo router, HCME Dealer Locator JSON feed)
+- **Key findings**:
+  - Strict classification applied: No integration marked `CONNECTED` without live execution or approved sandbox response.
+  - Zero public HCME self-service APIs for spare parts ordering, pricing, or live inventory.
+  - OSRM European Road Router and HCME Dealer Locator JSON feed are genuine public European endpoints classified as `ACCESS AVAILABLE — READY TO CONNECT`.
+  - DHL Express Europe and PostNL sandboxes are accessible with developer app registration, classified as `ACCESS AVAILABLE — READY TO CONNECT` (Sandbox).
+  - Neovia Logistics TMS and HCME Core ERP require commercial agreements, classified as `PARTNER / COMMERCIAL ACCESS REQUIRED`.
+  - Global e-Service, ConSite ISF, HCME Dealer Portal require dealer logins, classified as `AUTHENTICATED / DEALER ACCESS REQUIRED`.
+  - Two provider contracts are missing from `contracts/` and must be created: `ServiceProvider` and `DealerProvider`.
+  - Master integration inventory, technical architecture, and `/api/v1/health/integrations` design fully documented in `analysis.md`.
+- **Unexplored areas**: None within Explorer 2 survey scope.
 
 ## Key Decisions Made
-- Fully documented all 21 source sheets in `report.md` and synthesized findings in `handoff.md`.
-- Source workbook remained 100% untouched.
-- Zero Neo4j connections attempted.
+- Fully authored `analysis.md` with complete 9-domain inventory, carrier assessments, and blueprints.
+- Fully authored 5-component self-contained `handoff.md`.
+- Maintained strict non-regression and read-only protocol.
 
 ## Artifact Index
-- c:\Users\iamdn\OneDrive\Desktop\Parts&Service\.agents\explorer_survey_2\DISPATCH.md — Task assignment and instructions
-- c:\Users\iamdn\OneDrive\Desktop\Parts&Service\.agents\explorer_survey_2\BRIEFING.md — Working memory
-- c:\Users\iamdn\OneDrive\Desktop\Parts&Service\.agents\explorer_survey_2\progress.md — Progress and heartbeat
-- c:\Users\iamdn\OneDrive\Desktop\Parts&Service\.agents\explorer_survey_2\report.md — Comprehensive audit report
-- c:\Users\iamdn\OneDrive\Desktop\Parts&Service\.agents\explorer_survey_2\handoff.md — Standard 5-component handoff report
+- .agents/explorer_survey_2/DISPATCH.md — Received instructions
+- .agents/explorer_survey_2/BRIEFING.md — Working memory
+- .agents/explorer_survey_2/progress.md — Heartbeat and task checklist
+- .agents/explorer_survey_2/analysis.md — Comprehensive integration findings
+- .agents/explorer_survey_2/handoff.md — 5-component self-contained handoff

@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HCME Parts &amp; After-Sales Ecosystem — Europe Briefing</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --accent:#E8600C;
+    --tint:#FBE7D7;
+    --charcoal:#262626;
+    --charcoal-soft:#55585B;
+    --muted:#8A8D90;
+    --bg:#FAFAF8;
+    --panel:#FCFCFA;
+    --border:#E2E2DC;
+    --border-dash:#C7C9C4;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;height:100%;background:#1b1b1b;overflow:hidden;font-family:'IBM Plex Sans',Arial,sans-serif;}
+  #viewport{width:100vw;height:100vh;position:relative;overflow:hidden;}
+  #stage{position:absolute;top:0;left:0;width:1920px;height:1080px;transform-origin:0 0;}
+  .slide{position:absolute;top:0;left:0;width:1920px;height:1080px;background:var(--bg);color:var(--charcoal);
+    padding:128px 128px 160px;box-sizing:border-box;display:none;flex-direction:column;gap:24px;}
+  .slide.active{display:flex;}
+  h1,h2{font-family:'Space Grotesk',Arial,sans-serif;font-weight:600;margin:0;color:var(--charcoal);}
+  p{margin:0;}
+  .eyebrow{font-size:24px;font-weight:600;letter-spacing:2px;color:var(--accent);text-transform:uppercase;}
+  .eyebrow-muted{font-size:24px;font-weight:600;letter-spacing:1px;color:var(--muted);text-transform:uppercase;}
+  .lead{font-size:26px;line-height:1.4;color:var(--charcoal-soft);}
+  .footer-source{position:absolute;left:128px;bottom:64px;font-size:24px;color:var(--muted);}
+  .pill{font-size:26px;color:var(--charcoal);background:var(--panel);border:1px solid var(--border);border-radius:999px;padding:10px 24px;}
+  .pill.accent{background:var(--tint);border-color:var(--accent);font-weight:600;}
+  .dims-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;}
+  .dims-grid p{font-size:24px;font-weight:600;text-align:center;color:var(--charcoal);background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:16px 20px;}
+  .banner{background:var(--tint);border-radius:12px;padding:20px 28px;display:flex;align-items:center;justify-content:center;}
+  .banner p{font-size:28px;font-weight:600;color:var(--charcoal);text-align:center;}
+  .note-box{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:18px 28px;}
+  .note-box p{font-size:26px;line-height:1.4;color:var(--charcoal-soft);}
+  .insight{font-size:26px;font-style:italic;line-height:1.4;color:var(--charcoal-soft);}
+  .chain{display:flex;flex-direction:row;align-items:center;justify-content:center;gap:14px;}
+  .chain .box{flex:1;max-width:320px;background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:18px 16px;text-align:center;}
+  .chain .box.hero{background:var(--tint);border-color:var(--accent);}
+  .chain .box p{font-size:23px;font-weight:600;color:var(--charcoal);line-height:1.25;}
+  .chain .arrow{color:var(--accent);font-size:26px;line-height:1;flex:0 0 auto;}
+  .chips-row{display:flex;flex-wrap:wrap;gap:14px;justify-content:center;}
+  .chips-row p{font-size:25px;color:var(--charcoal);background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:12px 22px;}
+  .flow-row{display:flex;align-items:stretch;gap:16px;}
+  .flow-card{flex:1;background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:20px;display:flex;flex-direction:column;gap:8px;justify-content:center;height:150px;}
+  .flow-card.hero{background:var(--tint);border-color:var(--accent);}
+  .flow-card p.title{font-size:24px;font-weight:700;color:var(--charcoal);}
+  .flow-card p.detail{font-size:24px;line-height:1.35;color:var(--charcoal-soft);}
+  .flow-arrow{align-self:center;color:var(--accent);font-size:28px;width:32px;text-align:center;}
+  .two-col{display:flex;gap:32px;}
+  .two-col .panel{flex:1;background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:20px 24px;display:flex;flex-direction:column;gap:6px;}
+  .two-col .panel.dashed{border-style:dashed;border-color:var(--border-dash);}
+  .two-col .panel p.head{font-size:24px;font-weight:700;letter-spacing:1px;text-transform:uppercase;}
+  .two-col .panel p.body{font-size:24px;line-height:1.4;color:var(--charcoal-soft);}
+  table{width:100%;border-collapse:collapse;font-size:24px;color:var(--charcoal);}
+  th{text-align:left;font-weight:700;border-bottom:2px solid var(--charcoal);padding:12px;}
+  th:first-child{color:var(--muted);font-weight:600;text-transform:uppercase;}
+  th:nth-child(2){color:var(--accent);}
+  td{padding:12px;}
+  tr.band{background:var(--panel);}
+  td.label{color:var(--muted);font-weight:600;}
+  .principles{display:grid;grid-template-columns:repeat(2,1fr);gap:24px;}
+  .principles .card{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:24px;display:flex;flex-direction:column;gap:8px;justify-content:center;}
+  .principles .card.wide{grid-column:span 2;}
+  .principles .card p.head{font-size:24px;font-weight:700;color:var(--accent);letter-spacing:1px;}
+  .principles .card p.body{font-size:24px;line-height:1.4;color:#3C3F42;}
+  .journey-host{display:flex;flex-direction:column;gap:24px;}
+  .journey-row{display:flex;gap:16px;}
+  .step{flex:1;background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:16px 18px;display:flex;flex-direction:column;gap:6px;justify-content:center;height:160px;}
+  .step.close{background:var(--tint);border-color:var(--accent);}
+  .step p.num{font-size:22px;font-weight:600;color:var(--accent);}
+  .step p.name{font-size:24px;font-weight:700;color:var(--charcoal);line-height:1.2;}
+  .step p.desc{font-size:22px;line-height:1.3;color:#5B5F63;}
+  .row-turn{display:flex;align-items:center;justify-content:center;color:var(--accent);font-size:26px;gap:8px;}
+  .row-turn span.line{flex:1;height:1px;background:var(--border);}
+  .closing-line{font-size:26px;font-style:italic;color:#3C3F42;text-align:center;}
+
+  #controls{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:16px;
+    background:rgba(0,0,0,0.55);backdrop-filter:blur(4px);padding:10px 18px;border-radius:999px;z-index:50;}
+  #controls button{background:none;border:1px solid rgba(255,255,255,0.4);color:#fff;font-size:18px;width:34px;height:34px;border-radius:50%;cursor:pointer;}
+  #controls button:hover{background:rgba(255,255,255,0.15);}
+  #counter{color:#fff;font-family:'IBM Plex Sans',Arial,sans-serif;font-size:14px;min-width:44px;text-align:center;}
+  #notes-toggle{border-radius:999px !important;width:auto !important;padding:0 14px;font-size:13px !important;}
+
+  #notes-panel{position:fixed;left:0;right:0;bottom:0;max-height:32vh;overflow:auto;background:#141414;color:#e8e6e2;
+    font-family:'IBM Plex Sans',Arial,sans-serif;font-size:16px;line-height:1.6;padding:22px 40px 80px;display:none;z-index:40;
+    border-top:2px solid var(--accent);}
+  #notes-panel.show{display:block;}
+  #notes-panel .notes-label{color:var(--accent);font-weight:600;letter-spacing:1px;text-transform:uppercase;font-size:13px;margin-bottom:8px;}
+</style>
+</head>
+<body>
+
+<div id="viewport">
+  <div id="stage">
+
+    <!-- SLIDE 1 -->
+    <section class="slide active" data-notes="This is the ecosystem we're building on for HCME. Hitachi already has real capabilities in place — a dealer network, a Dealer Portal, Global e-Service, ConSite, Selected Parts, genuine and remanufactured parts, a regional-to-central distribution structure, and a public telematics API. I want to be precise about what this means: the research confirms these exist in the public record globally. It does not confirm every detail of how HCME Europe's own systems are wired internally — that's something we still need to validate locally, and the next slide is where we start being specific about Europe.">
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <p class="eyebrow">HCME · Parts &amp; After-Sales</p>
+        <h1 style="font-size:48px;line-height:1.15">The HCME After-Sales &amp; Parts Ecosystem</h1>
+        <p class="lead" style="width:1300px">What Hitachi Construction Machinery Europe's parts and service ecosystem is built on today.</p>
+      </div>
+      <div class="chain">
+        <div class="box hero"><p>Hitachi Construction Machinery</p></div>
+        <div class="arrow">&#8594;</div>
+        <div class="box"><p>Parts / Supply Network</p></div>
+        <div class="arrow">&#8594;</div>
+        <div class="box"><p>Dealer Network</p></div>
+        <div class="arrow">&#8594;</div>
+        <div class="box"><p>Customer</p></div>
+        <div class="arrow">&#8594;</div>
+        <div class="box"><p>Machine / Service</p></div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <p class="eyebrow" style="text-align:center">Confirmed capabilities</p>
+        <div class="chips-row">
+          <p>Dealer network</p>
+          <p>Dealer Portal 2.0</p>
+          <p>Global e-Service</p>
+          <p>ConSite</p>
+          <p>Selected Parts</p>
+          <p>Genuine Parts</p>
+          <p>Remanufactured Parts</p>
+          <p>Regional &amp; central distribution</p>
+          <p>Public Telematics API</p>
+        </div>
+      </div>
+      <div class="note-box"><p>Research confirms the ecosystem exists globally; exact HCME Europe operational integrations still require internal confirmation.</p></div>
+      <p class="footer-source">Source: Phase 0 OEM Parts Fulfilment Research</p>
+    </section>
+
+    <!-- SLIDE 2 -->
+    <section class="slide" data-notes="Parts move through a tiered network: a central depot in Tsukuba that runs 24/7/365 and is AEO customs-certified — which matters a lot in Europe, where a shipment often crosses several borders — feeding four regional depots, which supply the dealer network, which serves the customer and the machine. For Europe specifically, the research confirms two customer-facing digital tools: Online Parts Finder and ConSite ISF. What I'm not going to claim is exact European depot locations or dealer territory counts — that detail isn't in the public research, so I'm flagging it honestly as something we still need to confirm internally rather than guessing.">
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <p class="eyebrow">Supply &amp; dealer network</p>
+        <h2 style="font-size:46px">How Parts Move Through the European Network</h2>
+      </div>
+      <div class="flow-row">
+        <div class="flow-card">
+          <p class="title">Central Parts Depot</p>
+          <p class="detail">Tsukuba, Japan — 24/7/365, AEO customs-certified</p>
+        </div>
+        <div class="flow-arrow">&#8594;</div>
+        <div class="flow-card">
+          <p class="title">Regional Parts Depots</p>
+          <p class="detail">Four depots, global network</p>
+        </div>
+        <div class="flow-arrow">&#8594;</div>
+        <div class="flow-card hero">
+          <p class="title">Dealer Network</p>
+          <p class="detail">Local sales, stock &amp; service — including Europe</p>
+        </div>
+        <div class="flow-arrow">&#8594;</div>
+        <div class="flow-card">
+          <p class="title">Customer / Machine</p>
+          <p class="detail">Point of use</p>
+        </div>
+      </div>
+      <div class="two-col">
+        <div class="panel">
+          <p class="head" style="color:var(--accent)">Confirmed</p>
+          <p class="body">24/7/365 operation from Tsukuba; AEO customs-certified for fast cross-border movement. Europe: Online Parts Finder and ConSite ISF are confirmed digital tools.</p>
+        </div>
+        <div class="panel dashed">
+          <p class="head" style="color:var(--muted)">Unknown / needs confirmation</p>
+          <p class="body">Exact European depot locations and dealer territory detail are not publicly published — this needs internal confirmation.</p>
+        </div>
+      </div>
+      <p class="footer-source">Source: Phase 0 OEM Parts Fulfilment Research</p>
+    </section>
+
+    <!-- SLIDE 3 -->
+    <section class="slide" data-notes="To sanity-check what we found on Hitachi, we lined it up against Caterpillar and Komatsu — not to rank them, just to see what's common and what's different. All three are dealer-centred. Where they differ is mostly in how mature the digital layer is: Caterpillar has gone furthest, with Parts.Cat.com and a documented availability commitment. None of the three expose an open parts-ordering API to the public — Hitachi included. The pattern that matters most for our design: across every OEM we looked at, the dealer stays the critical fulfilment layer. That's the constant we're building the HCME journey around.">
+      <h2 style="font-size:48px">What Hitachi Does, Compared</h2>
+      <table>
+        <tr>
+          <th style="width:24%">Topic</th>
+          <th style="width:25.3%">Hitachi</th>
+          <th style="width:25.3%">Caterpillar</th>
+          <th style="width:25.3%">Komatsu</th>
+        </tr>
+        <tr class="band">
+          <td class="label">Dealer fulfilment</td>
+          <td>Dealer-centred</td>
+          <td>Dealer-centred</td>
+          <td>Dealer-centred, hybrid</td>
+        </tr>
+        <tr>
+          <td class="label">Customer-facing parts experience</td>
+          <td>Dealer Portal 2.0 / Selected Parts</td>
+          <td>Parts.Cat.com + Cat IP</td>
+          <td>My Komatsu</td>
+        </tr>
+        <tr class="band">
+          <td class="label">Public developer / API</td>
+          <td>Telematics API</td>
+          <td>Cat Digital Marketplace / VisionLink</td>
+          <td>ISO 15143-3 / AEMP 2.0 telematics</td>
+        </tr>
+        <tr>
+          <td class="label">Parts API</td>
+          <td>Not found publicly</td>
+          <td>No open API — Cat IP integration</td>
+          <td>No public API found</td>
+        </tr>
+        <tr class="band">
+          <td class="label">Formal availability guarantee</td>
+          <td>Not found</td>
+          <td>Documented commitment</td>
+          <td>Not found</td>
+        </tr>
+      </table>
+      <div class="banner"><p>Common pattern: the dealer remains a critical fulfilment layer.</p></div>
+      <p class="footer-source">Source: Phase 0 OEM Parts Fulfilment Research</p>
+    </section>
+
+    <!-- SLIDE 4 -->
+    <section class="slide" data-notes="So what are we actually trying to achieve? Five things. First, make the dealer a connected partner in the journey, not just a sales point — the research shows that's how the whole industry already works. Second, give real visibility end to end: where stock is, and how it gets to the customer. Third, ground everything in what Hitachi already has — ConSite, e-Service, the Dealer Portal — rather than waiting for a public parts API that simply doesn't exist today. Fourth, connect order, shipment, dealer hand-off and service into one journey instead of treating them as separate systems. And fifth, design it so real ERP, WMS and carrier systems can plug in over time, without us having to redesign the core flow. That's the goal — now let's look at the journey we're going to demonstrate.">
+      <h2 style="font-size:46px">A Connected Parts-to-Service Journey</h2>
+      <div class="principles">
+        <div class="card">
+          <p class="head">01 · DEALER AS PARTNER</p>
+          <p class="body">Make the dealer a connected, first-class part of the journey — not just a sales point.</p>
+        </div>
+        <div class="card">
+          <p class="head">02 · VISIBILITY, END TO END</p>
+          <p class="body">Know where stock exists, then how it reaches the customer — availability and fulfilment shown clearly, at every step.</p>
+        </div>
+        <div class="card">
+          <p class="head">03 · BUILD ON WHAT EXISTS</p>
+          <p class="body">Ground the journey in Hitachi's real tools — ConSite, e-Service, Dealer Portal — not a public parts API that doesn't exist yet.</p>
+        </div>
+        <div class="card">
+          <p class="head">04 · ONE CONNECTED FLOW</p>
+          <p class="body">Join order, shipment, dealer hand-off and service into one journey, instead of separate, disconnected steps.</p>
+        </div>
+        <div class="card wide">
+          <p class="head">05 · READY FOR REAL SYSTEMS</p>
+          <p class="body">Design so real ERP, WMS, logistics and carrier systems can be connected progressively — without redesigning the core journey.</p>
+        </div>
+      </div>
+      <div class="banner"><p>Research gives us the foundation. Now we can define the connected HCME journey.</p></div>
+      <p class="footer-source">Source: Phase 0 OEM Parts Fulfilment Research</p>
+    </section>
+
+    <!-- SLIDE 5 -->
+    <section class="slide" data-notes="This is the journey we're about to show you. It starts in the Parts Store and walks through selecting a part, checking availability, choosing how to fulfil it, allocating stock, placing the order, shipping it, handing it to the dealer, completing the service, and closing it out. For this release, our scope runs from Parts Store through Fulfilment, Dealer and Service. Telematics and machine signals are a real future extension — they could one day trigger a parts requirement upstream — but they're not part of what you're going to see today. To be clear about intent: we are not trying to replace anything in the Hitachi ecosystem. We're designing the connected fulfilment flow that sits around it — and with that, let's move into the demo.">
+      <h2 style="font-size:46px">The Target Journey We Will Demonstrate</h2>
+      <div class="journey-host">
+        <div class="journey-row">
+          <div class="step"><p class="num">01</p><p class="name">Parts Store</p><p class="desc">Browse &amp; search catalogue</p></div>
+          <div class="step"><p class="num">02</p><p class="name">Select Part</p><p class="desc">Part + quantity + destination</p></div>
+          <div class="step"><p class="num">03</p><p class="name">Availability</p><p class="desc">Where is the part available?</p></div>
+          <div class="step"><p class="num">04</p><p class="name">Fulfilment</p><p class="desc">How can we get it there?</p></div>
+          <div class="step"><p class="num">05</p><p class="name">Allocate</p><p class="desc">Reserve / commit stock</p></div>
+        </div>
+        <div class="row-turn"><span class="line"></span><span>&#8595; continues &#8595;</span><span class="line"></span></div>
+        <div class="journey-row">
+          <div class="step"><p class="num">06</p><p class="name">Order</p><p class="desc">Create confirmed order</p></div>
+          <div class="step"><p class="num">07</p><p class="name">Shipment</p><p class="desc">Dispatch + tracking</p></div>
+          <div class="step"><p class="num">08</p><p class="name">Dealer</p><p class="desc">Receive and coordinate</p></div>
+          <div class="step"><p class="num">09</p><p class="name">Service</p><p class="desc">Install the part</p></div>
+          <div class="step close"><p class="num">10</p><p class="name">Close</p><p class="desc">Complete service lifecycle</p></div>
+        </div>
+      </div>
+      <div class="two-col">
+        <div class="panel">
+          <p class="head" style="color:var(--accent)">Current scope</p>
+          <p class="body" style="color:#3C3F42">Parts Store &#8594; Parts Fulfilment &#8594; Dealer &#8594; Service</p>
+        </div>
+        <div class="panel dashed">
+          <p class="head" style="color:var(--muted)">Future extension</p>
+          <p class="body">Telematics / machine signals could become an upstream trigger — not required for this release.</p>
+        </div>
+      </div>
+      <p class="closing-line">We are not replacing the Hitachi ecosystem — we are designing the connected fulfilment flow around it.</p>
+      <p class="footer-source">Source: Phase 0 OEM Parts Fulfilment Research</p>
+    </section>
+
+  </div>
+</div>
+
+<div id="notes-panel"><div class="notes-label">Speaker notes</div><div id="notes-text"></div></div>
+
+<div id="controls">
+  <button id="prev" title="Previous (←)">&#8249;</button>
+  <span id="counter">1 / 5</span>
+  <button id="next" title="Next (→)">&#8250;</button>
+  <button id="notes-toggle" title="Toggle speaker notes (N)">Notes</button>
+</div>
+
+<script>
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  let current = 0;
+  const counter = document.getElementById('counter');
+  const notesPanel = document.getElementById('notes-panel');
+  const notesText = document.getElementById('notes-text');
+
+  function render(){
+    slides.forEach((s,i)=>s.classList.toggle('active', i===current));
+    counter.textContent = (current+1) + ' / ' + slides.length;
+    notesText.textContent = slides[current].getAttribute('data-notes') || '';
+  }
+  function go(delta){
+    current = Math.max(0, Math.min(slides.length-1, current+delta));
+    render();
+  }
+  document.getElementById('prev').addEventListener('click', ()=>go(-1));
+  document.getElementById('next').addEventListener('click', ()=>go(1));
+  document.getElementById('notes-toggle').addEventListener('click', ()=>notesPanel.classList.toggle('show'));
+
+  window.addEventListener('keydown', (e)=>{
+    if(e.key==='ArrowRight' || e.key===' ') go(1);
+    else if(e.key==='ArrowLeft') go(-1);
+    else if(e.key.toLowerCase()==='n') notesPanel.classList.toggle('show');
+  });
+
+  function scaleStage(){
+    const stage = document.getElementById('stage');
+    const s = Math.min(window.innerWidth/1920, window.innerHeight/1080);
+    stage.style.transform = 'scale(' + s + ')';
+    stage.style.left = ((window.innerWidth - 1920*s)/2) + 'px';
+    stage.style.top = ((window.innerHeight - 1080*s)/2) + 'px';
+  }
+  window.addEventListener('resize', scaleStage);
+  scaleStage();
+  render();
+</script>
+</body>
+</html>

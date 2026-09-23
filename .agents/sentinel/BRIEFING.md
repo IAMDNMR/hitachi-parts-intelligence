@@ -1,33 +1,36 @@
-# BRIEFING — 2026-09-17T10:42:22Z
+# BRIEFING — 2026-09-23T11:03:00Z
 
 ## Mission
-Clean, normalize, deduplicate, and validate the 21-sheet HCME After-Sales data foundation workbook into HITACHI_AFTERSALES_NEO4J_CLEAN.xlsx, 14 import CSVs, and audit reports without connecting to Neo4j.
+Supervise HCME Europe OEM Parts & Services Platform Phase 9: Real Integrations execution, monitor orchestrator progress and liveness, and conduct independent victory audit before completion.
 
 ## 🔒 My Identity
 - Archetype: sentinel
 - Working directory: c:\Users\iamdn\OneDrive\Desktop\Parts&Service\.agents\sentinel
-- Orchestrator: fb7a5e7b-f882-47b5-ba12-9c286ec578ff
+- Orchestrator: 64b2e471-00ec-4dd4-bc98-bd3df8f8b6e3
 - Victory Auditor: to be spawned on victory claim
 
 ## 🔒 Key Constraints
 - No technical decisions — relay only
 - Victory Audit is MANDATORY before reporting completion
-- Strict Neo4j Isolation Guardrail: Under NO circumstances connect to Neo4j, call Neo4j Aura, create Neo4j constraints, indexes, nodes, or edges
-- Authoritative source workbook C:\Users\iamdn\Downloads\HITACHI_OEM_AfterSales_Parts_Services_DataFoundation.xlsx must remain untouched
-- Pipeline must be fully deterministic: running audit_workbook.py and export_clean_data.py twice produces byte-identical outputs
+- Strict Europe-only boundary enforcement (0 US records)
+- Neo4j AuraDB is sole single source of runtime truth
+- Non-regression across all backend, frontend, allocation concurrency, and graph integrity tests
 
 ## User Context
-- **Last user request**: Clean, normalize, deduplicate, and validate the 21-sheet HCME After-Sales data foundation workbook, producing HITACHI_AFTERSALES_NEO4J_CLEAN.xlsx, 14 normalized CSVs in neo4j/data/, and comprehensive reports.
+- **Last user request**: Phase 9: Real Integrations replacing prototype NOT_CONNECTED boundaries with verified real European integrations, preserving Neo4j AuraDB runtime graph core and Phase 0-8 verified state.
 - **Pending clarifications**: none
-- **Delivered results**: none
+- **Delivered results**: Initialized Phase 9, dispatched Project Orchestrator, scheduled monitoring crons.
 
 ## Project Status
-- **Phase**: in progress (Phase 2 - Dual Track Execution)
-- **Active Orchestrator**: fb7a5e7b-f882-47b5-ba12-9c286ec578ff
-- **Orchestrator Status**: Phase 0 survey synthesized into PROJECT.md and TEST_INFRA.md. Dual Track active:
-  * E2E Testing Track (M-TEST): test_writer_m_test building test harness.
-  * Implementation Track M1: 3 parallel explorers active for audit_workbook.py and workbook_audit.md.
-  * Cumulative subagent spawn count: 7 / 16.
+- **Phase**: in progress
+- **Active Orchestrator**: 64b2e471-00ec-4dd4-bc98-bd3df8f8b6e3 (.agents/orchestrator_phase9/)
+- **Monitoring Crons**:
+  - Cron 1 (Progress Reporting, */8 * * * *): task-15
+  - Cron 2 (Liveness Check, */10 * * * *): task-17
+
+## Routing Decision
+- **Route**: General (teamwork_preview_orchestrator)
+- **Rationale**: Full multi-domain software engineering and integration lifecycle involving architecture protection, provider adapter implementation, docs, backend & frontend verification.
 
 ## Victory Audit Status
 - **Triggered**: no
@@ -35,6 +38,7 @@ Clean, normalize, deduplicate, and validate the 21-sheet HCME After-Sales data f
 - **Retry count**: 0
 
 ## Artifact Index
-- ORIGINAL_REQUEST.md — Authoritative record of user requirements
-- PROJECT.md — Decomposed project plan and milestones
-- TEST_INFRA.md — E2E test harness specifications
+- c:\Users\iamdn\OneDrive\Desktop\Parts&Service\.agents\ORIGINAL_REQUEST.md — Authoritative record of user request
+- c:\Users\iamdn\OneDrive\Desktop\Parts&Service\ORIGINAL_REQUEST.md — Root workspace copy of original request
+- c:\Users\iamdn\OneDrive\Desktop\Parts&Service\.agents\sentinel\BRIEFING.md — Sentinel persistent briefing
+- c:\Users\iamdn\OneDrive\Desktop\Parts&Service\.agents\orchestrator_phase9\context.md — Orchestrator workspace initialization
