@@ -33,6 +33,7 @@ Data legend used in the UI and here:
 | Stock snapshots (39, for 37 of 60 parts) | Stock-out exposure (marked DEMO), candidate stock | No stock feed |
 | Orders, shipments, customs context | Order traceability, order status, customs rule check | Demo orders plus orders created while testing the Parts Store (5 orders, 4 shipments today) |
 | Transport options (Road/Rail/Air) | Fulfilment options | Deterministic synthetic European transport data |
+| Demo part references (`DEMO-...`) for store items without a verified HCME part number (12 with unverified numbers, product families, attachments, unidentified items) | Cart → Continue to demo order → Stage 1–7 lifecycle | Not official part numbers; labelled "DEMO PART REFERENCE — NOT AN OFFICIAL HCME PART NUMBER", never shown as verified. Real numbers (C1–C2 below) replace them |
 
 Nothing demo-only is shown without a label: the Parts Intelligence header carries the legend, each Graph Insights tab carries
 REAL / SYNTHETIC_DEMO / NOT_CONNECTED chips, and disruption results list the provenance of every block.
