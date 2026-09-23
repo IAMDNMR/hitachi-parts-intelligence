@@ -19,8 +19,27 @@ export interface ItemEligibilityResult {
   badgeClass: string
   buttonLabel: string
   buttonTitle: string
-  actionType: 'CHECKOUT' | 'IDENTIFY_SERIAL' | 'REQUEST_VERIFICATION' | 'REQUEST_IDENTIFICATION'
+  actionType: 'CHECKOUT' | 'DEMO_CHECKOUT' | 'IDENTIFY_SERIAL' | 'REQUEST_VERIFICATION' | 'REQUEST_IDENTIFICATION'
   note: string | null
+  /** Labelled demo reference (DEMO-...) used to run the DEMONSTRATION order lifecycle for an unverified item. Never an OEM part number. */
+  demoPartReference: string | null
+}
+
+export const DEMO_PART_PREFIX = 'DEMO-'
+
+export function isDemoPartReference(partNumber: string | null | undefined): boolean {
+  return !!partNumber && partNumber.toUpperCase().startsWith(DEMO_PART_PREFIX)
+}
+
+export function demoPartReferenceFor(item: CartItem): string {
+  const base = (item.partNumber && item.partNumber.trim() && item.partNumber !== '—' && !/^(not |multiple)/i.test(item.partNumber.trim())
+    ? item.partNumber
+    : item.id
+  )
+    .toUpperCase()
+    .replace(/[^A-Z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+  return `${DEMO_PART_PREFIX}${base}`
 }
 
 export function getProductForCartItem(item: CartItem): StoreProduct | undefined {
@@ -37,7 +56,7 @@ export function getProductForCartItem(item: CartItem): StoreProduct | undefined 
  *
  * All non-eligible items present active, guided paths (no dead disabled buttons).
  */
-export function classifyCartItem(item: CartItem): ItemEligibilityResult {
+function classifyBase(item: CartItem): Omit<ItemEligibilityResult, 'demoPartReference'> {
   const product = getProductForCartItem(item)
   const isAmbiguous =
     (item.id === 'hydraulic-cylinder' || item.id === 'fuel-injection-pump') &&
@@ -147,6 +166,28 @@ export function classifyCartItem(item: CartItem): ItemEligibilityResult {
     buttonTitle: 'Submit an enquiry to identify the exact OEM part number for your machine',
     actionType: 'REQUEST_IDENTIFICATION',
     note: 'Published OEM part number required to check warehouse stock. Submit an enquiry with your machine model and serial number.',
+  }
+}
+
+/**
+ * Every catalogue item can move into the demonstration order workflow. Verified parts use their real OEM number; every other item runs the
+ * same workflow with a clearly labelled DEMO- reference (never presented as an OEM part number, never green/"verified"). Ambiguous
+ * assemblies keep the machine/serial identification and can also continue as a demo order.
+ */
+export function classifyCartItem(item: CartItem): ItemEligibilityResult {
+  const base = classifyBase(item)
+  if (base.actionType === 'CHECKOUT') return { ...base, demoPartReference: null }
+  const ref = demoPartReferenceFor(item)
+  if (base.actionType === 'IDENTIFY_SERIAL') return { ...base, demoPartReference: ref }
+  return {
+    ...base,
+    actionType: 'DEMO_CHECKOUT',
+    badgeLabel: '⚠ Demo order — part not verified',
+    badgeClass: 'ps-cart-badge--warning',
+    buttonLabel: 'Continue to demo order →',
+    buttonTitle: 'Run the demonstration order workflow with a labelled demo part reference (not an official HCME part number)',
+    note: 'Not an official HCME part number. The demonstration order workflow runs with a labelled demo reference; no real HCME order is created.',
+    demoPartReference: ref,
   }
 }
 

@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict'
 import test, { describe } from 'node:test'
 
-import { classifyCartItem, isFulfilmentEligible } from '../pages/PartsStore/eligibility.ts'
+import { classifyCartItem, isFulfilmentEligible, demoPartReferenceFor, isDemoPartReference } from '../pages/PartsStore/eligibility.ts'
 import { partsStoreCatalogue } from '../data/partsStoreCatalogue.ts'
 
 describe('Parts Store Data-Truth Eligibility Contract (Phase 11)', () => {
@@ -24,7 +24,7 @@ describe('Parts Store Data-Truth Eligibility Contract (Phase 11)', () => {
     const res = classifyCartItem(pt054)
     assert.equal(res.classification, 'UNVERIFIED_SOURCE_MISMATCH')
     assert.equal(res.isEligible, false)
-    assert.equal(res.actionType, 'REQUEST_VERIFICATION')
+    assert.equal(res.actionType, 'DEMO_CHECKOUT')
     assert.equal(isFulfilmentEligible(pt054), false)
   })
 
@@ -34,7 +34,7 @@ describe('Parts Store Data-Truth Eligibility Contract (Phase 11)', () => {
     const res = classifyCartItem(pt055)
     assert.equal(res.classification, 'UNVERIFIED_SOURCE_MISMATCH')
     assert.equal(res.isEligible, false)
-    assert.equal(res.actionType, 'REQUEST_VERIFICATION')
+    assert.equal(res.actionType, 'DEMO_CHECKOUT')
     assert.equal(isFulfilmentEligible(pt055), false)
   })
 
@@ -52,7 +52,7 @@ describe('Parts Store Data-Truth Eligibility Contract (Phase 11)', () => {
       const res = classifyCartItem(part)
       assert.equal(res.classification, 'UNVERIFIED_INTERNAL_REF', `${id} should be UNVERIFIED_INTERNAL_REF`)
       assert.equal(res.isEligible, false, `${id} must not be checkout-eligible`)
-      assert.equal(res.actionType, 'REQUEST_VERIFICATION')
+      assert.equal(res.actionType, 'DEMO_CHECKOUT')
       assert.equal(isFulfilmentEligible(part), false)
     }
   })
@@ -100,5 +100,29 @@ describe('Parts Store Data-Truth Eligibility Contract (Phase 11)', () => {
       assert.notEqual(res.actionType, 'CHECKOUT')
       assert.equal(isFulfilmentEligible(part), false)
     }
+  })
+
+  test('EVERY catalogue item can move into the order workflow; unverified ones use a labelled DEMO reference and are never green', () => {
+    for (const part of partsStoreCatalogue) {
+      const res = classifyCartItem(part)
+      if (res.actionType === 'CHECKOUT') {
+        assert.equal(res.demoPartReference, null)
+        assert.equal(res.isEligible, true)
+      } else {
+        assert.ok(['DEMO_CHECKOUT', 'IDENTIFY_SERIAL'].includes(res.actionType), `${part.id}: dead action ${res.actionType}`)
+        assert.equal(res.isEligible, false, `${part.id}: an unverified item must never be marked verified`)
+        assert.ok(isDemoPartReference(res.demoPartReference), `${part.id}: no labelled demo reference`)
+        assert.ok(!/verif(y|ication)/i.test(res.buttonLabel), `${part.id}: button must not ask for verification`)
+      }
+      assert.ok(res.badgeLabel && res.buttonLabel && res.partNumberDisplay)
+      assert.ok(!/undefined|null|NaN|\[object/i.test(`${res.badgeLabel} ${res.partNumberDisplay} ${res.note ?? ''}`), `${part.id}: unsafe text`)
+    }
+  })
+
+  test('demo references are labelled, deterministic and never look like an OEM number', () => {
+    const item = { id: 'wheel-loader-bucket', name: 'Wheel loader bucket', qty: 1, machine: null, image: null, partNumber: null }
+    assert.equal(demoPartReferenceFor(item), 'DEMO-WHEEL-LOADER-BUCKET')
+    assert.equal(demoPartReferenceFor({ ...item, partNumber: '4621008' }), 'DEMO-4621008')
+    assert.equal(isDemoPartReference('4621008'), false)
   })
 })

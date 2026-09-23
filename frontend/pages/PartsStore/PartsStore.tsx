@@ -737,10 +737,10 @@ interface SerialIdentificationModalProps {
   item: CartItem
   onClose: () => void
   onResolve: (updatedItem: CartItem) => void
-  onRequestQuote: () => void
+  onDemoOrder: () => void
 }
 
-function SerialIdentificationModal({ item, onClose, onResolve, onRequestQuote }: SerialIdentificationModalProps) {
+function SerialIdentificationModal({ item, onClose, onResolve, onDemoOrder }: SerialIdentificationModalProps) {
   const [selectedMachine, setSelectedMachine] = useState('ZX210LC-6')
   const [serialPin, setSerialPin] = useState('')
   const [selectedAssembly, setSelectedAssembly] = useState(
@@ -879,11 +879,11 @@ function SerialIdentificationModal({ item, onClose, onResolve, onRequestQuote }:
               className="ps-modal__secondary"
               onClick={() => {
                 onClose()
-                onRequestQuote()
+                onDemoOrder()
               }}
-              title="Submit machine serial lookup enquiry to HCME parts desk"
+              title="Cannot resolve the exact assembly? Continue with the demonstration order workflow"
             >
-              Need help? Request Support →
+              Continue to demo order →
             </button>
             <button type="submit">
               Apply &amp; Enable Fulfilment →
@@ -895,7 +895,7 @@ function SerialIdentificationModal({ item, onClose, onResolve, onRequestQuote }:
   )
 }
 
-function QuoteCartPanel({ cart, setCart, onClose, onRequestQuote }: QuoteCartPanelProps) {
+function QuoteCartPanel({ cart, setCart, onClose }: QuoteCartPanelProps) {
   // The cart item being fulfilled in the Guided Checkout Journey
   const [checkoutItem, setCheckoutItem] = useState<CartItem | null>(null)
   const [serialModalItem, setSerialModalItem] = useState<CartItem | null>(null)
@@ -904,7 +904,6 @@ function QuoteCartPanel({ cart, setCart, onClose, onRequestQuote }: QuoteCartPan
   const changeQty = (id: string, delta: number) =>
     setCart(cart.map((item) => (item.id === id ? { ...item, qty: Math.max(1, item.qty + delta) } : item)))
 
-  const hasEligibleItems = cart.some(isFulfilmentEligible)
 
   return (
     <>
@@ -974,13 +973,20 @@ function QuoteCartPanel({ cart, setCart, onClose, onRequestQuote }: QuoteCartPan
                         <button
                           type="button"
                           className="ps-quote-cart-list__inquire"
-                          onClick={() => {
-                            onClose()
-                            onRequestQuote()
-                          }}
+                          onClick={() => setCheckoutItem({ ...item, partNumber: elig.demoPartReference ?? item.partNumber })}
                           title={elig.buttonTitle}
                         >
                           {elig.buttonLabel}
+                        </button>
+                      )}
+                      {elig.actionType === 'IDENTIFY_SERIAL' && elig.demoPartReference && (
+                        <button
+                          type="button"
+                          className="ps-quote-cart-list__demo"
+                          onClick={() => setCheckoutItem({ ...item, partNumber: elig.demoPartReference })}
+                          title="Skip identification and run the demonstration order workflow with a labelled demo reference"
+                        >
+                          Continue to demo order →
                         </button>
                       )}
                       <button type="button" className="ps-quote-cart-list__remove" onClick={() => removeItem(item.id)} aria-label={`Remove ${item.name}`}>Remove</button>
@@ -992,32 +998,21 @@ function QuoteCartPanel({ cart, setCart, onClose, onRequestQuote }: QuoteCartPan
 
             <footer className="ps-modal__footer">
               <button type="button" className="ps-modal__secondary" onClick={onClose}>Keep browsing</button>
-              {hasEligibleItems ? (
-                <button
-                  type="button"
-                  onClick={() => {
-                    const target = cart.find(isFulfilmentEligible)
-                    if (target) setCheckoutItem(target)
-                  }}
-                  disabled={cart.length === 0}
-                  title="Proceed to checkout with verified items"
-                >
-                  Proceed to Checkout →
-                </button>
-              ) : (
-                <button
-                  type="button"
-                  onClick={() => {
-                    onClose()
-                    onRequestQuote()
-                  }}
-                  disabled={cart.length === 0}
-                  className="ps-modal__inquire-all"
-                  title="Submit enquiry to identify items in cart"
-                >
-                  Request Identification for Cart →
-                </button>
-              )}
+              <button
+                type="button"
+                onClick={() => {
+                  const first = cart[0]
+                  if (!first) return
+                  const target = cart.find(isFulfilmentEligible) ?? first
+                  const e = classifyCartItem(target)
+                  if (e.actionType === 'IDENTIFY_SERIAL') setSerialModalItem(target)
+                  else setCheckoutItem({ ...target, partNumber: e.demoPartReference ?? target.partNumber })
+                }}
+                disabled={cart.length === 0}
+                title="Proceed to the order workflow"
+              >
+                Proceed to Checkout →
+              </button>
             </footer>
           </div>
         </div>
@@ -1031,10 +1026,10 @@ function QuoteCartPanel({ cart, setCart, onClose, onRequestQuote }: QuoteCartPan
             setCart((prev) => prev.map((c) => (c.id === updatedItem.id ? updatedItem : c)))
             setSerialModalItem(null)
           }}
-          onRequestQuote={() => {
+          onDemoOrder={() => {
+            const target = classifyCartItem(serialModalItem)
             setSerialModalItem(null)
-            onClose()
-            onRequestQuote()
+            setCheckoutItem({ ...serialModalItem, partNumber: target.demoPartReference ?? serialModalItem.partNumber })
           }}
         />
       )}

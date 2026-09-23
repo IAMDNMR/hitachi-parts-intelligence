@@ -330,3 +330,45 @@ def test_kpi_set_matches_what_hcme_data_supports(session):
 def test_customs_is_a_rule_check_only(session):
     k = kpis.customs_flag_detection(session)
     assert k["false_flags"] == 0 and "GB" not in kpis.EU27 and "NL" in kpis.EU27 and k["caveat"]
+
+
+# ---------------------------------------------------------------- Phase 12: unverified store items run the demonstration lifecycle with a labelled DEMO- reference
+
+def _demo_headers(test_run_id):
+    return {"x-test-run-id": test_run_id, "x-test-user-id": "u", "x-test-role": "CUSTOMER"}
+
+
+def test_demo_reference_runs_allocation_order_shipment_and_service_without_a_canonical_part(test_run_id):
+    pn = "DEMO-WHEEL-LOADER-BUCKET"
+    H = _demo_headers(test_run_id)
+    rid = client.post("/api/v1/fulfilment-requests", json={"part_number": pn, "quantity": 1, "destination_branch_id": "DLR-045"}, headers=H).json()["id"]
+    client.post(f"/api/v1/fulfilment-requests/{rid}/availability", json={"part_number": pn, "quantity": 1, "destination_branch_id": "DLR-045"}, headers=H)
+    opt = client.post(f"/api/v1/fulfilment-requests/{rid}/options", headers=H).json()["options"][0]["id"]
+    assert client.post(f"/api/v1/fulfilment-requests/{rid}/select-option", json={"option_id": opt}, headers={**H, "x-idempotency-key": f"k1-{test_run_id}"}).status_code == 200
+    assert client.post(f"/api/v1/fulfilment-requests/{rid}/proceed-to-allocation", headers=H).status_code == 200
+    assert client.post(f"/api/v1/fulfilment-requests/{rid}/allocation", headers={**H, "x-idempotency-key": f"a1-{test_run_id}"}).status_code == 200
+    order = client.post(f"/api/v1/fulfilment-requests/{rid}/order", headers={**H, "x-idempotency-key": f"o1-{test_run_id}"})
+    assert order.status_code == 200
+    oid = order.json()["id"]
+    sh = client.post("/api/v1/shipments", json={"order_id": oid, "service_tier": "STANDARD"}, headers={**H, "x-idempotency-key": f"s1-{test_run_id}"})
+    assert sh.status_code == 200
+    sid = sh.json()["shipment_id"]
+    assert client.post(f"/api/v1/shipments/{sid}/dispatch", headers=H).status_code == 200
+    assert client.post(f"/api/v1/shipments/{sid}/deliver", headers=H).status_code == 200
+    job = client.post("/api/v1/service-jobs", json={"order_id": oid, "service_type": "PARTS_INSTALLATION"}, headers={**H, "x-idempotency-key": f"j1-{test_run_id}"})
+    assert job.status_code == 200
+    jid = job.json()["service_job_id"]
+    for step in ("receive", "start", "install", "complete"):
+        assert client.post(f"/api/v1/service-jobs/{jid}/{step}", headers=H).status_code == 200
+
+
+def test_a_real_looking_unknown_part_number_is_still_rejected_at_allocation(test_run_id):
+    """Only DEMO- references bypass the canonical Part; an unknown real-looking number must still fail."""
+    H = _demo_headers(test_run_id)
+    pn = "9999999X"
+    rid = client.post("/api/v1/fulfilment-requests", json={"part_number": pn, "quantity": 1, "destination_branch_id": "DLR-045"}, headers=H).json()["id"]
+    client.post(f"/api/v1/fulfilment-requests/{rid}/availability", json={"part_number": pn, "quantity": 1, "destination_branch_id": "DLR-045"}, headers=H)
+    opt = client.post(f"/api/v1/fulfilment-requests/{rid}/options", headers=H).json()["options"][0]["id"]
+    client.post(f"/api/v1/fulfilment-requests/{rid}/select-option", json={"option_id": opt}, headers={**H, "x-idempotency-key": f"k9-{test_run_id}"})
+    client.post(f"/api/v1/fulfilment-requests/{rid}/proceed-to-allocation", headers=H)
+    assert client.post(f"/api/v1/fulfilment-requests/{rid}/allocation", headers={**H, "x-idempotency-key": f"a9-{test_run_id}"}).status_code == 404

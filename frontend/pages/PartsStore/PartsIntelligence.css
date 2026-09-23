@@ -145,9 +145,9 @@
 /* Dealers */
 .pix-dealers { list-style: none; padding: 0; margin: 1rem 0 0; display: grid; gap: 0.75rem; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
 .pix-dealers li { display: grid; gap: 0.3rem; padding: 0.9rem 1rem; background: #fff; border: 1px solid var(--pix-line); border-radius: 12px; }
-.pix-dealers__top { display: flex; justify-content: space-between; gap: 0.5rem; align-items: start; }
+.pix-dealers__top { display: flex; flex-wrap: wrap; gap: 0.35rem 0.5rem; align-items: center; }
 .pix-dealers li { min-width: 0; align-content: start; }
-.pix-dealers__top strong { overflow-wrap: anywhere; }
+.pix-dealers__top strong { flex: 1 1 100%; min-width: 0; overflow-wrap: break-word; word-break: normal; line-height: 1.25; }
 .pix-dealers__loc { display: flex; align-items: center; gap: 0.3rem; font-size: 0.88rem; color: var(--pix-muted); }
 .pix-dealers__addr { font-size: 0.85rem; overflow-wrap: anywhere; }
 .pix-dealers__contact { display: grid; gap: 0.15rem; margin-top: 0.3rem; padding-top: 0.45rem; border-top: 1px solid var(--pix-line); font-size: 0.84rem; min-width: 0; }
@@ -198,9 +198,9 @@
 .pix-modal__head h3 .pix-icon { color: var(--pix-orange); }
 .pix-modal__head p { margin: 0.2rem 0 0; color: var(--pix-muted); }
 .pix-modal__x { border: 0; background: none; color: var(--pix-muted); cursor: pointer; padding: 0.3rem; height: fit-content; }
-.pix-tabs { display: flex; gap: 0.2rem; padding: 0 1.1rem; border-bottom: 1px solid var(--pix-line); overflow-x: auto; }
+.pix-tabs { display: flex; flex-wrap: wrap; gap: 0 0.1rem; padding: 0 0.8rem; border-bottom: 1px solid var(--pix-line); overflow: visible; }
 .pix-tabs button {
-  display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.7rem 0.8rem; border: 0; background: none; cursor: pointer;
+  display: inline-flex; align-items: center; gap: 0.35rem; padding: 0.65rem 0.6rem; border: 0; background: none; cursor: pointer; font-size: 0.9rem; line-height: 1.2;
   color: var(--pix-muted); font-weight: 600; border-bottom: 2px solid transparent; white-space: nowrap;
 }
 .pix-tabs button.is-active { color: #c2410c; border-bottom-color: var(--pix-orange); }

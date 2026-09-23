@@ -36,7 +36,11 @@ export default function Stage1Cart({ item, onUpdateQty, onNext, onClose }: Stage
         <div className="cw-card__item-content">
           <div className="cw-card__item-header">
             <h4>{item.name}</h4>
-            <span className="cw-tag cw-tag--green">GENUINE HITACHI OEM</span>
+            {item.partNumber?.toUpperCase().startsWith('DEMO-') ? (
+              <span className="cw-tag cw-tag--amber">DEMO PART REFERENCE — NOT AN OFFICIAL HCME PART NUMBER</span>
+            ) : (
+              <span className="cw-tag cw-tag--green">GENUINE HITACHI OEM</span>
+            )}
           </div>
 
           <div className="cw-specs-grid">

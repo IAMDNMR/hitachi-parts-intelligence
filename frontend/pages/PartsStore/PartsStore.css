@@ -1676,3 +1676,44 @@
   border-radius: 0.5rem;
   padding: 0.5rem 0.7rem;
 }
+
+/* Cart rows: image | details | quantity on the first line, action + remove on the second,
+   so the details are never squeezed and no control is clipped in the narrow modal. */
+.ps-modal .ps-quote-cart-list li {
+  display: grid;
+  grid-template-columns: 2.8rem minmax(0, 1fr) auto;
+  grid-template-areas:
+    'img info qty'
+    'img action remove';
+  align-items: start;
+  column-gap: 0.75rem;
+  row-gap: 0.5rem;
+}
+.ps-modal .ps-quote-cart-list__image { grid-area: img; }
+.ps-modal .ps-quote-cart-list__info { grid-area: info; }
+.ps-modal .ps-quote-cart-list li > .ps-qty { grid-area: qty; align-self: start; }
+.ps-modal button.ps-quote-cart-list__fulfil,
+.ps-modal button.ps-quote-cart-list__inquire { grid-area: action; justify-self: start; align-self: center; }
+.ps-modal button.ps-quote-cart-list__remove { grid-area: remove; justify-self: end; align-self: center; }
+.ps-modal .ps-quote-cart-list__info strong { white-space: normal; overflow: visible; text-overflow: clip; overflow-wrap: anywhere; }
+.ps-modal .ps-cart-item-note { max-width: none; }
+.ps-modal .ps-cart-badge { max-width: 100%; }
+
+.ps-modal .ps-quote-cart-list li {
+  grid-template-areas:
+    'img info qty'
+    'img action remove'
+    'img demo demo';
+}
+.ps-modal button.ps-quote-cart-list__demo {
+  grid-area: demo;
+  justify-self: start;
+  border: 1px dashed rgba(100, 116, 139, 0.6);
+  background: #f8fafc;
+  color: #475569;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 0.35rem 0.65rem;
+  border-radius: 0.45rem;
+  cursor: pointer;
+}

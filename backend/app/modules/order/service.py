@@ -34,7 +34,7 @@ from app.errors.exceptions import ConflictError, NotFoundError, UnprocessableErr
 from app.integrations.contracts.order import OrderSubmission
 from app.integrations.contracts.pricing import PricingQuery
 from app.integrations.factory import get_order_provider, get_pricing_provider
-from app.modules.allocation.service import get_allocation
+from app.modules.allocation.service import get_allocation, is_demo_part_number
 
 order_provider = get_order_provider()
 pricing_provider = get_pricing_provider()
@@ -86,6 +86,8 @@ def create_order(
         "MATCH (p:Part {part_number: $pn}) RETURN p.part_id AS part_id, p.part_number AS part_number",
         {"pn": req["partNumber"]},
     ).single()
+    if not part and is_demo_part_number(req["partNumber"]):
+        part = {"part_id": req["partNumber"], "part_number": req["partNumber"]}  # DEMO- reference: no canonical Part node
     if not part:
         raise NotFoundError(f"Part '{req['partNumber']}' not found (canonical Part must exist)")
     part = dict(part)

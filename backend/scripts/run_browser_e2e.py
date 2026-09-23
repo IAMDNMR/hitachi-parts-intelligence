@@ -301,23 +301,28 @@ def run_e2e():
             assert item_pt054.count() > 0, "PT-054 not in cart"
             # Verify badge and action button
             badge_text = item_pt054.locator(".ps-cart-badge").inner_text()
-            assert "Part verification required" in badge_text, f"Unexpected badge: {badge_text}"
+            assert "Demo order" in badge_text, f"Unexpected badge: {badge_text}"
 
             verify_btn = item_pt054.locator("button.ps-quote-cart-list__inquire")
             assert verify_btn.count() > 0, "Missing inquiry button"
-            assert "Request verification" in verify_btn.inner_text(), f"Unexpected button label: {verify_btn.inner_text()}"
-            assert verify_btn.is_enabled(), "Request verification button is dead/disabled"
+            assert "Continue to demo order" in verify_btn.inner_text(), f"Unexpected button label: {verify_btn.inner_text()}"
+            assert verify_btn.is_enabled(), "Continue to demo order button is dead/disabled"
             assert item_pt054.locator("button:has-text('Check stock & fulfil')").count() == 0, "Check stock should NOT exist for PT-054"
 
             # Click button - should open inquiry form, NOT checkout
             verify_btn.click()
-            page.wait_for_selector(".ps-modal h2:has-text('Your details')", timeout=5000)
-            assert page.locator(".cw-stage").count() == 0, "Checkout wizard opened unexpectedly for unverified part!"
-            print("  ✓ PT-054 correctly blocked from checkout; provides active 'Request verification →' inquiry action")
+            page.wait_for_selector(".cw-stage", timeout=5000)
+            stage_text = page.locator(".cw-stage").inner_text().upper()
+            assert "NOT AN OFFICIAL HCME PART NUMBER" in stage_text and "DEMO-" in stage_text, "unverified item must show a labelled DEMO reference"
+            assert "GENUINE HITACHI OEM" not in stage_text, "a DEMO reference must never be labelled genuine OEM"
+            print("  ✓ PT-054 is never marked verified; it moves into the demo order workflow with a labelled DEMO reference")
 
-            # Close inquiry modal
-            page.locator(".ps-modal__close").click()
+            # Close the wizard
+            page.locator("button.cw-close-btn").click()
             page.wait_for_timeout(300)
+            if page.locator(".ps-modal__close").count() > 0:
+                page.locator(".ps-modal__close").first.click()
+                page.wait_for_timeout(300)
             results["journey2_unverified_pt054"] = True
             print(">>> JOURNEY 2 (UNVERIFIED PART PT-054) PASSED!")
 
@@ -395,10 +400,10 @@ def run_e2e():
 
             oil_item = page.locator(".ps-quote-cart-list li", has_text="DH-2")
             assert oil_item.count() > 0, "DH-2 Oil not in cart"
-            assert "Part identification required" in oil_item.locator(".ps-cart-badge").inner_text()
+            assert "Demo order" in oil_item.locator(".ps-cart-badge").inner_text()
 
-            oil_inquire_btn = oil_item.locator("button:has-text('Request identification →')")
-            assert oil_inquire_btn.count() > 0, "Missing Request identification button"
+            oil_inquire_btn = oil_item.locator("button:has-text('Continue to demo order →')")
+            assert oil_inquire_btn.count() > 0, "Missing identification / order request button"
             assert oil_item.locator("button:has-text('Check stock & fulfil')").count() == 0, "Checkout button incorrectly enabled for product family!"
             print("  ✓ Product family DH-2 correctly restricted to inquiry flow, blocked from normal checkout")
 

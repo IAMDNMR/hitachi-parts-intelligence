@@ -1,9 +1,9 @@
 {
-  "generated_at": "2026-09-23T21:36:41+00:00",
+  "generated_at": "2026-09-23T22:47:14+00:00",
   "database": "fb580139.databases.neo4j.io",
   "label_classification": {
     "Allocation": {
-      "NOT_CONNECTED": 2,
+      "NOT_CONNECTED": 3,
       "SYNTHETIC_DEMO": 3
     },
     "Application": {
@@ -16,7 +16,7 @@
       "SOURCE_DERIVED": 17
     },
     "AuditRecord": {
-      "INTERNAL_REFERENCE_ONLY": 806
+      "INTERNAL_REFERENCE_ONLY": 831
     },
     "CatalogEntry": {
       "SYNTHETIC_DEMO": 3
@@ -53,20 +53,20 @@
       "SOURCE_DERIVED": 8
     },
     "FulfilmentOption": {
-      "SYNTHETIC_DEMO": 26
+      "SYNTHETIC_DEMO": 31
     },
     "FulfilmentRequest": {
       "SYNTHETIC_DEMO": 3,
-      "NOT_CONNECTED": 5
+      "NOT_CONNECTED": 6
     },
     "IdempotencyRecord": {
-      "INTERNAL_REFERENCE_ONLY": 43
+      "INTERNAL_REFERENCE_ONLY": 70
     },
     "Intent": {
       "UNKNOWN": 29
     },
     "InventoryCache": {
-      "SYNTHETIC_DEMO": 13
+      "SYNTHETIC_DEMO": 14
     },
     "InventoryLedger": {
       "NOT_CONNECTED": 1
@@ -81,7 +81,7 @@
       "UNKNOWN": 12
     },
     "Order": {
-      "SYNTHETIC_DEMO": 5
+      "SYNTHETIC_DEMO": 6
     },
     "Part": {
       "SOURCE_DERIVED": 60
@@ -100,22 +100,22 @@
       "UNKNOWN": 3
     },
     "RequestedPart": {
-      "UNKNOWN": 17
+      "UNKNOWN": 18
     },
     "Service": {
       "SOURCE_DERIVED": 22
     },
     "ServiceEvent": {
-      "SYNTHETIC_DEMO": 29
+      "SYNTHETIC_DEMO": 39
     },
     "ServiceJob": {
-      "SYNTHETIC_DEMO": 7
+      "SYNTHETIC_DEMO": 9
     },
     "Shipment": {
-      "SYNTHETIC_DEMO": 4
+      "SYNTHETIC_DEMO": 6
     },
     "ShipmentEvent": {
-      "SYNTHETIC_DEMO": 9
+      "SYNTHETIC_DEMO": 15
     },
     "Specification": {
       "SOURCE_DERIVED": 1635
@@ -154,7 +154,7 @@
     "part_without_supplier": 0,
     "machine_without_bom": 0,
     "inconsistent_order_state": 0,
-    "confirmed_confidence_from_mock": 23,
+    "confirmed_confidence_from_mock": 28,
     "bom_fitment_mismatch": 0,
     "demo_relationship_without_flag": 0,
     "supplier_missing_number": 0,
@@ -464,11 +464,16 @@
       "category": "confirmed_confidence_from_mock",
       "severity": "HIGH",
       "description": "Operational records claiming confidence CONFIRMED although produced by a mock integration",
-      "count": 23,
+      "count": 28,
       "record_ids": [
         "FulfilmentOption:fopt-e62b61ae-4b38-4c35-8213-c2932a3cd8a9",
+        "FulfilmentOption:fopt-73621bf5-ff5e-4b8c-897b-9b17313b7333",
+        "FulfilmentOption:fopt-bb17b40c-65d7-4a1f-b490-4a893910b41b",
         "FulfilmentOption:fopt-cde77f3c-d098-41ad-90b5-7bece0756e74",
         "FulfilmentOption:fopt-0e187624-2dd4-419c-9a84-aeaf2e9b2da7",
+        "FulfilmentOption:fopt-7274500a-bc1e-4c4c-8672-0c46f731659a",
+        "FulfilmentOption:fopt-b302d817-0301-4719-9510-436be099732a",
+        "FulfilmentOption:fopt-36a1eaa9-6b0e-4454-946b-1775bb8bb3ea",
         "FulfilmentOption:fopt-1e622c5f-e4aa-4ba6-9447-af53307754f6",
         "FulfilmentOption:fopt-7db41efe-5984-4309-ba34-5a156da9f329",
         "FulfilmentOption:fopt-68fb4af9-d0fc-48d3-8c83-2254e1049ff7",
@@ -647,6 +652,6 @@
       "action": "Delete — no authoritative supplier-to-depot source exists"
     }
   ],
-  "total_issue_records": 52,
+  "total_issue_records": 57,
   "failing_checks": 4
 }

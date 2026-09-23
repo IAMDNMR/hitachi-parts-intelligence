@@ -71,7 +71,18 @@ def _load_selected_option(session, fulfilment_request_id: str, option_id: str) -
     return dict(row)
 
 
+DEMO_PART_PREFIX = "DEMO-"
+
+
+def is_demo_part_number(part_number: str) -> bool:
+    """A store item without a verified HCME part number runs the demonstration lifecycle with a clearly labelled DEMO- reference. It has no
+    canonical Part node and is never a real HCME part number."""
+    return bool(part_number) and part_number.upper().startswith(DEMO_PART_PREFIX)
+
+
 def _load_canonical_part(session, part_number: str) -> Dict[str, Any]:
+    if is_demo_part_number(part_number):
+        return {"part_id": part_number, "part_number": part_number}
     row = session.run(
         "MATCH (p:Part {part_number: $pn}) RETURN p.part_id AS part_id, p.part_number AS part_number",
         {"pn": part_number},
@@ -196,9 +207,10 @@ def create_allocation(
         """
         MATCH (r:FulfilmentRequest {id: $req_id})
         MATCH (a:Allocation {id: $alloc_id})
-        MATCH (p:Part {part_number: $pn})
         MERGE (r)-[:HAS_ALLOCATION]->(a)
-        MERGE (a)-[:ALLOCATES]->(p)
+        WITH a
+        OPTIONAL MATCH (p:Part {part_number: $pn})
+        FOREACH (_ IN CASE WHEN p IS NULL THEN [] ELSE [1] END | MERGE (a)-[:ALLOCATES]->(p))
         """,
         {"req_id": fulfilment_request_id, "alloc_id": allocation_id, "pn": part_number},
     ).consume()

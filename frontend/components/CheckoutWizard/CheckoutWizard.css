@@ -1470,3 +1470,5 @@
   align-items: center;
   gap: 0.4rem;
 }
+
+.cw-tag--amber { background: #fffbeb; color: #b45309; border: 1px solid rgba(217, 119, 6, 0.35); }
