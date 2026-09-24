@@ -38,15 +38,13 @@ RETURN DISTINCT c.compliance_id AS compliance_id, c.name AS name, c.regulation_s
 
 _VERIFIED_PART_SUPPLIERS_Q = """
 MATCH (p:Part {part_id: $id})-[l:SUPPLIED_BY]->(s:Supplier)
-WHERE coalesce(s.synthetic, false) = false AND s.data_source = 'HCME_SAP_SUPPLIER_MASTER'
 RETURN s.supplier_id AS supplier_id, s.name AS name, s.country AS country, s.region AS region,
-       s.tier AS tier, l.share_pct AS share_pct, l.role AS role
+       s.tier AS tier, l.share_pct AS share_pct, l.role AS role, coalesce(l.synthetic, s.synthetic, false) AS synthetic
 ORDER BY l.share_pct DESC
 """
 
 _VERIFIED_CONCENTRATION_Q = """
 MATCH (s:Supplier)<-[l:SUPPLIED_BY]-(q:Part)
-WHERE coalesce(s.synthetic, false) = false AND s.data_source = 'HCME_SAP_SUPPLIER_MASTER'
 WITH s, q,
      EXISTS { (q)<-[:CONTAINS_PART]-(:Assembly {criticality: 'high'}) } AS critical,
      COUNT { (q)-[:SUPPLIED_BY]->(:Supplier) } AS n_suppliers
@@ -194,8 +192,11 @@ def _supplier_risk(part_suppliers, concentration, impact, total_suppliers: int =
             "supplier_master_count": total_suppliers,
             "geographic_distribution": geo_dist or [],
             "sample_suppliers": samples or [],
-            "data_basis": "SOURCE_DERIVED — Verified HCME supplier-to-part sourcing records.",
-            "provenance": "SOURCE_DERIVED",
+            "data_basis": ("SYNTHETIC DEMO DATA — supplier-to-part links, shares and tiers are demonstration data. "
+                           "The HCME SAP supplier master (real) has no part numbers yet."
+                           if all(s.get("synthetic") for s in part_suppliers)
+                           else "SOURCE_DERIVED — Verified HCME supplier-to-part sourcing records."),
+            "provenance": "SYNTHETIC_DEMO" if all(s.get("synthetic") for s in part_suppliers) else "SOURCE_DERIVED",
         }
 
     # STATE B: Supplier master exists, but Supplier -> Part mapping is not available in current source data

@@ -518,13 +518,11 @@ function ResultCard({ card: c, onInsights, onStore }: { card: PartCard; onInsigh
 
       {c.subcategory && <span className="pix-type">{c.subcategory}</span>}
       <p className="pix-assess"><PiIcon name="info" size={15} /> {c.assessment}</p>
-      {c.commercial && (
-        <p className="pix-muted">
-          Stock: {c.commercial.availability.status === 'NOT_CONNECTED' ? 'not connected' : c.commercial.availability.status} · Price:{' '}
-          {c.commercial.price.status === 'NOT_CONNECTED' ? 'not connected' : c.commercial.price.status} · Lead time:{' '}
-          {c.commercial.lead_time.status === 'NOT_CONNECTED' ? 'not connected' : c.commercial.lead_time.status}
-        </p>
-      )}
+      {c.commercial && (() => {
+        const bits = ([['Stock', c.commercial.availability.status], ['Price', c.commercial.price.status], ['Lead time', c.commercial.lead_time.status]] as [string, string][])
+          .filter(([, st]) => st !== 'NOT_CONNECTED').map(([k, st]) => `${k}: ${st}`)
+        return bits.length ? <p className="pix-muted">{bits.join(' · ')}</p> : null
+      })()}
       {c.risks && c.risks.length > 0 && (
         <ul className="pix-risks">{c.risks.map((x) => <li key={x}>{x}</li>)}</ul>
       )}

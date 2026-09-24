@@ -23,14 +23,14 @@ const TABS: { key: Tab; label: string; icon: PiIconName }[] = [
 const TAB_BASIS: Record<Tab, ['real' | 'demo' | 'off', string][]> = {
   impact: [['real', 'REAL: machines & fitment'], ['demo', 'SYNTHETIC_DEMO: assemblies, BOM qty, criticality']],
   compliance: [['real', 'REAL: regulation names'], ['demo', 'SYNTHETIC_DEMO: assembly requirements & certificates']],
-  risk: [['real', 'REAL: 1,720-supplier master'], ['off', 'NOT_CONNECTED: supplier → part']],
-  mitigation: [['real', 'REAL: catalogue & fitment'], ['demo', 'SYNTHETIC_DEMO: suppliers, stock, certificates'], ['off', 'NOT_CONNECTED: HCME interchangeability data']],
-  similar: [['real', 'REAL: catalogue & fitment'], ['off', 'NOT_CONNECTED: HCME interchangeability data']],
+  risk: [['real', 'REAL: 1,720-supplier master'], ['demo', 'SYNTHETIC_DEMO: supplier → part links']],
+  mitigation: [['real', 'REAL: catalogue & fitment'], ['demo', 'SYNTHETIC_DEMO: suppliers, stock, certificates']],
+  similar: [['real', 'REAL: catalogue & fitment']],
   disruption: [],
 }
 
 interface Assembly { name: string; criticality: 'high' | 'medium' | 'low'; qty: number; unit: string; machines: number }
-interface Supplier { supplier_id: string; name: string; country: string; region: string; tier: number; share_pct: number; role: string }
+interface Supplier { supplier_id: string; name: string; country: string; region: string; tier: number; share_pct: number; role: string; synthetic?: boolean }
 interface Concentration { supplier_id: string; name: string; region: string; country: string; parts: number; critical_parts: number; sole_source_critical: number }
 interface Alternative {
   part_id: string; part_number: string | null; part_name: string | null
@@ -373,7 +373,7 @@ function SupplierRiskTab({ d }: { d: GraphInsightsResponse['supplier_risk'] }) {
   return (
     <div className="pix-section">
       <div className="pix-supplier">
-        <h4>This Part's Verified Supplier{d.part_suppliers.length > 1 ? 's' : ''}</h4>
+        <h4>This Part's Supplier{d.part_suppliers.length > 1 ? 's' : ''} {d.provenance === 'SYNTHETIC_DEMO' && <span className="pix-chip pix-chip--demo">SYNTHETIC_DEMO</span>}</h4>
         {d.part_suppliers.map((s) => (
           <div key={s.supplier_id} className="pix-supplier__row">
             <strong>{s.name}</strong>
@@ -389,7 +389,7 @@ function SupplierRiskTab({ d }: { d: GraphInsightsResponse['supplier_risk'] }) {
       </div>
 
       <h4>Platform Concentration Risk</h4>
-      <p className="pix-muted pix-small">Critical parts per supplier across verified catalogue relationships</p>
+      <p className="pix-muted pix-small">Critical parts per supplier across catalogue supplier links</p>
       {d.concentration.map((c) => (
         <div key={c.supplier_id} className="pix-row">
           <strong>{c.name}</strong>

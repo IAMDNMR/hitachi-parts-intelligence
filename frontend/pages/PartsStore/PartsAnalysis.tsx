@@ -72,9 +72,9 @@ export function DisruptionView({ d }: { d: DisruptionBrief }) {
         ))}
       </div>
       <div className="pix-prov" aria-label="Data basis">
-        {Object.entries(d.provenance).map(([k, v]) => (
+        {Object.entries(d.provenance).filter(([, v]) => v !== 'NOT_CONNECTED').map(([k, v]) => (
           <span key={k} className={`pix-chip ${isReal(v) ? 'pix-chip--real' : 'pix-chip--demo'}`} title={v}>
-            {PROVENANCE_LABEL[k] ?? k}: {isReal(v) ? 'real' : v === 'NOT_CONNECTED' ? 'not connected' : 'demo'}
+            {PROVENANCE_LABEL[k] ?? k}: {isReal(v) ? 'real' : 'demo'}
           </span>
         ))}
       </div>

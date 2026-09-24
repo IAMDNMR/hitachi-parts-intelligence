@@ -21,13 +21,10 @@ def test_graph_insights_four_tabs_for_main_hydraulic_pump():
     assert all(a["criticality"] == "high" for a in impact["critical_paths"])
 
     risk = d["supplier_risk"]
-    assert risk["status"] == "NOT_CONNECTED"
-    assert risk["connected"] is False
-    assert risk["part_suppliers"] == [], "No synthetic demo suppliers appear in real supplier risk"
-    assert risk["concentration"] == [], "No fake concentration numbers in real supplier risk"
+    assert risk["status"] == "CONNECTED" and risk["provenance"] == "SYNTHETIC_DEMO"
+    assert risk["part_suppliers"] and all(x["synthetic"] for x in risk["part_suppliers"])
     assert risk["supplier_master_count"] == 1720
-    assert "NOT CONNECTED" in risk["data_basis"]
-    assert risk["spof"]["is_spof"] is False
+    assert "SYNTHETIC DEMO" in risk["data_basis"]
     assert len(risk["geographic_distribution"]) > 0
     assert not any("Demo" in s["name"] for s in risk["sample_suppliers"])
 
@@ -41,8 +38,7 @@ def test_graph_insights_four_tabs_for_main_hydraulic_pump():
 
     for section in ("impact", "compliance"):
         assert "SYNTHETIC DEMO" in d[section]["data_basis"]
-    assert "HCME supplier master" in d["supplier_risk"]["data_basis"]
-    assert "NOT CONNECTED" in d["supplier_risk"]["data_basis"]
+    assert "SYNTHETIC DEMO" in d["supplier_risk"]["data_basis"]
 
 
 def test_graph_insights_unknown_part_is_404():
