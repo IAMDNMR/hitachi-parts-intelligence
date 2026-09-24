@@ -117,21 +117,40 @@ def test_07_supplier_depot_shared_city_oosterhout():
     assert r["graph_path"] == ["Depot", "City", "Supplier"]
 
 
-def test_08_supplier_risk_shows_labelled_demo_links():
-    """Graph Insights shows the demo supplier links, clearly labelled SYNTHETIC_DEMO."""
+def test_08_supplier_risk_state_b_not_connected():
+    """Graph Insights API returns State B (NOT_CONNECTED) when no supplier-part mapping exists."""
     res = client.get("/api/v1/intelligence/parts/PT-045/graph-insights")
     assert res.status_code == 200
     risk = res.json()["supplier_risk"]
-    assert risk["status"] == "CONNECTED" and risk["connected"] is True
+    assert risk["status"] == "NOT_CONNECTED"
+    assert risk["connected"] is False
     assert risk["supplier_master_count"] == 1720
-    assert risk["part_suppliers"] and risk["provenance"] == "SYNTHETIC_DEMO"
-    assert "SYNTHETIC DEMO" in risk["data_basis"]
+    assert risk["part_suppliers"] == []
+    assert risk["concentration"] == []
+    assert risk["risk_calculations"] == "UNAVAILABLE"
+    assert "no supplier-to-part" in risk["data_basis"]
 
 
-def test_09_demo_supplier_links_are_flagged_synthetic():
+def test_09_no_synthetic_supplier_leakage_into_real_supplier_risk():
+    """Synthetic demo suppliers (Demo Powertrain Supplier, etc.) never appear in Graph Insights."""
     res = client.get("/api/v1/intelligence/parts/PT-045/graph-insights")
     risk = res.json()["supplier_risk"]
-    assert all(s["synthetic"] for s in risk["part_suppliers"])
+    demo_names = [
+        "Demo Powertrain Supplier",
+        "Demo Lubricants Supplier",
+        "Demo Hydraulics Supplier A",
+        "Demo Filtration & Coatings Supplier",
+        "Demo Electrical Supplier",
+        "Demo Undercarriage Supplier",
+        "Demo Battery Supplier",
+        "Demo Hydraulics Supplier B",
+    ]
+    for s in risk["part_suppliers"]:
+        assert s["name"] not in demo_names
+    for c in risk["concentration"]:
+        assert c["name"] not in demo_names
+    for sm in risk.get("sample_suppliers", []):
+        assert sm["name"] not in demo_names
 
 
 def test_10_no_fabricated_supplier_part_relationship(neo4j_session):

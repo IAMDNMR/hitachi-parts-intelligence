@@ -38,13 +38,15 @@ RETURN DISTINCT c.compliance_id AS compliance_id, c.name AS name, c.regulation_s
 
 _VERIFIED_PART_SUPPLIERS_Q = """
 MATCH (p:Part {part_id: $id})-[l:SUPPLIED_BY]->(s:Supplier)
+WHERE coalesce(s.synthetic, false) = false AND s.data_source = 'HCME_SAP_SUPPLIER_MASTER'
 RETURN s.supplier_id AS supplier_id, s.name AS name, s.country AS country, s.region AS region,
-       s.tier AS tier, l.share_pct AS share_pct, l.role AS role, coalesce(l.synthetic, s.synthetic, false) AS synthetic
+       s.tier AS tier, l.share_pct AS share_pct, l.role AS role
 ORDER BY l.share_pct DESC
 """
 
 _VERIFIED_CONCENTRATION_Q = """
 MATCH (s:Supplier)<-[l:SUPPLIED_BY]-(q:Part)
+WHERE coalesce(s.synthetic, false) = false AND s.data_source = 'HCME_SAP_SUPPLIER_MASTER'
 WITH s, q,
      EXISTS { (q)<-[:CONTAINS_PART]-(:Assembly {criticality: 'high'}) } AS critical,
      COUNT { (q)-[:SUPPLIED_BY]->(:Supplier) } AS n_suppliers
@@ -220,8 +222,8 @@ def _supplier_risk(part_suppliers, concentration, impact, total_suppliers: int =
         },
         "geographic_distribution": geo_dist or [],
         "sample_suppliers": samples or [],
-        "data_basis": f"HCME supplier master ({total_suppliers:,} records) contains verified supplier and location data. "
-                      "Supplier-to-part sourcing relationships are NOT CONNECTED in current HCME source data.",
+        "data_basis": f"HCME supplier master ({total_suppliers:,} records): supplier number, name, city and country. "
+                      "The source has no supplier-to-part sourcing records, so none is shown.",
         "provenance": "SOURCE_DERIVED / NOT_CONNECTED",
     }
 

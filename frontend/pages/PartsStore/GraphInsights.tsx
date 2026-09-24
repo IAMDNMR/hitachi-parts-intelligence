@@ -23,7 +23,7 @@ const TABS: { key: Tab; label: string; icon: PiIconName }[] = [
 const TAB_BASIS: Record<Tab, ['real' | 'demo' | 'off', string][]> = {
   impact: [['real', 'REAL: machines & fitment'], ['demo', 'SYNTHETIC_DEMO: assemblies, BOM qty, criticality']],
   compliance: [['real', 'REAL: regulation names'], ['demo', 'SYNTHETIC_DEMO: assembly requirements & certificates']],
-  risk: [['real', 'REAL: 1,720-supplier master'], ['demo', 'SYNTHETIC_DEMO: supplier → part links']],
+  risk: [['real', 'REAL: 1,720-supplier master'], ],
   mitigation: [['real', 'REAL: catalogue & fitment'], ['demo', 'SYNTHETIC_DEMO: suppliers, stock, certificates']],
   similar: [['real', 'REAL: catalogue & fitment']],
   disruption: [],
@@ -268,71 +268,26 @@ function SupplierRiskTab({ d }: { d: GraphInsightsResponse['supplier_risk'] }) {
   if (!isConnected) {
     return (
       <div className="pix-section">
-        <div className="pix-risk-banner">
-          <div className="pix-risk-banner__top">
-            <span className="pix-badge pix-badge--amber">NOT CONNECTED</span>
-            <h4>SUPPLIER RISK DATA NOT CONNECTED</h4>
-          </div>
-          <p>
-            {d.reason ||
-              'Supplier master data is available, but supplier-to-part sourcing relationships are not available in current HCME source data. Critical-part concentration and sole-source analysis cannot be calculated from verified supplier data.'}
-          </p>
-        </div>
-
         <div className="pix-risk-grid">
           <div className="pix-risk-card">
             <span className="pix-risk-card__label">Supplier Master</span>
             <strong className="pix-risk-card__val">
               {d.supplier_master_count ? d.supplier_master_count.toLocaleString() : '1,720'}
             </strong>
-            <span className="pix-risk-card__sub">records available</span>
+            <span className="pix-risk-card__sub">HCME suppliers (SAP)</span>
             <span className="pix-badge pix-badge--real">SOURCE-DERIVED</span>
           </div>
-          <div className="pix-risk-card pix-risk-card--alert">
-            <span className="pix-risk-card__label">Supplier → Part Mapping</span>
-            <strong className="pix-risk-card__val pix-risk-card__val--dim">NOT CONNECTED</strong>
-            <span className="pix-risk-card__sub">No part numbers in master</span>
-            <span className="pix-badge pix-badge--amber">NOT_CONNECTED</span>
-          </div>
-          <div className="pix-risk-card pix-risk-card--alert">
-            <span className="pix-risk-card__label">Risk Calculations</span>
-            <strong className="pix-risk-card__val pix-risk-card__val--dim">UNAVAILABLE</strong>
-            <span className="pix-risk-card__sub">Zero fabricated metrics</span>
-            <span className="pix-badge pix-badge--muted">UNAVAILABLE</span>
-          </div>
         </div>
-
-        <div className="pix-risk-reqs">
-          <h4><PiIcon name="shield" size={16} /> Connection Specification & Data Provenance</h4>
-          <div className="pix-req-row">
-            <span className="pix-req-k">Available Dimensions</span>
-            <span className="pix-req-v">
-              {(d.available_dimensions || ['Supplier', 'City', 'Country']).join(' · ')}
-            </span>
-          </div>
-          <div className="pix-req-row">
-            <span className="pix-req-k">Missing Relationship</span>
-            <span className="pix-req-v pix-text-warn">{d.missing_relationship || 'Supplier → Part'}</span>
-          </div>
-          <div className="pix-req-row">
-            <span className="pix-req-k">Required Source</span>
-            <span className="pix-req-v">
-              {d.required_source || 'SAP purchasing / source-list / PO data containing supplier number + material/part number.'}
-            </span>
-          </div>
-          <div className="pix-req-row">
-            <span className="pix-req-k">Authority Rule</span>
-            <span className="pix-req-v">
-              No supplier-to-part relationship is manufactured or inferred from geographic location or proximity.
-            </span>
-          </div>
-        </div>
+        <p className="pix-muted pix-small">
+          The HCME supplier master gives each supplier's number, name, city and country. It does not say which supplier delivers which part, so no
+          supplier is shown as this part's source.
+        </p>
 
         {d.geographic_distribution && d.geographic_distribution.length > 0 && (
           <div className="pix-geo-section">
-            <h4><PiIcon name="pin" size={16} /> Real Supplier Master Geographic Distribution</h4>
+            <h4><PiIcon name="pin" size={16} /> Suppliers by country</h4>
             <p className="pix-muted pix-small">
-              Geographic concentration across European operating footprint (SOURCE-DERIVED). Not supply concentration.
+              Where HCME's suppliers are located (SOURCE-DERIVED).
             </p>
             <div className="pix-geo-grid">
               {d.geographic_distribution.map((g) => (
@@ -348,7 +303,7 @@ function SupplierRiskTab({ d }: { d: GraphInsightsResponse['supplier_risk'] }) {
 
         {d.sample_suppliers && d.sample_suppliers.length > 0 && (
           <div className="pix-sample-section">
-            <h4><PiIcon name="factory" size={16} /> Verified HCME Supplier Records (Sample)</h4>
+            <h4><PiIcon name="factory" size={16} /> HCME supplier records (sample)</h4>
             <div className="pix-sample-list">
               {d.sample_suppliers.map((s) => (
                 <div key={s.supplier_number} className="pix-row">

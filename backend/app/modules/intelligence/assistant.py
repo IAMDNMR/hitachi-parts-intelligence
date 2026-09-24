@@ -743,9 +743,11 @@ def h_alternatives(session, ext, ctx):
     elif interchangeability.is_family(p):
         fb = f"{p['part_id']} is a product-line family record, not an orderable part, so no substitute is assessed for it."
     else:
-        fb = (f"No candidate for {p['part_id']}: nothing else in the catalogue is the same part type and fitted to the same machines. "
-              "No HCME supersession or interchangeability data is loaded.")
+        fb = (f"No alternatives are available for {p['part_id']}. Other parts of the same type exist in the catalogue, but none is fitted to the same "
+              "machine models, so none can be offered as a candidate. No HCME supersession or interchangeability data is loaded.")
+        ev["alternatives_available"] = False
     return {"evidence": ev, "graph_path": ["Part", "Machine", "Alternative Part"], "data": {"part_id": p["part_id"]}, "fallback": fb,
+            "deterministic": not m["alternatives"],  # a plain "not available" is stated as is, not reworded by the LLM
             "result_type": None if m["alternatives"] else "INSUFFICIENT_DATA"}
 
 
@@ -1255,8 +1257,8 @@ HANDLERS: Dict[str, Callable] = {
 def _answer(provider, query: str, intent: str, result: Dict[str, Any]) -> tuple[str, str]:
     if result.get("clarify"):
         return result["clarify"], "clarification"
-    if intent == "part_search":
-        return result["fallback"], "deterministic"  # the result cards are the answer
+    if intent == "part_search" or result.get("deterministic"):
+        return result["fallback"], "deterministic"  # the result cards / a plain "not available" are the answer
     if isinstance(provider, GeminiLLMProvider):
         try:
             if result.get("general"):

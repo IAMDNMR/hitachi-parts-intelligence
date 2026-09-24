@@ -141,7 +141,7 @@ def test_candidate_wording_and_similarity_is_only_a_supporting_signal():
 
 def test_no_candidate_answer_is_honest():
     r = client.post(f"{API}/query", json={"query": "Are there alternatives for PT-045?"}).json()
-    assert "No candidate" in r["answer"] or "no candidate" in r["answer"].lower()
+    assert "no alternatives are available" in r["answer"].lower()
     r = client.post(f"{API}/query", json={"query": "Are there alternatives for PT-007?"}).json()
     assert "Engineering Review" in r["answer"] and "PT-015" in r["answer"]
 
