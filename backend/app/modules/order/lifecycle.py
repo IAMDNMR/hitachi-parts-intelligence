@@ -25,6 +25,7 @@ from app.modules.order.service import advance_order_state, cancel_order, get_ord
 from app.modules.service.service import (
     complete_service,
     create_service_job,
+    get_service_job,
     install_part,
     receive_part,
     start_service,
@@ -209,7 +210,7 @@ def list_orders(session, limit: int = 200) -> List[Dict[str, Any]]:
     rows = session.run(
         """
         MATCH (o:Order) WHERE o.customerName IS NOT NULL
-        RETURN o.id AS order_id, o.status AS status, o.customerName AS customer_name, o.shipToDealerName AS dealer_name,
+        RETURN o.id AS order_id, o.status AS status, o.customerName AS customer_name, o.customerEmail AS customer_email, o.shipToDealerName AS dealer_name,
                o.partNumber AS part_number, o.partName AS part_name, o.quantity AS quantity, toString(o.placedAt) AS placed_at,
                o.data_source AS data_source, o.provenance AS provenance
         ORDER BY o.placedAt DESC LIMIT $limit
@@ -294,8 +295,10 @@ def get_operations(session, order_id: str) -> Dict[str, Any]:
         "service": k["service_job_status"],
     }
     action = _next_action(k)
+    extra = _step_details(session, order_id, k)
     return {
         "order": order,
+        **extra,
         "steps": [{"key": key, "label": label, "state": state[key], "detail": detail.get(key)} for key, label in STEPS],
         "next_action": action,
         "allocation_id": k["allocation_id"],
@@ -307,6 +310,42 @@ def get_operations(session, order_id: str) -> Dict[str, Any]:
         "cancelled": k["order_status"] == "CANCELLED",
         "can_cancel": _can_cancel(k),
         "integration_label": order["integration_label"],
+    }
+
+
+def _step_details(session, order_id: str, k: Dict[str, Any]) -> Dict[str, Any]:
+    """Per-step details for the Orders screen, all read from the graph: allocation, fulfilment confirmation and the dealer service job."""
+    row = session.run(
+        """
+        MATCH (o:Order {id: $id})
+        OPTIONAL MATCH (dp:Depot {depot_id: o.sourceId})
+        RETURN o.sourceId AS source_id, dp.name AS depot_name, dp.city AS depot_city, dp.country AS depot_country,
+               o.external_order_id AS external_order_id, o.synced_at AS synced_at, o.data_source AS data_source,
+               toString(o.allocatedAt) AS allocated_at, toString(o.fulfilmentConfirmedAt) AS fulfilment_confirmed_at,
+               toString(o.updatedAt) AS updated_at
+        """,
+        {"id": order_id},
+    ).single()
+    d = dict(row) if row else {}
+    source = {"id": d.get("source_id"), "name": d.get("depot_name"), "city": d.get("depot_city"), "country": d.get("depot_country")}
+    allocation = None
+    if k["allocation_id"]:
+        try:
+            a = get_allocation(session, k["req_id"])
+            allocation = {"allocation_id": a["id"], "status": a["status"], "part_number": a["partNumber"], "quantity": a["quantity"],
+                          "source_id": a["sourceId"], "reserved_at": a.get("reservedAt"), "confirmed_at": a.get("confirmedAt"),
+                          "released_at": a.get("releasedAt")}
+        except NotFoundError:
+            allocation = None
+    service_job = get_service_job(session, k["service_job_id"]) if k["service_job_id"] else None
+    return {
+        "source": source,
+        "allocation": allocation,
+        "fulfilment": {"confirmed_at": d.get("fulfilment_confirmed_at"), "external_order_id": d.get("external_order_id"),
+                       "synced_at": d.get("synced_at"), "data_source": d.get("data_source")},
+        "service_job": service_job,
+        "completed_at": (service_job or {}).get("completed_at") if k["service_job_status"] == "COMPLETED" else None,
+        "updated_at": d.get("updated_at"),
     }
 
 
