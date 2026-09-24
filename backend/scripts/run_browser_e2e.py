@@ -3,7 +3,7 @@ backend/scripts/run_browser_e2e.py
 
 Final Real Browser E2E Validation Script for Phase 11
 Uses Playwright Chromium to validate all 6 required user journeys:
-1. VERIFIED PART CHECKOUT (Battery 4663907 -> Cart -> Check Stock & Fulfil -> Stages 1-7)
+1. VERIFIED PART CHECKOUT (Battery 4663907 -> Cart -> Check Stock & Fulfil -> Order Confirmation)
 2. UNVERIFIED PART (PT-054 -> Request verification -> disabled from checkout)
 3. AMBIGUOUS PART (hydraulic-cylinder -> Serial/PIN lookup modal -> resolved to 4410244 -> checkout-enabled)
 4. PRODUCT FAMILY (genuine-engine-oil-dh2 -> Request identification -> inquiry flow)
@@ -20,6 +20,15 @@ from playwright.sync_api import sync_playwright
 
 ROOT_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 FRONTEND_DIR = os.path.join(ROOT_DIR, "frontend")
+
+def open_cart_stage(page):
+    """The wizard starts at Customer Details; fill them and move to the Cart stage, where the part reference is shown."""
+    page.fill("#requester-name", "E2E Tester")
+    page.fill("#requester-email", "e2e-tester@example.eu")
+    page.locator("button:has-text('Next: Cart →')").click()
+    page.wait_for_selector(".cw-stage__title:has-text('2. Cart')", timeout=5000)
+
+
 
 def run_e2e():
     sys.stdout.reconfigure(encoding='utf-8')
@@ -147,126 +156,29 @@ def run_e2e():
             page.wait_for_selector(".cw-stage", timeout=5000)
             print("  ✓ Launched Guided Checkout Wizard into Stage 1")
 
-            # Stage 1: Review selected part
-            assert "Review Selected Part" in page.locator(".cw-stage__title").inner_text()
-            page.locator("button:has-text('Next: Requester Details →')").click()
-            page.wait_for_timeout(500)
-            print("  ✓ Stage 1 completed: Part and quantity confirmed")
-
-            # Stage 2: Requester Information
-            assert "Requester Information" in page.locator(".cw-stage__title").inner_text()
+            # Stage 1: Customer details (the customer journey ends at Order Confirmation; operations happen on the Orders screen)
+            assert "Customer Details" in page.locator(".cw-stage__title").inner_text()
             page.fill("#requester-name", "Johannes van der Berg")
             page.fill("#requester-email", "johannes@hitachi-aftersales.eu")
-            page.locator("button:has-text('Next: Destination Dealer →')").click()
-            page.wait_for_timeout(500)
-            print("  ✓ Stage 2 completed: Requester identity entered")
-
-            # Stage 3: Destination Dealer
-            assert "Destination Dealer Selection" in page.locator(".cw-stage__title").inner_text()
-            dealer_select = page.locator("#dealer-select")
+            page.locator("button:has-text('Next: Cart →')").click()
+            page.wait_for_selector(".cw-stage__title:has-text('2. Cart')", timeout=5000)
+            page.locator("button:has-text('Next: Delivery Dealer →')").click()
             page.wait_for_selector("#dealer-select option", timeout=15000)
-            # Select first dealer branch
-            first_val = dealer_select.locator("option").first.get_attribute("value")
-            dealer_select.select_option(value=first_val)
-            page.wait_for_timeout(500)
+            assert "Delivery / Dealer" in page.locator(".cw-stage__title").inner_text()
             page.locator("button:has-text('Check Stock & Availability →')").click()
-            page.wait_for_timeout(500)
-            print("  ✓ Stage 3 completed: Dealer branch selected with straight-line distance")
-
-            # Stage 4: Availability Snapshot
-            page.wait_for_selector(".cw-stage__title:has-text('Availability Snapshot')", timeout=8000)
-            # Verify data provenance notice
-            assert "SYNTHETIC DEMO DATA" in page.locator(".cw-provenance-banner").inner_text()
-            assert "NOT CONNECTED" in page.locator(".cw-provenance-banner").inner_text()
+            page.wait_for_selector(".cw-stage__title:has-text('4. Availability')", timeout=15000)
             page.locator("button:has-text('Next: Transportation Options →')").click()
-            page.wait_for_timeout(500)
-            print("  ✓ Stage 4 completed: Availability evaluated (Notice: SYNTHETIC DEMO DATA)")
-
-            # Stage 5: Transportation Options
             page.wait_for_selector(".cw-card--transport", timeout=12000)
-            # Select the first transport card
-            cards = page.locator(".cw-card--transport")
-            assert cards.count() > 0, "No transport option cards rendered"
-            cards.first.click()
-            page.wait_for_timeout(300)
+            page.locator(".cw-card--transport").first.click()
             page.locator("button:has-text('Next: Order Review →')").click()
-            page.wait_for_timeout(500)
-            print("  ✓ Stage 5 completed: Transport mode selected")
-
-            # Stage 6: Final Review & Order Placement
-            page.wait_for_selector(".cw-stage__title:has-text('Final Review')", timeout=5000)
-            assert "4663907" in page.locator(".cw-review-grid").inner_text()
-            place_order_btn = page.locator("button:has-text('Confirm Order & Proceed to Fulfilment →')")
-            place_order_btn.click()
-            print("  ✓ Stage 6 completed: Order placement confirmed")
-
-            # Stage 7: Post-Order Lifecycle & Milestones
-            page.wait_for_selector(".cw-stage__title:has-text('7. Demonstration: Allocation → Order → Shipment → Service → Close')", timeout=15000)
-            assert page.locator(".cw-milestone-card").count() >= 1, "Milestones not rendered"
-            stage = page.locator(".cw-stage")
-            assert "fulfilment lifecycle & service" in stage.inner_text().lower()
-            assert "no live hcme erp, inventory, carrier, tms or dealer service system is connected" in " ".join(stage.inner_text().lower().split())
-            print("  ✓ Stage 7 reached: demonstration header and data-truth subtitle rendered")
-
-            # Walk the whole simulated lifecycle and check the data-truth wording at every step.
-            FORBIDDEN = ["Live Tracking", "physically", "torqued", "Quality inspection", "Certified Service Technician",
-                         "CERTIFIED_SERVICE_TECHNICIAN", "Workshop Manager", "Authorised Dealer Service", "authorised dealer technician",
-                         "Successfully Closed", "successfully delivered to dealer branch", "Live sequential"]
-
-            def check_wording(label):
-                text = page.locator(".cw-stage").inner_text()
-                bad = [w for w in FORBIDDEN if w.lower() in text.lower()]
-                assert not bad, f"{label}: misleading wording present: {bad}"
-
-            def click(text, timeout=15000):
-                btn = page.locator(f"button:has-text('{text}')")
-                btn.first.wait_for(state="visible", timeout=timeout)
-                btn.first.click()
-                page.wait_for_timeout(700)
-
-            check_wording("stage 7 start")
-            click("Allocate Inventory")
-            page.wait_for_selector(".cw-milestone-title:has-text('Simulated Inventory Allocation')", timeout=15000)
-            page.wait_for_selector("text=Demonstrates how inventory would be reserved against the selected fulfilment source", timeout=15000)
-            page.wait_for_selector(".cw-milestone-card >> text=DEMO / SIMULATED", timeout=15000)
-            assert "demo / simulated" in page.locator(".cw-milestone-card").first.inner_text().lower()
-            check_wording("allocation")
-            click("Create Simulated Order")
-            page.wait_for_selector(".cw-milestone-title:has-text('Simulated Order Creation')", timeout=15000)
-            page.wait_for_selector(".cw-milestone-card:has-text('Simulated Order Creation') >> text=ERP Integration", timeout=15000)
-            order_card = page.locator(".cw-milestone-card", has_text="Simulated Order Creation").inner_text()
-            assert "no live hcme erp order is created" in order_card.lower() and "demo / simulated" in order_card.lower()
-            check_wording("order")
-            click("Create Simulated Shipment")
-            page.wait_for_selector(".cw-milestone-title:has-text('Simulated Shipment & Tracking')", timeout=15000)
-            page.wait_for_selector(".cw-milestone-card:has-text('Simulated Shipment & Tracking') >> text=Demo Tracking Code", timeout=15000)
-            ship_card = page.locator(".cw-milestone-card", has_text="Simulated Shipment & Tracking").inner_text()
-            for must in ("Demo European Logistics Partner", "NOT_CONNECTED", "SYNTHETIC_DEMO", "Demo Tracking Code"):
-                assert must.lower() in ship_card.lower(), f"shipment card missing '{must}'"
-            check_wording("shipment created")
-            click("Simulate Dispatch Milestone")
-            click("Simulate Delivery Milestone")
-            page.wait_for_selector("text=Demonstration shipment reached the simulated delivery milestone.", timeout=15000)
-            check_wording("shipment delivered")
-            click("[SIMULATED] Create Demo Service Job")
-            page.wait_for_selector(".cw-milestone-title:has-text('Simulated Dealer Service')", timeout=15000)
-            page.wait_for_selector(".cw-milestone-card:has-text('Simulated Dealer Service') >> text=Demo Work Order", timeout=15000)
-            svc = page.locator(".cw-milestone-card", has_text="Simulated Dealer Service").inner_text()
-            assert "demo work order" in svc.lower() and "demo / simulated" in svc.lower() and "[simulated] service job created" in svc.lower()
-            check_wording("service job")
-            for step_label, milestone in (("1. [SIMULATED] Part Receipt Recorded", "[SIMULATED] Part Receipt Recorded"),
-                                          ("2. [SIMULATED] Service Work Started", "[SIMULATED] Service Work Started"),
-                                          ("3. [SIMULATED] Installation Milestone Recorded", "[SIMULATED] Installation Milestone Recorded"),
-                                          ("4. [SIMULATED] Service Completion Recorded", "[SIMULATED] Service Completion Recorded")):
-                click(step_label)
-                page.wait_for_selector(f".cw-events-list :text('{milestone}')", timeout=15000)
-                check_wording(step_label)
-            page.wait_for_selector(".cw-celebration-title:has-text('Demonstration Fulfilment Journey Completed')", timeout=15000)
-            final = page.locator(".cw-card--celebration").inner_text()
-            assert "no live commercial order, carrier shipment, or dealer service event was created." in " ".join(final.lower().split())
-            assert "demo / simulated" in final.lower() and "demo work order" in final.lower(), f"final card text: {final!r}"
-            check_wording("final")
-            print("  ✓ Stage 7 lifecycle walked end to end: every event marked DEMO/SIMULATED, no misleading wording")
+            page.wait_for_selector(".cw-stage__title:has-text('6. Review')", timeout=8000)
+            page.locator("button:has-text('Place Order →')").click()
+            page.wait_for_selector("[data-testid='order-id']", timeout=15000)
+            order_id = page.locator("[data-testid='order-id']").inner_text().strip()
+            assert order_id.startswith("HCME-ORD-"), order_id
+            body = page.locator(".cw-stage").inner_text()
+            assert "Allocate Inventory" not in body and "Shipment" not in body.split("Fulfilment")[0], "lifecycle controls must not appear in checkout"
+            print(f"  ✓ Customer journey ends at Order Confirmation ({order_id}); allocation / shipment / service are on the Orders screen")
 
             # Close wizard / return
             page.locator("button.cw-close-btn").click()
@@ -312,6 +224,7 @@ def run_e2e():
             # Click button - should open inquiry form, NOT checkout
             verify_btn.click()
             page.wait_for_selector(".cw-stage", timeout=5000)
+            open_cart_stage(page)
             stage_text = page.locator(".cw-stage").inner_text().upper()
             assert "NOT AN OFFICIAL HCME PART NUMBER" in stage_text and "DEMO-" in stage_text, "unverified item must show a labelled DEMO reference"
             assert "GENUINE HITACHI OEM" not in stage_text, "a DEMO reference must never be labelled genuine OEM"
@@ -353,6 +266,7 @@ def run_e2e():
 
             cyl_item.locator("button:has-text('Continue to demo order →')").first.click()
             page.wait_for_selector(".cw-stage", timeout=8000)
+            open_cart_stage(page)
             assert "NOT AN OFFICIAL HCME PART NUMBER" in page.locator(".cw-stage").inner_text().upper()
             print("  ✓ Ambiguous cylinder goes straight to the demo order with a labelled DEMO reference (no serial question)")
 

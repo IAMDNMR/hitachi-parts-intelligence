@@ -1,0 +1,47 @@
+.ord-screen { min-height: 100vh; background: #fbf8f4; }
+.ord { max-width: 1120px; margin: 0 auto; padding: 2rem 1.25rem 4rem; color: #16202c; }
+.ord__head h1 { font-size: 2rem; margin: 0 0 0.35rem; }
+.ord__head p, .ord__muted, .ord__note { color: #5b6673; margin: 0.25rem 0 0; }
+.ord__head--row { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; flex-wrap: wrap; }
+.ord__error { color: #b3261e; background: #fdecea; border-radius: 8px; padding: 0.6rem 0.8rem; margin: 0.75rem 0 0; }
+.ord__table-wrap { margin-top: 1.25rem; background: #fff; border: 1px solid #e6e0d8; border-radius: 14px; overflow-x: auto; }
+.ord__table { width: 100%; border-collapse: collapse; font-size: 0.92rem; }
+.ord__table th { text-align: left; font-size: 0.72rem; letter-spacing: 0.06em; text-transform: uppercase; color: #6b7684; padding: 0.8rem 1rem; border-bottom: 1px solid #eee8e0; }
+.ord__table td { padding: 0.85rem 1rem; border-bottom: 1px solid #f3eee7; vertical-align: top; }
+.ord__table tr:last-child td { border-bottom: 0; }
+.ord__open, .ord__back { color: #e8531d; font-weight: 600; text-decoration: none; }
+.ord__open:hover, .ord__back:hover { text-decoration: underline; }
+.ord__back { display: inline-block; margin-bottom: 1rem; }
+.ord__status { display: inline-block; padding: 0.2rem 0.65rem; border-radius: 999px; font-size: 0.78rem; font-weight: 600; background: #fff1e6; color: #b8460f; }
+.ord__status--accepted { background: #e8f0fe; color: #1a4fb3; }
+.ord__status--fulfilled { background: #e6f4ea; color: #1e7a3c; }
+.ord__status--closed { background: #e6f4ea; color: #14612e; }
+.ord__status--cancelled { background: #f1f1f1; color: #666; }
+
+.ord__steps { list-style: none; display: flex; gap: 0.25rem; padding: 0; margin: 1.5rem 0 1rem; overflow-x: auto; }
+.ord__step { flex: 1 1 0; min-width: 110px; display: flex; flex-direction: column; align-items: center; gap: 0.35rem; text-align: center; position: relative; font-size: 0.85rem; color: #7a8592; }
+.ord__step + .ord__step::before { content: ''; position: absolute; top: 15px; right: 50%; width: 100%; height: 2px; background: #e2dcd3; z-index: 0; }
+.ord__step--done + .ord__step::before, .ord__step--done + .ord__step--current::before { background: #1e7a3c; }
+.ord__step-dot { position: relative; z-index: 1; width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; background: #e2dcd3; color: #5b6673; font-weight: 700; font-size: 0.85rem; }
+.ord__step--done .ord__step-dot { background: #1e7a3c; color: #fff; }
+.ord__step--current .ord__step-dot { background: #e8531d; color: #fff; box-shadow: 0 0 0 4px #ffd9c7; }
+.ord__step--current .ord__step-label, .ord__step--done .ord__step-label { color: #16202c; font-weight: 600; }
+.ord__step-detail { font-size: 0.72rem; text-transform: capitalize; }
+
+.ord__action { background: #fff; border: 1px solid #e6e0d8; border-radius: 14px; padding: 1rem 1.25rem; margin-bottom: 1.25rem; }
+.ord__btn { background: #e8531d; color: #fff; border: 0; border-radius: 10px; padding: 0.75rem 1.25rem; font-size: 1rem; font-weight: 600; cursor: pointer; }
+.ord__btn:disabled { opacity: 0.6; cursor: wait; }
+.ord__done { color: #14612e; font-weight: 600; margin: 0; }
+.ord__note { font-size: 0.8rem; margin-top: 0.6rem; }
+
+.ord__cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1rem; }
+.ord__card { background: #fff; border: 1px solid #e6e0d8; border-radius: 14px; padding: 1rem 1.25rem; }
+.ord__card h3 { margin: 0 0 0.6rem; font-size: 1rem; }
+.ord__card dl { display: grid; grid-template-columns: 110px 1fr; gap: 0.4rem 0.75rem; margin: 0; font-size: 0.9rem; }
+.ord__card dt { color: #6b7684; }
+.ord__card dd { margin: 0; overflow-wrap: anywhere; }
+.ord__events { list-style: none; padding: 0; margin: 0.75rem 0 0; font-size: 0.85rem; display: grid; gap: 0.35rem; }
+.ord__events strong { text-transform: capitalize; }
+.ord__events span { color: #5b6673; }
+
+@media (max-width: 640px) { .ord { padding: 1.25rem 1rem 3rem; } .ord__card dl { grid-template-columns: 90px 1fr; } }

@@ -14,7 +14,7 @@ import Stage3DestinationDealer from './Stage3DestinationDealer'
 import Stage4Availability from './Stage4Availability'
 import Stage5Transportation, { type UnifiedTransportOption } from './Stage5Transportation'
 import Stage6OrderReview from './Stage6OrderReview'
-import Stage7PostOrder from './Stage7PostOrder'
+import Stage7OrderConfirmation, { type PlacedOrder } from './Stage7OrderConfirmation'
 import './CheckoutWizard.css'
 
 interface CheckoutWizardProps {
@@ -26,13 +26,13 @@ interface CheckoutWizardProps {
 const REQUESTER_KEY = 'hcme-requester-identity'
 
 const STAGE_NAMES = [
-  'Cart Item',
-  'Requester',
-  'Destination Dealer',
-  'Stock Availability',
-  'Transportation',
-  'Order Review',
-  'Lifecycle & Service',
+  'Customer Details',
+  'Cart',
+  'Delivery / Dealer',
+  'Availability',
+  'Fulfilment',
+  'Review & Place Order',
+  'Order Confirmation',
 ]
 
 export default function CheckoutWizard({ item: initialItem, onClose, onComplete }: CheckoutWizardProps) {
@@ -62,6 +62,14 @@ export default function CheckoutWizard({ item: initialItem, onClose, onComplete 
     }
   })
 
+  const [requesterPhone, setRequesterPhone] = useState(() => {
+    try {
+      return JSON.parse(localStorage.getItem(REQUESTER_KEY) || '{}').phone || ''
+    } catch {
+      return ''
+    }
+  })
+
   // European dealers
   const [dealers, setDealers] = useState<DealerOption[]>([])
   const [selectedDealerId, setSelectedDealerId] = useState<string>('')
@@ -86,6 +94,7 @@ export default function CheckoutWizard({ item: initialItem, onClose, onComplete 
   // Review & Confirmation
   const [orderSubmitting, setOrderSubmitting] = useState<boolean>(false)
   const [orderError, setOrderError] = useState<string | null>(null)
+  const [placedOrder, setPlacedOrder] = useState<PlacedOrder | null>(null)
 
   // Fetch real European dealer network on mount
   useEffect(() => {
@@ -121,7 +130,7 @@ export default function CheckoutWizard({ item: initialItem, onClose, onComplete 
     try {
       localStorage.setItem(
         REQUESTER_KEY,
-        JSON.stringify({ name: requesterName, email: requesterEmail, company: requesterCompany })
+        JSON.stringify({ name: requesterName, email: requesterEmail, company: requesterCompany, phone: requesterPhone })
       )
     } catch {
       // localStorage unavailable
@@ -282,14 +291,35 @@ export default function CheckoutWizard({ item: initialItem, onClose, onComplete 
     setCurrentStage(6)
   }
 
-  // Authorize and advance to Stage 7
-  const handleConfirmOrder = () => {
+  // Place the order: the backend writes the Order (with the customer, delivery, part and fulfilment details) to Neo4j and returns its ID.
+  const handlePlaceOrder = async () => {
+    if (!requestId) {
+      setOrderError('The fulfilment request is missing. Go back and check availability again.')
+      return
+    }
     setOrderSubmitting(true)
     setOrderError(null)
-    setTimeout(() => {
-      setOrderSubmitting(false)
+    try {
+      const res = await fetch(`/api/v1/fulfilment-requests/${requestId}/place-order`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-test-user-id': 'site-visitor-demo', 'x-test-role': 'CUSTOMER' },
+        body: JSON.stringify({
+          customer_name: requesterName.trim(),
+          customer_email: requesterEmail.trim(),
+          customer_phone: requesterPhone.trim() || null,
+          customer_company: requesterCompany.trim() || null,
+          part_name: item.name,
+        }),
+      })
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.error?.message || data.detail || 'The order could not be placed.')
+      setPlacedOrder(data as PlacedOrder)
       setCurrentStage(7)
-    }, 400)
+    } catch (err) {
+      setOrderError(err instanceof Error ? err.message : String(err))
+    } finally {
+      setOrderSubmitting(false)
+    }
   }
 
   return (
@@ -359,27 +389,29 @@ export default function CheckoutWizard({ item: initialItem, onClose, onComplete 
         {/* Active Stage View — ONE STAGE AT A TIME */}
         <div className="cw-body">
           {currentStage === 1 && (
-            <Stage1Cart
-              item={item}
-              onUpdateQty={(q) => setItem((prev) => ({ ...prev, qty: q }))}
-              onNext={() => setCurrentStage(2)}
-              onClose={onClose}
-            />
-          )}
-
-          {currentStage === 2 && (
             <Stage2Requester
               name={requesterName}
               email={requesterEmail}
               company={requesterCompany}
+              phone={requesterPhone}
               onChangeName={setRequesterName}
               onChangeEmail={setRequesterEmail}
               onChangeCompany={setRequesterCompany}
-              onBack={() => setCurrentStage(1)}
+              onChangePhone={setRequesterPhone}
+              onBack={onClose}
               onNext={() => {
                 saveIdentity()
-                setCurrentStage(3)
+                setCurrentStage(2)
               }}
+            />
+          )}
+
+          {currentStage === 2 && (
+            <Stage1Cart
+              item={item}
+              onUpdateQty={(q) => setItem((prev) => ({ ...prev, qty: q }))}
+              onNext={() => setCurrentStage(3)}
+              onClose={() => setCurrentStage(1)}
             />
           )}
 
@@ -436,25 +468,21 @@ export default function CheckoutWizard({ item: initialItem, onClose, onComplete 
               requesterName={requesterName}
               requesterEmail={requesterEmail}
               requesterCompany={requesterCompany}
+              requesterPhone={requesterPhone}
               dealer={selectedDealer}
               transportComparison={transportComparison}
               selectedOption={selectedOption}
               onBack={() => setCurrentStage(5)}
-              onConfirmOrder={handleConfirmOrder}
+              onConfirmOrder={handlePlaceOrder}
               submitting={orderSubmitting}
               error={orderError}
             />
           )}
 
-          {currentStage === 7 && requestId && (
-            <Stage7PostOrder
-              requestId={requestId}
-              partNumber={item.partNumber || item.id}
-              quantity={item.qty}
-              sourceId="DEPOT-OOSTERHOUT"
-              dealerId={selectedDealerId}
-              dealerName={selectedDealer?.dealer_name}
-              onFinishJourney={() => {
+          {currentStage === 7 && placedOrder && (
+            <Stage7OrderConfirmation
+              order={placedOrder}
+              onFinish={() => {
                 onComplete()
                 onClose()
               }}

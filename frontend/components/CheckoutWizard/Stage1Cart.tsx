@@ -11,10 +11,14 @@ export default function Stage1Cart({ item, onUpdateQty, onNext, onClose }: Stage
   return (
     <div className="cw-stage">
       <div className="cw-stage__header">
-        <div className="cw-stage__badge cw-stage__badge--real">REAL · GENUINE CATALOGUE ITEM</div>
-        <h3 className="cw-stage__title">1. Review Selected Part &amp; Quantity</h3>
+        {item.partNumber?.toUpperCase().startsWith('DEMO-') ? (
+          <div className="cw-stage__badge cw-stage__badge--synthetic">SYNTHETIC DEMO · DEMO PART REFERENCE</div>
+        ) : (
+          <div className="cw-stage__badge cw-stage__badge--real">REAL · GENUINE CATALOGUE ITEM</div>
+        )}
+        <h3 className="cw-stage__title">2. Cart</h3>
         <p className="cw-stage__desc">
-          Verify the genuine Hitachi part details and required order quantity before checking European depot availability.
+          Check the part and the quantity before choosing where to deliver it.
         </p>
       </div>
 
@@ -56,7 +60,11 @@ export default function Stage1Cart({ item, onUpdateQty, onNext, onClose }: Stage
             )}
             <div className="cw-spec-item">
               <span className="cw-spec-item__label">Provenance</span>
-              <strong className="cw-spec-item__val cw-val--real">Source-Verified Catalog</strong>
+              {item.partNumber?.toUpperCase().startsWith('DEMO-') ? (
+                <strong className="cw-spec-item__val">Demo reference</strong>
+              ) : (
+                <strong className="cw-spec-item__val cw-val--real">Source-Verified Catalog</strong>
+              )}
             </div>
             <div className="cw-spec-item">
               <span className="cw-spec-item__label">Origin Depot</span>
@@ -93,10 +101,10 @@ export default function Stage1Cart({ item, onUpdateQty, onNext, onClose }: Stage
 
       <div className="cw-actions">
         <button type="button" className="cw-btn cw-btn--secondary" onClick={onClose}>
-          ← Back to Cart
+          ← Back
         </button>
         <button type="button" className="cw-btn cw-btn--primary" onClick={onNext}>
-          Next: Requester Details →
+          Next: Delivery Dealer →
         </button>
       </div>
     </div>

@@ -66,7 +66,7 @@ export default function Stage3DestinationDealer({
     <div className="cw-stage">
       <div className="cw-stage__header">
         <div className="cw-stage__badge cw-stage__badge--real">REAL · HCME EUROPEAN DEALER NETWORK</div>
-        <h3 className="cw-stage__title">3. Destination Dealer Selection</h3>
+        <h3 className="cw-stage__title">3. Delivery / Dealer</h3>
         <p className="cw-stage__desc">
           Select a verified European dealer branch from the public HCME dealer feed (181 of 182 branches mapped with
           GPS coordinates). Distances are computed directly from the European Parts Centre in Oosterhout, Netherlands.
@@ -182,7 +182,7 @@ export default function Stage3DestinationDealer({
 
       <div className="cw-actions">
         <button type="button" className="cw-btn cw-btn--secondary" onClick={onBack}>
-          ← Back to Requester
+          ← Back to Cart
         </button>
         <button
           type="button"

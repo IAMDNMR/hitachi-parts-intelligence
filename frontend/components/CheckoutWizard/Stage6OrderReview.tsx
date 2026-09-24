@@ -11,6 +11,7 @@ interface Stage6OrderReviewProps {
   requesterName: string
   requesterEmail: string
   requesterCompany?: string
+  requesterPhone?: string
   dealer: DealerOption | null
   transportComparison: TransportComparisonResponse | null
   selectedOption: UnifiedTransportOption | TransportOptionDTO | null
@@ -25,6 +26,7 @@ export default function Stage6OrderReview({
   requesterName,
   requesterEmail,
   requesterCompany,
+  requesterPhone,
   dealer,
   transportComparison,
   selectedOption,
@@ -37,10 +39,9 @@ export default function Stage6OrderReview({
     <div className="cw-stage">
       <div className="cw-stage__header">
         <div className="cw-stage__badge cw-stage__badge--info">ORDER PRE-CONFIRMATION</div>
-        <h3 className="cw-stage__title">6. Final Review &amp; Order Authorization</h3>
+        <h3 className="cw-stage__title">6. Review &amp; Place Order</h3>
         <p className="cw-stage__desc">
-          Review the complete fulfilment request specification before confirming inventory allocation and creating the
-          order.
+          Check everything below, then place the order. HCME operations handle allocation, shipping and service afterwards.
         </p>
       </div>
 
@@ -100,7 +101,7 @@ export default function Stage6OrderReview({
                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
                 <circle cx="12" cy="7" r="4" />
               </svg>
-              2. Requester Details
+              Customer Details
             </h4>
             <div className="cw-review-rows">
               <div className="cw-review-row">
@@ -111,6 +112,12 @@ export default function Stage6OrderReview({
                 <span>Email Address</span>
                 <span>{requesterEmail}</span>
               </div>
+              {requesterPhone && (
+                <div className="cw-review-row">
+                  <span>Phone</span>
+                  <span>{requesterPhone}</span>
+                </div>
+              )}
               {requesterCompany && (
                 <div className="cw-review-row">
                   <span>Customer / Fleet</span>
@@ -219,7 +226,7 @@ export default function Stage6OrderReview({
           onClick={onConfirmOrder}
           disabled={submitting}
         >
-          {submitting ? 'Placing Order & Allocating...' : 'Confirm Order & Proceed to Fulfilment →'}
+          {submitting ? 'Placing order…' : 'Place Order →'}
         </button>
       </div>
     </div>

@@ -4,9 +4,11 @@ interface Stage2RequesterProps {
   name: string
   email: string
   company?: string
+  phone?: string
   onChangeName: (val: string) => void
   onChangeEmail: (val: string) => void
   onChangeCompany?: (val: string) => void
+  onChangePhone?: (val: string) => void
   onBack: () => void
   onNext: () => void
 }
@@ -17,9 +19,11 @@ export default function Stage2Requester({
   name,
   email,
   company = '',
+  phone = '',
   onChangeName,
   onChangeEmail,
   onChangeCompany,
+  onChangePhone,
   onBack,
   onNext,
 }: Stage2RequesterProps) {
@@ -40,10 +44,10 @@ export default function Stage2Requester({
   return (
     <div className="cw-stage">
       <div className="cw-stage__header">
-        <div className="cw-stage__badge cw-stage__badge--info">IDENTITY &amp; AUDIT TRAIL</div>
-        <h3 className="cw-stage__title">2. Requester Information</h3>
+        <div className="cw-stage__badge cw-stage__badge--info">CUSTOMER DETAILS</div>
+        <h3 className="cw-stage__title">1. Customer Details</h3>
         <p className="cw-stage__desc">
-          Specify who is requesting this parts fulfilment. Requester identity is persisted to the Neo4j graph audit trail.
+          Tell us who is placing this order. These details are saved with the order.
         </p>
       </div>
 
@@ -99,24 +103,23 @@ export default function Stage2Requester({
           />
         </div>
 
-        <div className="cw-notice cw-notice--info">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <circle cx="12" cy="12" r="10" />
-            <line x1="12" y1="16" x2="12" y2="12" />
-            <line x1="12" y1="8" x2="12.01" y2="8" />
-          </svg>
-          <div>
-            <strong>Identity Persistence:</strong> A <code>Customer</code> node is matched or created in Neo4j with
-            relationship <code>(:Customer)-[:REQUESTED]-&gt;(:FulfilmentRequest)</code>.
-          </div>
+        <div className="cw-field">
+          <label htmlFor="requester-phone">Phone (Optional)</label>
+          <input
+            id="requester-phone"
+            type="tel"
+            placeholder="e.g. +31 6 1234 5678"
+            value={phone}
+            onChange={(e) => onChangePhone?.(e.target.value)}
+          />
         </div>
 
         <div className="cw-actions">
           <button type="button" className="cw-btn cw-btn--secondary" onClick={onBack}>
-            ← Back to Cart
+            Cancel
           </button>
           <button type="submit" className="cw-btn cw-btn--primary" disabled={!canProceed}>
-            Next: Destination Dealer →
+            Next: Cart →
           </button>
         </div>
       </form>

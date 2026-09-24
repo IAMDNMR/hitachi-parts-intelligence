@@ -146,7 +146,7 @@ export default function Stage5Transportation({
     <div className="cw-stage">
       <div className="cw-stage__header">
         <div className="cw-stage__badge cw-stage__badge--synthetic">SYNTHETIC DEMO · MULTI-MODAL LOGISTICS</div>
-        <h3 className="cw-stage__title">5. European Transportation Selection</h3>
+        <h3 className="cw-stage__title">5. Fulfilment Option</h3>
         <p className="cw-stage__desc">
           Compare multi-modal freight routes from the European Parts Centre in Oosterhout to the receiving dealer branch.
           Options are calculated using deterministic European distance-band rates.

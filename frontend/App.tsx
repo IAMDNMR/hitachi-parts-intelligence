@@ -9,10 +9,12 @@ import { TheGround } from './pages/TheGround/components/TheGround'
 import { MachinerySection } from './sections/Machinery/MachinerySection'
 import { PartsStore } from './pages/PartsStore/PartsStore'
 import { PartsIntelligenceScreen } from './pages/PartsStore/PartsIntelligenceScreen'
+import { OrdersPage } from './pages/Orders/OrdersPage'
 
 const GROUND = '#/the-ground'
 const PARTS_STORE = '#/parts-store'
 const PARTS_INTELLIGENCE = '#/parts-intelligence'
+const ORDERS = '#/orders'
 
 /**
  * Routing, such as it is.
@@ -61,6 +63,7 @@ export default function App() {
   if (on(GROUND)) return <TheGround onHome={goHome} />
   if (on(PARTS_INTELLIGENCE)) return <PartsIntelligenceScreen onHome={goHome} />
   if (on(PARTS_STORE)) return <PartsStore onHome={goHome} />
+  if (on(ORDERS)) return <OrdersPage onHome={goHome} />
 
   return (
     <>

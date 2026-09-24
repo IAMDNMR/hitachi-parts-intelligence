@@ -64,7 +64,7 @@ def create_service_job(
     fulfilment_req = dict(order_row["fr"]) if order_row["fr"] else None
 
     # Order must be in a valid progressive state
-    valid_order_states = {"ACCEPTED", "ALLOCATED", "SHIPPED", "DELIVERED", "COMPLETED"}
+    valid_order_states = {"ACCEPTED", "ALLOCATED", "SHIPPED", "DELIVERED", "FULFILLED", "COMPLETED"}
     if order.get("status") not in valid_order_states:
         raise ConflictError(
             f"Cannot create ServiceJob for Order '{order_id}' in status '{order.get('status')}'. "

@@ -57,6 +57,13 @@ export function SiteHeader({
           Parts Intelligence
         </a>
         <a
+          className={current === 'orders' ? 'site-header__link is-current' : 'site-header__link'}
+          href="#/orders"
+          onClick={(event) => go(event, '#/orders')}
+        >
+          Orders
+        </a>
+        <a
           className={current === 'ground' ? 'site-header__link is-current' : 'site-header__link'}
           href="#/the-ground"
           onClick={(event) => go(event, '#/the-ground')}

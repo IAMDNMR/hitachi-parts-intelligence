@@ -38,7 +38,7 @@ export default function Stage4Availability({
     <div className="cw-stage">
       <div className="cw-stage__header">
         <div className="cw-stage__badge cw-stage__badge--synthetic">SYNTHETIC DEMO · AVAILABILITY SNAPSHOT</div>
-        <h3 className="cw-stage__title">4. Availability Snapshot</h3>
+        <h3 className="cw-stage__title">4. Availability</h3>
         <p className="cw-stage__desc">
           Availability snapshot for part <strong>{partNumber}</strong> (quantity: <strong>{requiredQty}</strong>) evaluated against European depot and regional network sources.
         </p>
