@@ -260,7 +260,7 @@ export default function Stage5Transportation({
                         })}
                       </strong>
                     </div>
-
+                  </div>
 
                   <div className="cw-transport-footer">
                     <div className="cw-transport-price">
