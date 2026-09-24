@@ -28,16 +28,23 @@ export interface GraphView {
 // than reshuffling column order per response.
 const TYPE_ORDER = ['Country', 'MachineType', 'City', 'DealerBranch', 'Depot', 'Part', 'Supplier']
 
-const COL_WIDTH = 190
-const ROW_HEIGHT = 64
-const NODE_W = 156
+const COL_WIDTH = 250
+const ROW_HEIGHT = 58
+const NODE_W = 210
 const NODE_H = 44
 const PAD = 24
+const MAX_ROWS = 7 // a column with more nodes is split into side-by-side sub-columns so the diagram stays compact
+const LABEL_MAX = 30
 
 function columnFor(type: string, columns: string[]): number {
   const known = TYPE_ORDER.indexOf(type)
   if (known >= 0) return TYPE_ORDER.filter((t) => columns.includes(t)).indexOf(type)
   return columns.filter((c) => !TYPE_ORDER.includes(c)).indexOf(type) + TYPE_ORDER.filter((t) => columns.includes(t)).length
+}
+
+/** "PT-037 Hitachi Genuine Hydraulic Oil" -> "PT-037 Hydraulic Oil": every catalogue part is a Hitachi genuine part, so the prefix only takes up room. */
+function shortLabel(label: string): string {
+  return label.replace(/^(PT-\d+\s+)?Hitachi\s+(Genuine\s+)?/i, '$1').trim()
 }
 
 function badgeClass(dataClass: string): string {
@@ -71,38 +78,70 @@ export default function NetworkGraph({ graph }: { graph: GraphView }) {
     byColumn[col] = byColumn[col] || []
     byColumn[col].push(n)
   }
-  const colCount = Object.keys(byColumn).length
-  const maxRows = Math.max(...Object.values(byColumn).map((n) => n.length))
-  const width = colCount * COL_WIDTH + PAD * 2
-  const height = maxRows * ROW_HEIGHT + PAD * 2
-
+  // Each type column may need several sub-columns; give every node a slot.
+  const cols = Object.keys(byColumn).map(Number).sort((x, y) => x - y)
   const pos: Record<string, { x: number; y: number }> = {}
-  Object.entries(byColumn).forEach(([colStr, colNodes]) => {
-    const col = Number(colStr)
-    const rowsInCol = colNodes.length
-    const offsetY = (maxRows - rowsInCol) / 2
-    colNodes.forEach((n, row) => {
-      pos[n.id] = {
-        x: PAD + col * COL_WIDTH + NODE_W / 2,
-        y: PAD + (offsetY + row) * ROW_HEIGHT + NODE_H / 2,
-      }
+  let slot = 0
+  let maxRows = 1
+  for (const col of cols) {
+    const colNodes = byColumn[col] ?? []
+    const subCols = Math.ceil(colNodes.length / MAX_ROWS)
+    const rowsPer = Math.ceil(colNodes.length / subCols)
+    maxRows = Math.max(maxRows, rowsPer)
+    colNodes.forEach((n, i) => {
+      pos[n.id] = { x: PAD + (slot + Math.floor(i / rowsPer)) * COL_WIDTH + NODE_W / 2, y: i % rowsPer }
     })
-  })
+    slot += subCols
+  }
+  const width = slot * COL_WIDTH + PAD * 2 - (COL_WIDTH - NODE_W)
+  const height = maxRows * ROW_HEIGHT + PAD * 2
+  for (const col of cols) {
+    const colNodes = byColumn[col] ?? []
+    const subCols = Math.ceil(colNodes.length / MAX_ROWS)
+    const rowsPer = Math.ceil(colNodes.length / subCols)
+    colNodes.forEach((n, i) => {
+      const inThis = Math.min(rowsPer, colNodes.length - Math.floor(i / rowsPer) * rowsPer)
+      const offsetY = (maxRows - inThis) / 2
+      const q = pos[n.id]
+      if (q) q.y = PAD + (offsetY + (i % rowsPer)) * ROW_HEIGHT + NODE_H / 2
+    })
+  }
+
+  // One label per (source, relationship) group when a hub fans out to many nodes - a label on every line overlaps itself.
+  const groupSize: Record<string, number> = {}
+  for (const e of edges) groupSize[`${e.source}|${e.display_relationship}`] = (groupSize[`${e.source}|${e.display_relationship}`] || 0) + 1
+  const labelled = new Set<string>()
 
   return (
     <div className="ng">
-      <svg viewBox={`0 0 ${width} ${height}`} width="100%" height={height} role="img" aria-label="Relationship graph">
+      <svg viewBox={`0 0 ${width} ${height}`} width="100%" style={{ maxWidth: width, height: 'auto' }} role="img" aria-label="Relationship graph">
         {edges.map((e, i) => {
           const a = pos[e.source]
           const b = pos[e.target]
           if (!a || !b) return null
-          const midX = (a.x + b.x) / 2
-          const midY = (a.y + b.y) / 2
+          const key = `${e.source}|${e.display_relationship}`
+          const many = (groupSize[key] ?? 0) > 3
+          let label: string | null = e.display_relationship
+          let lx = (a.x + b.x) / 2
+          let ly = (a.y + b.y) / 2
+          if (many) {
+            if (labelled.has(key)) label = null
+            else {
+              labelled.add(key)
+              label = `${e.display_relationship} ×${groupSize[key]}`
+              lx = a.x + NODE_W / 2 + 46
+              ly = a.y
+            }
+          }
           return (
             <g key={`${e.source}-${e.target}-${i}`} className={`ng-edge ${edgeClass(e.relationship_source)}`}>
-              <line x1={a.x} y1={a.y} x2={b.x} y2={b.y} />
-              <rect x={midX - e.display_relationship.length * 3.2 - 4} y={midY - 9} width={e.display_relationship.length * 6.4 + 8} height={18} rx={4} />
-              <text x={midX} y={midY + 4} textAnchor="middle">{e.display_relationship}</text>
+              <line x1={a.x + NODE_W / 2} y1={a.y} x2={b.x - NODE_W / 2} y2={b.y} />
+              {label && (
+                <>
+                  <rect x={lx - label.length * 3.2 - 4} y={ly - 9} width={label.length * 6.4 + 8} height={18} rx={4} />
+                  <text x={lx} y={ly + 4} textAnchor="middle">{label}</text>
+                </>
+              )}
             </g>
           )
         })}
@@ -114,8 +153,9 @@ export default function NetworkGraph({ graph }: { graph: GraphView }) {
               <rect width={NODE_W} height={NODE_H} rx={10} />
               <text x={NODE_W / 2} y={17} textAnchor="middle" className="ng-node__type">{n.type}</text>
               <text x={NODE_W / 2} y={33} textAnchor="middle" className="ng-node__label">
-                {n.label.length > 22 ? `${n.label.slice(0, 21)}…` : n.label}
+                {shortLabel(n.label).length > LABEL_MAX ? `${shortLabel(n.label).slice(0, LABEL_MAX - 1)}…` : shortLabel(n.label)}
               </text>
+              <title>{n.label}</title>
             </g>
           )
         })}
