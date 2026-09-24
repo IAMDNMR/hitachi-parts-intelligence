@@ -255,11 +255,6 @@ export default function PartsIntelligencePanel({
           <div>
             <h2>Parts Intelligence</h2>
             <p>Ask about parts, dealers, suppliers and their relationships — powered by Hitachi After-Sales data.</p>
-            <div className="pix-legend" aria-label="Data legend">
-              <span className="pix-chip pix-chip--real">REAL — HCME / source data</span>
-              <span className="pix-chip pix-chip--demo">SYNTHETIC_DEMO — illustration only</span>
-              <span className="pix-chip pix-chip--off">NOT_CONNECTED — data not available</span>
-            </div>
           </div>
           {turns.length > 0 && (
             <button type="button" className="pix-btn pix-head__new" onClick={() => { setTurns([]); setContextPartId(null) }}>
