@@ -62,49 +62,49 @@ def test_eta_skips_weekends():
     assert calculate_delivery_date(friday, 2) == "2026-09-29"
 
 
+def _spec(mode, level=None):
+    return next(s for s in RATE_SPECS if s.mode == mode and (level is None or s.service_level == level))
+
+
+KMS = (20.0, 65.0, 250.0, 550.0, 900.0, 1400.0, 2200.0)
+
+
+def test_cost_grows_with_distance_for_every_mode():
+    from app.modules.transport.rate_card import option_cost
+    for spec in RATE_SPECS:
+        totals = [option_cost(spec, km)[3] for km in KMS]
+        assert totals == sorted(totals) and totals[0] < totals[-1], spec.display_name
+
+
 def test_express_costs_more_than_standard():
-    """Verify that Express strictly costs more than Standard across all applicable distance bands."""
-    for band_enum in DistanceBandEnum:
-        road_std = next(
-            (s for s in RATE_SPECS if s.mode == TransportMode.ROAD and s.service_level == ServiceLevel.STANDARD and band_enum in s.distance_cost_by_band),
-            None,
-        )
-        road_exp = next(
-            (s for s in RATE_SPECS if s.mode == TransportMode.ROAD and s.service_level == ServiceLevel.EXPRESS and band_enum in s.distance_cost_by_band),
-            None,
-        )
-        if road_std and road_exp:
-            cost_std = road_std.base_cost + road_std.distance_cost_by_band[band_enum] + road_std.service_level_cost_by_band[band_enum]
-            cost_exp = road_exp.base_cost + road_exp.distance_cost_by_band[band_enum] + road_exp.service_level_cost_by_band[band_enum]
-            assert cost_exp > cost_std, f"Express should cost more than Standard in {band_enum.value}"
+    from app.modules.transport.rate_card import option_cost
+    std, exp = _spec(TransportMode.ROAD, ServiceLevel.STANDARD), _spec(TransportMode.ROAD, ServiceLevel.EXPRESS)
+    for km in KMS:
+        assert option_cost(exp, km)[3] > option_cost(std, km)[3]
 
 
-def test_express_is_faster_or_equal_to_standard():
-    """Verify that Express transit time is <= Standard transit time in all applicable distance bands."""
-    for band_enum in DistanceBandEnum:
-        road_std = next(
-            (s for s in RATE_SPECS if s.mode == TransportMode.ROAD and s.service_level == ServiceLevel.STANDARD and band_enum in s.transit_days_by_band),
-            None,
-        )
-        road_exp = next(
-            (s for s in RATE_SPECS if s.mode == TransportMode.ROAD and s.service_level == ServiceLevel.EXPRESS and band_enum in s.transit_days_by_band),
-            None,
-        )
-        if road_std and road_exp:
-            days_std = road_std.transit_days_by_band[band_enum]
-            days_exp = road_exp.transit_days_by_band[band_enum]
-            assert days_exp <= days_std, f"Express should be faster or equal in {band_enum.value}"
+def test_express_is_strictly_faster_than_standard():
+    from app.modules.transport.rate_card import transit_days_for
+    std, exp = _spec(TransportMode.ROAD, ServiceLevel.STANDARD), _spec(TransportMode.ROAD, ServiceLevel.EXPRESS)
+    for km in KMS:
+        assert transit_days_for(exp, km) < transit_days_for(std, km)
 
 
-def test_rail_lower_cost():
-    """Verify Rail freight provides lower cost than Road Standard on heavy trunk routes (Bands 3, 4, 5)."""
-    for band_enum in [DistanceBandEnum.BAND_3, DistanceBandEnum.BAND_4, DistanceBandEnum.BAND_5]:
-        rail = next((s for s in RATE_SPECS if s.mode == TransportMode.RAIL and band_enum in s.distance_cost_by_band), None)
-        road = next((s for s in RATE_SPECS if s.mode == TransportMode.ROAD and s.service_level == ServiceLevel.STANDARD and band_enum in s.distance_cost_by_band), None)
-        assert rail is not None and road is not None
-        cost_rail = rail.base_cost + rail.distance_cost_by_band[band_enum]
-        cost_road = road.base_cost + road.distance_cost_by_band[band_enum]
-        assert cost_rail < cost_road, f"Rail should cost less than Road Standard in {band_enum.value}"
+def test_rail_is_cheaper_than_road_on_long_routes_and_slower():
+    from app.modules.transport.rate_card import option_cost, transit_days_for
+    rail, road = _spec(TransportMode.RAIL), _spec(TransportMode.ROAD, ServiceLevel.STANDARD)
+    for km in (550.0, 900.0, 1400.0):
+        assert option_cost(rail, km)[3] < option_cost(road, km)[3]
+        assert transit_days_for(rail, km) >= transit_days_for(road, km)
+
+
+def test_air_is_the_dearest_and_never_slower_than_road_express():
+    from app.modules.transport.rate_card import option_cost, transit_days_for
+    air, exp = _spec(TransportMode.AIR), _spec(TransportMode.ROAD, ServiceLevel.EXPRESS)
+    for km in KMS:
+        assert transit_days_for(air, km) <= transit_days_for(exp, km)
+        if km <= 1400:  # on very long routes a dedicated express road service costs more than air freight
+            assert option_cost(air, km)[3] > option_cost(exp, km)[3]
 
 
 def test_transport_options_api_endpoint():

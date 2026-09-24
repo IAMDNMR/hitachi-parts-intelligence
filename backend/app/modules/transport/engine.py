@@ -21,6 +21,8 @@ from app.modules.transport.models import (
 from app.modules.transport.rate_card import (
     DISTANCE_BANDS,
     RATE_SPECS,
+    option_cost,
+    transit_days_for,
     resolve_distance_band,
 )
 
@@ -184,17 +186,12 @@ def compute_transport_comparison(
             )
         )
 
-    # Evaluate options from RATE_SPECS for this distance band
+    # Evaluate every mode from RATE_SPECS on the actual distance
     for spec in RATE_SPECS:
-        if band_id not in spec.distance_cost_by_band:
-            continue
-
         opt_id = f"TR-{spec.mode.value}-{spec.service_level.value}-{band_id.value}"
-        base = spec.base_cost
-        dist_cost = spec.distance_cost_by_band[band_id]
-        srv_cost = spec.service_level_cost_by_band.get(band_id, 0.0)
-        total = round(base + dist_cost + srv_cost, 2)
-        transit_days = spec.transit_days_by_band[band_id]
+        km = straight_line_km if spec.mode == TransportMode.AIR else estimated_road_km
+        base, dist_cost, srv_cost, total = option_cost(spec, km)
+        transit_days = transit_days_for(spec, km)
         delivery_date = calculate_delivery_date(now, transit_days)
 
         options.append(
@@ -213,22 +210,19 @@ def compute_transport_comparison(
                 service_level_cost=srv_cost,
                 total_cost=total,
                 data_class="SYNTHETIC_DEMO",
-                provenance_note="Calculated from straight-line distance using synthetic European freight rate model.",
-                highlight_tag=spec.highlight_tag,
+                provenance_note="Calculated from the distance using a synthetic European freight rate model (not a carrier quote).",
+                highlight_tag=None,
                 is_selected=(selected_option_id == opt_id),
             )
         )
 
-    # Refine highlight tags dynamically across options:
-    # 1. Cheapest gets "LOWEST COST"
+    # Tags: cheapest = LOWEST COST; quickest (cheapest among ties) = FASTEST, only when it is strictly quicker than the cheapest.
     if options:
-        min_cost = min(o.total_cost for o in options)
-        min_transit = min(o.transit_days for o in options)
-        for opt in options:
-            if opt.total_cost == min_cost and not opt.highlight_tag:
-                opt.highlight_tag = "LOWEST COST"
-            elif opt.transit_days == min_transit and opt.service_level == ServiceLevel.EXPRESS:
-                opt.highlight_tag = "FASTEST"
+        cheapest = min(options, key=lambda o: (o.total_cost, o.transit_days))
+        cheapest.highlight_tag = "LOWEST COST"
+        quickest = min(options, key=lambda o: (o.transit_days, o.total_cost))
+        if quickest is not cheapest and quickest.transit_days < cheapest.transit_days:
+            quickest.highlight_tag = "FASTEST"
 
     return TransportComparisonResponse(
         origin=origin,

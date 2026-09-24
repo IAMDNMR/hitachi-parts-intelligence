@@ -5,7 +5,7 @@ Deterministic European Rate Card and Distance Band Configuration.
 Governs synthetic freight options across ROAD, RAIL, AIR, and INTERNAL_TRANSFER.
 """
 
-from typing import Dict, List, NamedTuple, Optional
+from typing import Dict, List, NamedTuple, Optional, Tuple
 from app.modules.transport.models import DistanceBandEnum, TransportMode, ServiceLevel
 
 
@@ -80,136 +80,46 @@ def resolve_distance_band(distance_km: float) -> DistanceBandConfig:
 
 
 class OptionSpec(NamedTuple):
+    """Synthetic rate model. Cost = base (handling) + per_km x distance + service surcharge; transit comes from distance steps.
+    ROAD/RAIL are priced on the estimated road distance, AIR on the straight-line distance."""
     mode: TransportMode
     service_level: ServiceLevel
     display_name: str
     carrier_label: str
     base_cost: float
-    distance_cost_by_band: Dict[DistanceBandEnum, float]
-    service_level_cost_by_band: Dict[DistanceBandEnum, float]
-    transit_days_by_band: Dict[DistanceBandEnum, int]
+    per_km: float
+    service_surcharge: float
+    transit_steps: List[Tuple[float, int]]  # (up to this many km, business days); the last step is open-ended
     cutoff_time: str
     highlight_tag: Optional[str] = None
 
 
-# Mode eligibility per band per audit §6 & §8:
-# Band 1: Road Standard, Road Express, (Internal Transfer where applicable)
-# Band 2: Road Standard, Road Express
-# Band 3: Road Standard, Road Express, Rail Standard
-# Band 4: Road Standard, Road Express, Rail Standard, Air Express
-# Band 5: Road Standard, Road Express, Rail Standard, Air Express
-# Band 6: Road Standard, Air Express
+def transit_days_for(spec: OptionSpec, km: float) -> int:
+    for max_km, days in spec.transit_steps:
+        if km <= max_km:
+            return days
+    return spec.transit_steps[-1][1]
 
+
+def option_cost(spec: OptionSpec, km: float) -> Tuple[float, float, float, float]:
+    """(base, distance cost, service surcharge, total) for a distance in km."""
+    dist = round(spec.per_km * max(km, 0.0), 2)
+    return spec.base_cost, dist, spec.service_surcharge, round(spec.base_cost + dist + spec.service_surcharge, 2)
+
+
+# Demonstration rates only (SYNTHETIC_DEMO), set to be plausible for European pallet / air freight - not carrier quotes.
+# Every mode is offered for every distance; short-haul rail and air are simply slow / expensive, as in real life.
 RATE_SPECS: List[OptionSpec] = [
-    # 1. Road Standard (Available in all bands 1-6)
-    OptionSpec(
-        mode=TransportMode.ROAD,
-        service_level=ServiceLevel.STANDARD,
-        display_name="Road Freight Standard",
-        carrier_label="European Road Logistics Partner · Demo",
-        base_cost=25.0,
-        distance_cost_by_band={
-            DistanceBandEnum.BAND_1: 10.0,
-            DistanceBandEnum.BAND_2: 20.0,
-            DistanceBandEnum.BAND_3: 35.0,
-            DistanceBandEnum.BAND_4: 55.0,
-            DistanceBandEnum.BAND_5: 80.0,
-            DistanceBandEnum.BAND_6: 120.0,
-        },
-        service_level_cost_by_band={b: 0.0 for b in DistanceBandEnum},
-        transit_days_by_band={
-            DistanceBandEnum.BAND_1: 1,
-            DistanceBandEnum.BAND_2: 2,
-            DistanceBandEnum.BAND_3: 3,
-            DistanceBandEnum.BAND_4: 3,
-            DistanceBandEnum.BAND_5: 4,
-            DistanceBandEnum.BAND_6: 5,
-        },
-        cutoff_time="14:00 CET",
-        highlight_tag="LOWEST COST",
-    ),
-    # 2. Road Express (Available in bands 1-5)
-    OptionSpec(
-        mode=TransportMode.ROAD,
-        service_level=ServiceLevel.EXPRESS,
-        display_name="Road Courier Express",
-        carrier_label="European Express Logistics Partner · Demo",
-        base_cost=35.0,
-        distance_cost_by_band={
-            DistanceBandEnum.BAND_1: 15.0,
-            DistanceBandEnum.BAND_2: 30.0,
-            DistanceBandEnum.BAND_3: 50.0,
-            DistanceBandEnum.BAND_4: 75.0,
-            DistanceBandEnum.BAND_5: 110.0,
-            DistanceBandEnum.BAND_6: 160.0,
-        },
-        service_level_cost_by_band={
-            DistanceBandEnum.BAND_1: 15.0,
-            DistanceBandEnum.BAND_2: 25.0,
-            DistanceBandEnum.BAND_3: 35.0,
-            DistanceBandEnum.BAND_4: 45.0,
-            DistanceBandEnum.BAND_5: 55.0,
-            DistanceBandEnum.BAND_6: 65.0,
-        },
-        transit_days_by_band={
-            DistanceBandEnum.BAND_1: 1,
-            DistanceBandEnum.BAND_2: 1,
-            DistanceBandEnum.BAND_3: 2,
-            DistanceBandEnum.BAND_4: 2,
-            DistanceBandEnum.BAND_5: 2,
-            DistanceBandEnum.BAND_6: 3,
-        },
-        cutoff_time="17:00 CET",
-        highlight_tag=None,
-    ),
-    # 3. Rail Standard (Available in bands 3, 4, 5 — sustainable intermodal)
-    OptionSpec(
-        mode=TransportMode.RAIL,
-        service_level=ServiceLevel.STANDARD,
-        display_name="Rail Intermodal Freight",
-        carrier_label="European Rail Logistics Partner · Demo",
-        base_cost=20.0,
-        distance_cost_by_band={
-            DistanceBandEnum.BAND_3: 25.0,
-            DistanceBandEnum.BAND_4: 40.0,
-            DistanceBandEnum.BAND_5: 60.0,
-        },
-        service_level_cost_by_band={
-            DistanceBandEnum.BAND_3: 0.0,
-            DistanceBandEnum.BAND_4: 0.0,
-            DistanceBandEnum.BAND_5: 0.0,
-        },
-        transit_days_by_band={
-            DistanceBandEnum.BAND_3: 3,
-            DistanceBandEnum.BAND_4: 4,
-            DistanceBandEnum.BAND_5: 5,
-        },
-        cutoff_time="12:00 CET",
-        highlight_tag=None,
-    ),
-    # 4. Air Express (Available in bands 4, 5, 6 — emergency machine-down)
-    OptionSpec(
-        mode=TransportMode.AIR,
-        service_level=ServiceLevel.EXPRESS,
-        display_name="Air Priority Express",
-        carrier_label="European Air Freight Partner · Demo",
-        base_cost=75.0,
-        distance_cost_by_band={
-            DistanceBandEnum.BAND_4: 65.0,
-            DistanceBandEnum.BAND_5: 90.0,
-            DistanceBandEnum.BAND_6: 125.0,
-        },
-        service_level_cost_by_band={
-            DistanceBandEnum.BAND_4: 45.0,
-            DistanceBandEnum.BAND_5: 55.0,
-            DistanceBandEnum.BAND_6: 65.0,
-        },
-        transit_days_by_band={
-            DistanceBandEnum.BAND_4: 1,
-            DistanceBandEnum.BAND_5: 1,
-            DistanceBandEnum.BAND_6: 2,
-        },
-        cutoff_time="18:30 CET",
-        highlight_tag="FASTEST",
-    ),
+    OptionSpec(TransportMode.ROAD, ServiceLevel.STANDARD, "Road Freight Standard", "European Road Logistics Partner · Demo",
+               base_cost=40.0, per_km=0.60, service_surcharge=0.0,
+               transit_steps=[(300, 2), (700, 3), (1200, 4), (float("inf"), 5)], cutoff_time="14:00 CET", highlight_tag=None),
+    OptionSpec(TransportMode.ROAD, ServiceLevel.EXPRESS, "Road Courier Express", "European Express Logistics Partner · Demo",
+               base_cost=60.0, per_km=1.10, service_surcharge=25.0,
+               transit_steps=[(700, 1), (1500, 2), (float("inf"), 3)], cutoff_time="17:00 CET", highlight_tag=None),
+    OptionSpec(TransportMode.RAIL, ServiceLevel.STANDARD, "Rail Intermodal Freight", "European Rail Logistics Partner · Demo",
+               base_cost=90.0, per_km=0.30, service_surcharge=0.0,
+               transit_steps=[(300, 3), (700, 4), (1200, 5), (float("inf"), 6)], cutoff_time="12:00 CET", highlight_tag=None),
+    OptionSpec(TransportMode.AIR, ServiceLevel.EXPRESS, "Air Freight Express", "European Air Freight Partner · Demo",
+               base_cost=250.0, per_km=1.00, service_surcharge=60.0,
+               transit_steps=[(1500, 1), (float("inf"), 2)], cutoff_time="18:30 CET", highlight_tag=None),
 ]

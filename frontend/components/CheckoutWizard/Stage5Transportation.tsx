@@ -95,7 +95,7 @@ export default function Stage5Transportation({
       if (mode === 'ROAD' && service === 'STANDARD') name = 'Road Freight Standard'
       else if (mode === 'ROAD' && service === 'EXPRESS') name = 'Road Courier Express'
       else if (mode === 'RAIL') name = 'Rail Intermodal Freight'
-      else if (mode === 'AIR') name = 'Air Priority Express'
+      else if (mode === 'AIR') name = 'Air Freight Express'
 
       displayOptions.push({
         id: fopt.id,
