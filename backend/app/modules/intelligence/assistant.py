@@ -430,14 +430,25 @@ def h_part_search(session, ext, ctx):
                     "graph_path": ["Part"], "data": {"candidates": cards},
                     "fallback": f"Found {len(cards)} part(s) for the requested specs. Best match: {cards[0]['part_id']} {cards[0]['part_name']} ({cards[0]['match_pct']}%)."}
     every = find_parts(session, text, ext.get("machine_ref"), limit=500)
+    machine_missed = False
     if not every and ext.get("machine_ref"):
         every = find_parts(session, text, None, limit=500)
+        machine_missed = bool(every)
     cards = every[:ctx["limit"]]
     top = [{"part_id": c["part_id"], "name": c["part_name"], "match_pct": c["match_pct"]} for c in cards[:5]]
     shown = f"; showing the top {len(cards)}" if len(every) > len(cards) else ""
     fb = (f"Found {len(every)} matching part(s) in the HCME Europe catalogue{shown}. Best match: "
           f"{cards[0]['part_id']} {cards[0]['part_name']} ({cards[0]['match_pct']}%)." if cards
           else "No part in the current HCME Europe catalogue matches that description.")
+    if machine_missed and cards:
+        close = ", ".join(f"{c['part_id']} {c['part_name']}" for c in cards[:3])
+        fb = (f"No matching part is recorded as fitting the {ext['machine_ref']}. Parts that match your request but are recorded for other "
+              f"machines: {close}. Check the fitment before ordering.")
+    elif cards and cards[0].get("unmatched_terms"):
+        # the best part still misses part of the request (e.g. "hydraulic" filter when only oil and fuel filters exist): say so plainly
+        close = ", ".join(f"{c['part_id']} {c['part_name']}" for c in cards[:3])
+        fb = (f"The catalogue has no part that matches all of your request (not found: {', '.join(cards[0]['unmatched_terms'])}). "
+              f"Closest: {close}.")
     return {"evidence": {"matches": top, "machine_filter": ext.get("machine_ref"),
                          "provenance": "SOURCE_DERIVED catalogue; match % is DERIVED from term coverage"},
             "graph_path": ["Part", "Machine (fitment filter)"] if ext.get("machine_ref") else ["Part"],

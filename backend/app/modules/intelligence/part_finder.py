@@ -20,6 +20,13 @@ _STOP = {
     "machine", "machines", "model", "genuine", "looking", "want", "replacement", "new", "used", "use", "by",
     "why", "does", "how", "often", "it", "its", "wear", "work", "works", "change", "about", "tell", "explain",
     "when", "should", "be", "much", "many", "who", "where", "all", "some", "type", "kind", "good", "best",
+    # conversational filler around the real request ("the old one's clogged and the customer's waiting")
+    "old", "one", "ones", "clogged", "blocked", "broken", "worn", "dirty", "damaged", "faulty", "failed", "leaking", "customer", "customers",
+    "waiting", "wait", "urgent", "urgently", "asap", "quickly", "quick", "now", "today", "soon", "but", "so", "then", "still", "just", "really",
+    "very", "would", "could", "like", "if", "because", "since", "as", "at", "from", "into", "them", "they", "he", "she", "his", "her", "was",
+    "were", "has", "had", "got", "am", "im", "ive", "thanks", "thank", "hi", "hello", "hey", "sorry", "help",
+    "won", "lose", "losing", "lost", "flat", "dead", "order", "ordering", "buy", "usually", "else", "also", "down", "stopped", "start", "starts",
+    "starting", "options", "option", "available", "stock", "supply", "supplies", "fits", "fitted", "models", "which", "own", "their", "theirs",
 }
 _FIELD_WEIGHTS = [("part_name", 3), ("part_subcategory", 3), ("part_category", 2), ("component_assembly", 2), ("description", 1)]
 
@@ -93,12 +100,19 @@ def find_parts(session, text: str, machine: Optional[str] = None, limit: int = 9
     rows = session.run(_CATALOGUE_Q).data()
     machine_l = (machine or "").lower()
     terms = [t for t in _tokens(text) if not machine_l or t not in _tokens(machine_l)]
+    # Words that appear nowhere in the catalogue ("clogged", "waiting" and other talk around the request) must not dilute the match.
+    vocab = {w for r in rows for f, _ in _FIELD_WEIGHTS for w in _tokens(str(dict(r["part"]).get(f) or ""))}
+    known = [t for t in terms if _hit(t, vocab)]
+    dropped = [t for t in terms if t not in known and len(t) >= 5]   # long unknown words are reported (e.g. "bucket" when there is none)
+    if known:
+        terms = known
     raw = (text or "").strip().lower()
 
     cards = []
     for r in rows:
         part = dict(r["part"])
         models = r["models"]
+        unmatched: List[str] = []
         if machine_l and not any(machine_l in (m or "").lower() for m in models):
             continue
 
@@ -112,6 +126,7 @@ def find_parts(session, text: str, machine: Optional[str] = None, limit: int = 9
             matched = sum(1 for b in best if b)
             if not matched:
                 continue
+            unmatched = [t for t, b in zip(terms, best) if not b] + dropped
             strong = sum(1 for b in best if b >= 2)
             pct = round(100 * (0.7 * matched / len(terms) + 0.3 * sum(best) / (3 * len(terms))))
             if not strong:
@@ -120,7 +135,11 @@ def find_parts(session, text: str, machine: Optional[str] = None, limit: int = 9
             pct = 90  # no part terms: every part fitted to the requested machine
         else:
             continue
-        cards.append(to_card(part, len(models), pct, machine))
+        card = to_card(part, len(models), pct, machine)
+        if unmatched and pct < 100:
+            card["unmatched_terms"] = unmatched
+            card["assessment"] += f" Nothing in this part matches: {', '.join(unmatched)}."
+        cards.append(card)
 
     cards.sort(key=lambda c: (-c["match_pct"], -c["fits_count"], c["part_id"]))
     return [c for c in cards if c["match_pct"] >= 50][:limit]
