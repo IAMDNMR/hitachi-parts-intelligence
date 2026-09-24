@@ -261,11 +261,6 @@ export default function Stage5Transportation({
                       </strong>
                     </div>
 
-                    <div className="cw-transport-metric">
-                      <span className="cw-metric-label">Dispatch Cutoff</span>
-                      <strong className="cw-metric-value">{opt.dispatch_cutoff_time}</strong>
-                    </div>
-                  </div>
 
                   <div className="cw-transport-footer">
                     <div className="cw-transport-price">

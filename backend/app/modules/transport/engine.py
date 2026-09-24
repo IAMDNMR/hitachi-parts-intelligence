@@ -216,6 +216,12 @@ def compute_transport_comparison(
             )
         )
 
+    # Paying more must buy speed: drop any option that another option beats or equals on both price and transit time.
+    def _dominated(o):
+        return any(x is not o and x.total_cost <= o.total_cost and x.transit_days <= o.transit_days
+                   and (x.total_cost < o.total_cost or x.transit_days < o.transit_days) for x in options)
+    options = [o for o in options if not _dominated(o)]
+
     # Tags: cheapest = LOWEST COST; quickest (cheapest among ties) = FASTEST, only when it is strictly quicker than the cheapest.
     if options:
         cheapest = min(options, key=lambda o: (o.total_cost, o.transit_days))

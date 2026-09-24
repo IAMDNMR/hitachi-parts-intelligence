@@ -98,13 +98,13 @@ def test_rail_is_cheaper_than_road_on_long_routes_and_slower():
         assert transit_days_for(rail, km) >= transit_days_for(road, km)
 
 
-def test_air_is_the_dearest_and_never_slower_than_road_express():
-    from app.modules.transport.rate_card import option_cost, transit_days_for
-    air, exp = _spec(TransportMode.AIR), _spec(TransportMode.ROAD, ServiceLevel.EXPRESS)
-    for km in KMS:
-        assert transit_days_for(air, km) <= transit_days_for(exp, km)
-        if km <= 1400:  # on very long routes a dedicated express road service costs more than air freight
-            assert option_cost(air, km)[3] > option_cost(exp, km)[3]
+def test_more_money_always_means_faster_delivery():
+    """For every route the offered options are ordered so that a dearer option is strictly quicker."""
+    for dealer in ("DLR-001", "DLR-122", "DLR-043", "DLR-066", "DLR-130"):
+        opts = client.get(f"/api/v1/transport/options?destination_branch_id={dealer}&part_number=4663907&quantity=1").json()["options"]
+        opts = sorted(opts, key=lambda o: o["total_cost"])
+        for cheaper, dearer in zip(opts, opts[1:]):
+            assert dearer["transit_days"] < cheaper["transit_days"], (dealer, cheaper["display_name"], dearer["display_name"])
 
 
 def test_transport_options_api_endpoint():

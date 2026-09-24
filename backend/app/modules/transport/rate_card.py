@@ -108,7 +108,8 @@ def option_cost(spec: OptionSpec, km: float) -> Tuple[float, float, float, float
 
 
 # Demonstration rates only (SYNTHETIC_DEMO), set to be plausible for European pallet / air freight - not carrier quotes.
-# Every mode is offered for every distance; short-haul rail and air are simply slow / expensive, as in real life.
+# Rule kept by the engine: paying more always buys a faster delivery. An option that costs more than another without being faster
+# (e.g. air on a short route where express road is already next-day) is not offered.
 RATE_SPECS: List[OptionSpec] = [
     OptionSpec(TransportMode.ROAD, ServiceLevel.STANDARD, "Road Freight Standard", "European Road Logistics Partner · Demo",
                base_cost=40.0, per_km=0.60, service_surcharge=0.0,
@@ -117,7 +118,7 @@ RATE_SPECS: List[OptionSpec] = [
                base_cost=60.0, per_km=1.10, service_surcharge=25.0,
                transit_steps=[(700, 1), (1500, 2), (float("inf"), 3)], cutoff_time="17:00 CET", highlight_tag=None),
     OptionSpec(TransportMode.RAIL, ServiceLevel.STANDARD, "Rail Intermodal Freight", "European Rail Logistics Partner · Demo",
-               base_cost=90.0, per_km=0.30, service_surcharge=0.0,
+               base_cost=30.0, per_km=0.30, service_surcharge=0.0,
                transit_steps=[(300, 3), (700, 4), (1200, 5), (float("inf"), 6)], cutoff_time="12:00 CET", highlight_tag=None),
     OptionSpec(TransportMode.AIR, ServiceLevel.EXPRESS, "Air Freight Express", "European Air Freight Partner · Demo",
                base_cost=250.0, per_km=1.00, service_surcharge=60.0,
