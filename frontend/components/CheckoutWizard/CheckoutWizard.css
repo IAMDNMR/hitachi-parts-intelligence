@@ -1472,3 +1472,6 @@
 }
 
 .cw-tag--amber { background: #fffbeb; color: #b45309; border: 1px solid rgba(217, 119, 6, 0.35); }
+
+.cw-step.is-clickable { cursor: pointer; }
+.cw-step.is-clickable:hover .cw-step__label { text-decoration: underline; }

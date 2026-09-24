@@ -320,11 +320,17 @@ export default function CheckoutWizard({ item: initialItem, onClose, onComplete 
             const stepNum = idx + 1
             const isCompleted = currentStage > stepNum
             const isActive = currentStage === stepNum
+            const canGoBack = isCompleted && currentStage < 7 // once the order is confirmed (stage 7) earlier stages are read-only
             return (
               <div
                 key={name}
-                className={`cw-step${isActive ? ' is-active' : ''}${isCompleted ? ' is-completed' : ''}`}
-                title={`Stage ${stepNum}: ${name}`}
+                className={`cw-step${isActive ? ' is-active' : ''}${isCompleted ? ' is-completed' : ''}${canGoBack ? ' is-clickable' : ''}`}
+                title={canGoBack ? `Back to stage ${stepNum}: ${name}` : `Stage ${stepNum}: ${name}`}
+                {...(canGoBack ? {
+                  role: 'button', tabIndex: 0,
+                  onClick: () => setCurrentStage(stepNum),
+                  onKeyDown: (e: React.KeyboardEvent) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setCurrentStage(stepNum) } },
+                } : {})}
               >
                 <div className="cw-step__indicator">
                   {isCompleted ? (
