@@ -6,6 +6,12 @@ P04,Parts Search,Show track roller parts,part_search,,,,,,,,,,Part,,FALSE,,PART_
 P05,Parts Search,Tell me everything about PT-001.,part_info,,,PT-001,,,,,,,"Part (+ fitment, assemblies, compliance, alternatives)",,FALSE,,PART_RESULTS,,SOURCE_DERIVED,,SOURCE_DERIVED,TRUE,TRUE,2026-09-23
 P06,Parts Search,Are there alternatives for PT-007?,alternatives,,,PT-007,,,,,,,"Part -> (same part type, shared fitment) Part - candidates for engineering review",,FALSE,,PART_RESULTS,,DERIVED,,DERIVED,TRUE,TRUE,2026-09-23
 P07,Parts Search,Are there alternatives for PT-045?,alternatives,,,PT-045,,,,,,,"Part -> (same part type, shared fitment) Part - none exist",,FALSE,,INSUFFICIENT_DATA,,DERIVED,,DERIVED,TRUE,TRUE,2026-09-23
+P08,Parts Search,I need a battery for a ZX17U-6.,part_search,,ZX17U-6,,,,,,,,Machine -[:HAS_PART_FITMENT]-> Part,,FALSE,,PART_RESULTS,,SOURCE_DERIVED,,SOURCE_DERIVED,TRUE,TRUE,2026-09-23
+P09,Parts Search,I need the main hydraulic pump.,part_search,,,,,,,,,,Part,,FALSE,,PART_RESULTS,,SOURCE_DERIVED,,SOURCE_DERIVED,TRUE,TRUE,2026-09-23
+P10,Parts Search,I need a bearing for the swing.,part_search,,,,,,,,,,Part,,FALSE,,PART_RESULTS,,SOURCE_DERIVED,,SOURCE_DERIVED,TRUE,TRUE,2026-09-23
+P11,Parts Search,Which filters do you have?,part_search,,,,,,,,,,Part,,FALSE,,PART_RESULTS,,SOURCE_DERIVED,,SOURCE_DERIVED,TRUE,TRUE,2026-09-23
+P12,Parts Search,What is part 4398110?,part_info,,,PT-047,,,,,,,"Part (+ fitment, assemblies, compliance, alternatives)",,FALSE,,PART_RESULTS,,SOURCE_DERIVED,,SOURCE_DERIVED,TRUE,TRUE,2026-09-23
+P14,Parts Search,Which oils and fluids fit a ZX210LC-7?,machine_parts,,ZX210LC-7,,,,,,,,Machine -[:HAS_PART_FITMENT]-> Part,,FALSE,,PART_RESULTS,,SOURCE_DERIVED,,SOURCE_DERIVED,TRUE,TRUE,2026-09-23
 D01,Dealers,Which dealers are in Netherlands?,dealer_list,,,,,,,,NL,,DealerBranch -[:LOCATED_IN]-> City -[:IN_COUNTRY]-> Country,,FALSE,,DEALER_RESULTS,,SOURCE_DERIVED,,SOURCE_DERIVED,TRUE,TRUE,2026-09-23
 D02,Dealers,Which dealers are in Germany?,dealer_list,,,,,,,,DE,,DealerBranch -[:LOCATED_IN]-> City -[:IN_COUNTRY]-> Country,,FALSE,,DEALER_RESULTS,,SOURCE_DERIVED,,SOURCE_DERIVED,TRUE,TRUE,2026-09-23
 D03,Dealers,Which dealer is closest to Eindhoven?,nearest_dealer,,,,,,,,,,City coordinates -> DealerBranch (distance),,FALSE,,DEALER_RESULTS,,DERIVED,,DERIVED,TRUE,TRUE,2026-09-23
@@ -30,6 +36,3 @@ M02,Machines & Fleet,Show me the medium excavators.,machine_list,,medium excavat
 M03,Machines & Fleet,Which machines use PT-001?,impact_analysis,,,PT-001,,,,,,,Part <- HAS_PART_FITMENT - Machine,,FALSE,,MACHINE_RESULTS,,SOURCE_DERIVED,,SOURCE_DERIVED,TRUE,TRUE,2026-09-23
 M04,Machines & Fleet,Tell me about ZX210LC-7.,machine_info,,ZX210LC-7,,,,,,,,Machine -[:HAS_PART_FITMENT]-> Part,,FALSE,,MACHINE_RESULTS,,SOURCE_DERIVED,,SOURCE_DERIVED,TRUE,TRUE,2026-09-23
 M05,Machines & Fleet,Are there multi-grade oil alternatives for genuine engine oil?,alternatives,,,,,,,,,,Part (product domain),,FALSE,,INSUFFICIENT_DATA,,SOURCE_DERIVED,,SOURCE_DERIVED,TRUE,TRUE,2026-09-23
-O01,Orders & Service,What is the status of order-demo-001?,order_status,,,,,,,,,,Order -> Shipment -> DealerBranch -> ServiceJob,,FALSE,,ORDER_JOURNEY,,SYNTHETIC_DEMO,,SYNTHETIC_DEMO,TRUE,TRUE,2026-09-23
-O02,Orders & Service,Which dealer receives order-demo-002?,order_status,,,,,,,,,,Order -> Shipment -> DealerBranch,,FALSE,,ORDER_JOURNEY,,SYNTHETIC_DEMO,,SYNTHETIC_DEMO,TRUE,TRUE,2026-09-23
-O03,Orders & Service,Show me the complete journey of order-demo-001.,order_status,,,,,,,,,,Order -> Allocation -> Shipment -> DealerBranch -> ServiceJob,,FALSE,,ORDER_JOURNEY,,SYNTHETIC_DEMO,,SYNTHETIC_DEMO,TRUE,TRUE,2026-09-23

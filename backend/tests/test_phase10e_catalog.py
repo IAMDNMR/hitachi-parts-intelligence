@@ -28,7 +28,8 @@ def _catalog():
 def test_catalog_endpoint_lists_only_verified_categories_and_questions():
     cats = _catalog()["categories"]
     names = {c["name"] for c in cats}
-    assert {"Parts Search", "Dealers", "Relationships", "Suppliers", "Machines & Fleet", "Orders & Service"} <= names
+    assert {"Parts Search", "Dealers", "Relationships", "Suppliers", "Machines & Fleet"} <= names
+    assert "Orders & Service" not in names
     questions = [q for c in cats for q in c["questions"]]
     assert len(questions) >= 30
     assert len({q["question_id"] for q in questions}) == len(questions)
