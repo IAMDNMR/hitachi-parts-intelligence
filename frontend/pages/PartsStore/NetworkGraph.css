@@ -15,6 +15,7 @@
 }
 .ng-node__type { font-size: 9px; letter-spacing: 0.04em; text-transform: uppercase; fill: var(--pix-muted); }
 .ng-node__label { font-size: 12px; font-weight: 600; fill: var(--pix-ink); }
+.ng-node__detail { font-size: 10px; fill: var(--pix-muted); }
 
 .ng-node--real rect { stroke: var(--pix-orange); }
 .ng-node--derived rect { stroke: var(--pix-muted); stroke-dasharray: 4 3; }

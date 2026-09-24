@@ -28,10 +28,10 @@ export interface GraphView {
 // than reshuffling column order per response.
 const TYPE_ORDER = ['Country', 'MachineType', 'City', 'DealerBranch', 'Depot', 'Part', 'Supplier']
 
-const COL_WIDTH = 250
-const ROW_HEIGHT = 58
+const COL_WIDTH = 300
+const ROW_HEIGHT = 74
 const NODE_W = 210
-const NODE_H = 44
+const NODE_H = 60
 const PAD = 24
 const MAX_ROWS = 7 // a column with more nodes is split into side-by-side sub-columns so the diagram stays compact
 const LABEL_MAX = 30
@@ -45,6 +45,14 @@ function columnFor(type: string, columns: string[]): number {
 /** "PT-037 Hitachi Genuine Hydraulic Oil" -> "PT-037 Hydraulic Oil": every catalogue part is a Hitachi genuine part, so the prefix only takes up room. */
 function shortLabel(label: string): string {
   return label.replace(/^(PT-\d+\s+)?Hitachi\s+(Genuine\s+)?/i, '$1').trim()
+}
+
+/** "Amsterdam (1 dealer(s) · 3 suppliers)" -> name "Amsterdam" + detail "1 dealer(s) · 3 suppliers", so long labels sit on two lines instead of being cut off. */
+function splitLabel(label: string): { name: string; detail: string | null } {
+  const short = shortLabel(label)
+  const m = short.match(/^(.*?)\s*\((.*)\)\s*$/)
+  if (m && m[1] && m[2]) return { name: m[1], detail: m[2] }
+  return { name: short, detail: null }
 }
 
 function badgeClass(dataClass: string): string {
@@ -108,8 +116,18 @@ export default function NetworkGraph({ graph }: { graph: GraphView }) {
   }
 
   // One label per (source, relationship) group when a hub fans out to many nodes - a label on every line overlaps itself.
+  const degree: Record<string, number> = {}
+  for (const e of edges) {
+    degree[e.source] = (degree[e.source] ?? 0) + 1
+    degree[e.target] = (degree[e.target] ?? 0) + 1
+  }
+  // The hub of an edge is the endpoint with more connections (a country receiving many cities, a machine type feeding many parts).
+  const hubOf = (e: GraphEdge) => ((degree[e.source] ?? 0) >= (degree[e.target] ?? 0) ? e.source : e.target)
   const groupSize: Record<string, number> = {}
-  for (const e of edges) groupSize[`${e.source}|${e.display_relationship}`] = (groupSize[`${e.source}|${e.display_relationship}`] || 0) + 1
+  for (const e of edges) {
+    const k = `${hubOf(e)}|${e.display_relationship}`
+    groupSize[k] = (groupSize[k] ?? 0) + 1
+  }
   const labelled = new Set<string>()
 
   return (
@@ -119,7 +137,8 @@ export default function NetworkGraph({ graph }: { graph: GraphView }) {
           const a = pos[e.source]
           const b = pos[e.target]
           if (!a || !b) return null
-          const key = `${e.source}|${e.display_relationship}`
+          const hub = hubOf(e)
+          const key = `${hub}|${e.display_relationship}`
           const many = (groupSize[key] ?? 0) > 3
           let label: string | null = e.display_relationship
           let lx = (a.x + b.x) / 2
@@ -129,13 +148,16 @@ export default function NetworkGraph({ graph }: { graph: GraphView }) {
             else {
               labelled.add(key)
               label = `${e.display_relationship} ×${groupSize[key]}`
-              lx = a.x + NODE_W / 2 + 46
-              ly = a.y
+              const h = pos[hub] ?? a
+              // in the gap beside the hub, on the side facing the other nodes
+              const other = hub === e.source ? b : a
+              lx = h.x + (other.x >= h.x ? 1 : -1) * (NODE_W / 2 + (COL_WIDTH - NODE_W) / 2)
+              ly = h.y
             }
           }
           return (
             <g key={`${e.source}-${e.target}-${i}`} className={`ng-edge ${edgeClass(e.relationship_source)}`}>
-              <line x1={a.x + NODE_W / 2} y1={a.y} x2={b.x - NODE_W / 2} y2={b.y} />
+              <line x1={a.x + (a.x <= b.x ? NODE_W / 2 : -NODE_W / 2)} y1={a.y} x2={b.x + (a.x <= b.x ? -NODE_W / 2 : NODE_W / 2)} y2={b.y} />
               {label && (
                 <>
                   <rect x={lx - label.length * 3.2 - 4} y={ly - 9} width={label.length * 6.4 + 8} height={18} rx={4} />
@@ -151,10 +173,17 @@ export default function NetworkGraph({ graph }: { graph: GraphView }) {
           return (
             <g key={n.id} className={`ng-node ${badgeClass(n.data_class)}`} transform={`translate(${p.x - NODE_W / 2}, ${p.y - NODE_H / 2})`}>
               <rect width={NODE_W} height={NODE_H} rx={10} />
-              <text x={NODE_W / 2} y={17} textAnchor="middle" className="ng-node__type">{n.type}</text>
-              <text x={NODE_W / 2} y={33} textAnchor="middle" className="ng-node__label">
-                {shortLabel(n.label).length > LABEL_MAX ? `${shortLabel(n.label).slice(0, LABEL_MAX - 1)}…` : shortLabel(n.label)}
-              </text>
+              <text x={NODE_W / 2} y={18} textAnchor="middle" className="ng-node__type">{n.type}</text>
+              {(() => {
+                const { name, detail } = splitLabel(n.label)
+                const clip = (t: string) => (t.length > LABEL_MAX ? `${t.slice(0, LABEL_MAX - 1)}…` : t)
+                return (
+                  <>
+                    <text x={NODE_W / 2} y={detail ? 32 : 38} textAnchor="middle" className="ng-node__label">{clip(name)}</text>
+                    {detail && <text x={NODE_W / 2} y={48} textAnchor="middle" className="ng-node__detail">{clip(detail)}</text>}
+                  </>
+                )
+              })()}
               <title>{n.label}</title>
             </g>
           )
