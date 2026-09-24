@@ -18,7 +18,7 @@ SYNTHETIC_DEMO / NOT_CONNECTED) and the answer must say so.
 import json
 import re
 import time
-from typing import Any, Callable, Dict, List, Optional
+from typing import Any, Callable, Dict, Optional
 
 from app.logging_config.logger import logger
 from app.modules.dealer.geocode import resolve_location
@@ -213,7 +213,7 @@ def _correct_typos(query: str) -> str:
 
 
 def _extract_deterministic(query: str) -> Dict[str, Any]:
-    from app.modules.intelligence.graph_query import MACHINE_TYPE_VOCAB, PART_CATEGORY_VOCAB, resolve_machine_type, resolve_part_category
+    from app.modules.intelligence.graph_query import MACHINE_TYPE_VOCAB, PART_CATEGORY_VOCAB
     query = _correct_typos(query)
     q = query.lower()
     pid = re.search(r"\bpt-\d{3}\b", q)

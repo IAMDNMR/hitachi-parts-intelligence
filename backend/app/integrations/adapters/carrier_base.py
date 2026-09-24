@@ -6,8 +6,6 @@ Enables seamless multi-carrier pluggability (Neovia TMS, DHL Express/Freight, DB
 """
 
 from abc import ABC, abstractmethod
-from typing import Any, Dict, Optional
-from pydantic import BaseModel, Field
 
 from app.integrations.contracts.shipment import ShipmentCreationRequest, ShipmentCreationResult
 from app.integrations.contracts.tracking import TrackingQuery, TrackingResult

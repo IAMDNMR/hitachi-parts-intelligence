@@ -231,8 +231,7 @@ interface Kpi {
   needs?: string | null
   demo_only?: boolean
   excluded_test_orders?: number
-  real_numerator?: number
-  real_pct?: number | null
+  stages?: Record<string, number>
 }
 
 export function KpiPanel({ onClose }: { onClose: () => void }) {
@@ -281,11 +280,13 @@ function KpiCard({ k }: { k: Kpi }) {
     <div className={`pix-kpi ${k.demo_only ? 'pix-kpi--off' : ''}`}>
       <div className="pix-kpi__top">
         <strong>{k.kpi}</strong>
-        <span className="pix-kpi__val">{!k.measurable ? 'not measurable' : `${k.value_pct}%`}</span>
+        <span className="pix-kpi__val">{!k.measurable ? (k.kpi.startsWith('Order') ? 'no orders yet' : 'not measurable') : `${k.value_pct}%`}</span>
       </div>
       {k.numerator != null && k.denominator != null && <p className="pix-muted">{k.numerator} of {k.denominator}</p>}
-      {k.real_numerator != null && (
-        <p className="pix-muted">Real SAP supplier links: {k.real_numerator} of {k.denominator} (needs SAP source list)</p>
+      {k.stages && (
+        <p className="pix-muted">
+          Placed {k.stages.placed} · In fulfilment {k.stages.in_fulfilment} · Delivered {k.stages.delivered} · Completed {k.stages.completed}
+        </p>
       )}
       <p className="pix-muted">{k.method}</p>
       {k.excluded_test_orders ? <p className="pix-muted">{k.excluded_test_orders} test-session orders are not counted.</p> : null}

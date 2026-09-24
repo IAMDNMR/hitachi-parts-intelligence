@@ -1,7 +1,7 @@
 """
 Parts Intelligence KPIs calculable from the CURRENT graph.
 
-Headline KPIs: order traceability, master-data consistency, supplier-to-part coverage. `demo_only`: stock-out exposure.
+Headline KPIs: master-data consistency, order completion, order traceability. `demo_only`: stock-out exposure.
 Each returns numerator/denominator, a short method, its data basis (REAL / SYNTHETIC_DEMO) and `measurable`; a KPI the data cannot support
 is returned as measurable=false with what it needs - never a made-up number.
 
@@ -41,18 +41,6 @@ CALL { MATCH (m:Machine)
 RETURN parts, attrs, fitted, typed, dealers, dealers_geo, dealers_linked, suppliers, suppliers_linked, machines, machines_typed
 """
 
-_SUPPLIER_COVERAGE_Q = """
-CALL { MATCH (p:Part) WHERE p.testRunId IS NULL AND p.part_id STARTS WITH 'PT-'
-       RETURN count(p) AS parts,
-              sum(CASE WHEN EXISTS { (p)-[:SUPPLIED_BY]->(:Supplier) } THEN 1 ELSE 0 END) AS with_any,
-              sum(CASE WHEN EXISTS { (p)-[:SUPPLIED_BY]->(s:Supplier) WHERE s.data_source = 'HCME_SAP_SUPPLIER_MASTER' } THEN 1 ELSE 0 END) AS with_real,
-              sum(CASE WHEN COUNT { (p)-[:SUPPLIED_BY]->(:Supplier) } = 1 THEN 1 ELSE 0 END) AS sole }
-CALL { MATCH (s:Supplier) WHERE s.data_source = 'HCME_SAP_SUPPLIER_MASTER'
-       RETURN count(s) AS real_suppliers,
-              sum(CASE WHEN EXISTS { (s)<-[:SUPPLIED_BY]-(:Part) } THEN 1 ELSE 0 END) AS real_linked }
-RETURN parts, with_any, with_real, sole, real_suppliers, real_linked
-"""
-
 _STOCK_Q = """
 MATCH (p:Part) WHERE p.testRunId IS NULL AND p.part_id STARTS WITH 'PT-'
 CALL { WITH p OPTIONAL MATCH (p)-[:HAS_SYNTHETIC_INVENTORY]->(i:InventorySnapshot)
@@ -65,19 +53,39 @@ def _pct(n: int, d: int):
     return round(100.0 * n / d, 1) if d else None
 
 
+def _real_orders(rows):
+    """Placed orders that count: not cancelled, not created by an automated test session."""
+    return [r for r in rows if r["status"] != "CANCELLED" and r["provenance"] != "INTERNAL_TEST_WORKFLOW"]
+
+
 def order_traceability(session) -> Dict[str, Any]:
-    """Only seeded demo orders are measured. Orders created while testing the Parts Store (provenance INTERNAL_TEST_WORKFLOW) stop part-way by
-    design, so counting them would make the KPI move with every test session."""
+    """Of the orders that have reached shipment, how many are linked end to end. An order that is only placed (no shipment yet) is still in progress,
+    not broken, so it is not counted here; the completion KPI below covers it."""
     rows = session.run(_CHAIN_Q).data()
-    live = [r for r in rows if r["status"] != "CANCELLED" and r["provenance"] != "INTERNAL_TEST_WORKFLOW"]
+    live = [r for r in _real_orders(rows) if r["shipment"]]
     excluded = sum(1 for r in rows if r["status"] != "CANCELLED" and r["provenance"] == "INTERNAL_TEST_WORKFLOW")
-    links = ["request", "allocation", "part", "shipment", "dealer", "service"]
+    links = ["request", "allocation", "part", "shipment", "dealer"]
     full = [r for r in live if all(r[k] for k in links)]
     return {"kpi": "Order traceability rate", "measurable": bool(live), "numerator": len(full), "denominator": len(live),
             "value_pct": _pct(len(full), len(live)), "excluded_test_orders": excluded,
-            "method": "orders linked end to end: request, allocation, part, shipment, dealer, service job",
-            "data_source": "SYNTHETIC_DEMO seeded orders (not ERP data)",
+            "method": "shipped orders linked end to end: request, allocation, part, shipment, dealer",
+            "data_source": "SYNTHETIC_DEMO orders (not ERP data)",
             "not_traceable": [r["id"] for r in live if r not in full]}
+
+
+def order_completion(session) -> Dict[str, Any]:
+    """Orders that finished the whole lifecycle (allocation, fulfilment, shipment, tracking, dealer service) out of all placed orders."""
+    rows = _real_orders(session.run(_CHAIN_Q).data())
+    done = [r for r in rows if r["status"] == "CLOSED"]
+    stages = {"placed": 0, "in_fulfilment": 0, "delivered": 0, "completed": 0}
+    for r in rows:
+        key = {"CREATED": "placed", "ACCEPTED": "in_fulfilment", "FULFILLED": "delivered", "CLOSED": "completed"}.get(r["status"])
+        if key:
+            stages[key] += 1
+    return {"kpi": "Order completion rate", "measurable": bool(rows), "numerator": len(done), "denominator": len(rows),
+            "value_pct": _pct(len(done), len(rows)), "stages": stages,
+            "method": "orders completed end to end (delivered and serviced) out of all placed orders",
+            "data_source": "SYNTHETIC_DEMO orders (not ERP data)"}
 
 
 def master_data_consistency(session) -> Dict[str, Any]:
@@ -93,18 +101,6 @@ def master_data_consistency(session) -> Dict[str, Any]:
             "checks": [{"check": n, "passing": a, "of": b, "pct": _pct(a, b)} for n, a, b in checks],
             "method": "completeness checks on parts, dealers, suppliers and machines (full audit: phase10_data_audit.py)",
             "data_source": "REAL catalogue, dealer and SAP supplier-master data"}
-
-
-def supplier_part_coverage(session) -> Dict[str, Any]:
-    c = session.run(_SUPPLIER_COVERAGE_Q).single()
-    return {"kpi": "Supplier-to-part coverage", "measurable": c["parts"] > 0,
-            "numerator": c["with_any"], "denominator": c["parts"], "value_pct": _pct(c["with_any"], c["parts"]),
-            "real_numerator": c["with_real"], "real_pct": _pct(c["with_real"], c["parts"]),
-            "with_any_supplier_pct": _pct(c["with_any"], c["parts"]), "demo_only_parts": c["with_any"] - c["with_real"],
-                        "sole_sourced_parts": c["sole"], "real_suppliers": c["real_suppliers"], "real_suppliers_linked_to_parts": c["real_linked"],
-            "method": "parts linked to a supplier (demo links); real SAP links counted separately",
-            "data_source": "SYNTHETIC_DEMO supplier links (the SAP supplier master has no part numbers yet)",
-            "needs": "SAP purchasing / source-list data with supplier number + material number"}
 
 
 def stock_out_exposure(session) -> Dict[str, Any]:
@@ -123,6 +119,6 @@ def stock_out_exposure(session) -> Dict[str, Any]:
 def all_kpis(session) -> Dict[str, Any]:
     return {
         "note": "Calculated live from the current graph. Demo/sample data; no live ERP, carrier, stock or customs integration.",
-        "kpis": [order_traceability(session), master_data_consistency(session), supplier_part_coverage(session)],
+        "kpis": [master_data_consistency(session), order_completion(session), order_traceability(session)],
         "demo_only": [stock_out_exposure(session)],
     }

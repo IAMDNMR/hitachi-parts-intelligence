@@ -20,7 +20,7 @@ Domains covered:
 """
 
 import os
-from typing import Any, Dict, Optional
+from typing import Any, Dict
 
 # Contracts
 from app.integrations.contracts.inventory import InventoryProvider

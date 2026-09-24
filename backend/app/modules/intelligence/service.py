@@ -33,7 +33,6 @@ from app.modules.intelligence.schemas import (
     FitmentEvidenceTab,
     SourceAvailabilityTab,
     AlternativesTab,
-    AlternativeCandidate,
     SourceRiskTab,
 )
 

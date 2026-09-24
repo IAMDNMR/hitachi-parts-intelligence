@@ -14,10 +14,9 @@ second search database.
   than silently pretending to run it.
 """
 
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Tuple
 
 from app.modules.intelligence.providers import get_embedding_provider
-from app.modules.intelligence.ranking import score_candidate
 
 PART_FULLTEXT_INDEX = "part_fulltext_search"
 

@@ -16,10 +16,9 @@ Features:
 - Never crashes or raises exceptions on network failure.
 """
 
-from datetime import datetime, timezone
 import math
 import time
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Tuple
 
 import httpx
 

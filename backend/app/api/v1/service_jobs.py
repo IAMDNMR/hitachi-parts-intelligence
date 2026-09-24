@@ -4,13 +4,12 @@ backend/app/api/v1/service_jobs.py
 Phase 8 Dealer & Service API router.
 """
 
-from typing import Any, Dict, List, Optional
+from typing import List, Optional
 from fastapi import APIRouter, Depends, Header, Query
 
 from app.db.neo4j.connection import get_neo4j_session
 from app.idempotency.service import check_idempotency, save_idempotency_record
 from app.modules.service.schemas import (
-    ServiceEventCreate,
     ServiceJobCreateRequest,
     ServiceJobResponse,
     ServiceJourneyTraceResponse,

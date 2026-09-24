@@ -12,7 +12,7 @@ Preserves real vs synthetic boundaries:
 - Parts without graph evidence return UNKNOWN / INSUFFICIENT EVIDENCE.
 """
 
-from typing import Any, Dict, List
+from typing import Any, Dict
 
 from app.errors.exceptions import NotFoundError
 

@@ -19,7 +19,7 @@ backfilled — whatever the visitor typed is what gets stored.
 import json
 import re
 import uuid
-from typing import Any, List, Optional
+from typing import List, Optional
 
 from fastapi import APIRouter, Depends
 from pydantic import BaseModel

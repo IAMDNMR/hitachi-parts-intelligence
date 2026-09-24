@@ -4,7 +4,7 @@ backend/app/api/v1/shipment.py
 Phase 7 Shipment & Tracking API router.
 """
 
-from typing import Any, Dict, Optional
+from typing import Optional
 from fastapi import APIRouter, Depends, Header, Query
 
 from app.db.neo4j.connection import get_neo4j_session

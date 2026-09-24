@@ -45,6 +45,8 @@ interface Operations {
   service_job_id: string | null
   service_job_status: string | null
   completed: boolean
+  cancelled: boolean
+  can_cancel: boolean
 }
 
 const STATUS_LABEL: Record<string, string> = {
@@ -91,9 +93,14 @@ export function OrdersPage({ onHome }: { onHome: () => void }) {
   )
 }
 
+const PAGE_SIZE = 15
+
 function OrderList() {
   const [rows, setRows] = useState<OrderRow[] | null>(null)
   const [error, setError] = useState<string | null>(null)
+  const [query, setQuery] = useState('')
+  const [status, setStatus] = useState('ALL')
+  const [page, setPage] = useState(0)
 
   useEffect(() => {
     let cancelled = false
@@ -115,14 +122,43 @@ function OrderList() {
       {error && <p className="ord__error" role="alert">{error}</p>}
       {!rows && !error && <p className="ord__muted">Loading orders…</p>}
       {rows && rows.length === 0 && <p className="ord__muted">No orders yet. Orders appear here as soon as a customer places one in the Parts Store.</p>}
-      {rows && rows.length > 0 && (
+      {rows && rows.length > 0 && (() => {
+        const q = query.trim().toLowerCase()
+        const filtered = rows.filter(
+          (r) =>
+            (status === 'ALL' || r.status === status) &&
+            (!q ||
+              [r.order_id, r.customer_name, r.dealer_name ?? '', ...r.parts.flatMap((p) => [p.part_number, p.part_name ?? ''])].some((t) =>
+                t.toLowerCase().includes(q),
+              )),
+        )
+        const pages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE))
+        const current = Math.min(page, pages - 1)
+        const shown = filtered.slice(current * PAGE_SIZE, (current + 1) * PAGE_SIZE)
+        return (
+        <>
+        <div className="ord__filters">
+          <input
+            type="search"
+            className="ord__search"
+            placeholder="Search by order ID, customer, part or dealer"
+            aria-label="Search orders"
+            value={query}
+            onChange={(e) => { setQuery(e.target.value); setPage(0) }}
+          />
+          <select className="ord__select" aria-label="Filter by status" value={status} onChange={(e) => { setStatus(e.target.value); setPage(0) }}>
+            <option value="ALL">All statuses</option>
+            {Object.entries(STATUS_LABEL).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
+          </select>
+          <span className="ord__muted">{filtered.length} of {rows.length} orders</span>
+        </div>
         <div className="ord__table-wrap">
           <table className="ord__table">
             <thead>
               <tr><th>Order ID</th><th>Customer</th><th>Parts</th><th>Dealer</th><th>Status</th><th>Date</th><th /></tr>
             </thead>
             <tbody>
-              {rows.map((r) => (
+              {shown.map((r) => (
                 <tr key={r.order_id} data-testid="order-row">
                   <td><strong>{r.order_id}</strong></td>
                   <td>{r.customer_name}</td>
@@ -138,7 +174,17 @@ function OrderList() {
             </tbody>
           </table>
         </div>
-      )}
+        {filtered.length === 0 && <p className="ord__muted">No orders match your search.</p>}
+        {pages > 1 && (
+          <div className="ord__pager">
+            <button type="button" className="ord__pbtn" disabled={current === 0} onClick={() => setPage(current - 1)}>← Previous</button>
+            <span className="ord__muted">Page {current + 1} of {pages}</span>
+            <button type="button" className="ord__pbtn" disabled={current >= pages - 1} onClick={() => setPage(current + 1)}>Next →</button>
+          </div>
+        )}
+        </>
+        )
+      })()}
     </section>
   )
 }
@@ -211,11 +257,24 @@ function OrderDetail({ orderId }: { orderId: string }) {
       <div className="ord__action">
         {ops.completed ? (
           <p className="ord__done">✓ Lifecycle completed. The order is closed.</p>
+        ) : ops.cancelled ? (
+          <p className="ord__cancelled">This order was cancelled. No further steps are possible.</p>
         ) : ops.next_action ? (
           <button type="button" className="ord__btn" disabled={busy} onClick={() => run(ops.next_action!.key)} data-action={ops.next_action.key}>
             {busy ? 'Working…' : `${ops.next_action.label} →`}
           </button>
         ) : null}
+        {ops.can_cancel && !ops.cancelled && (
+          <button
+            type="button"
+            className="ord__btn ord__btn--ghost"
+            disabled={busy}
+            onClick={() => { if (window.confirm(`Cancel order ${o.order_id}? This cannot be undone.`)) run('cancel') }}
+            data-action="cancel"
+          >
+            Cancel order
+          </button>
+        )}
         {error && <p className="ord__error" role="alert">{error}</p>}
         <p className="ord__note">{o.integration_label}</p>
       </div>

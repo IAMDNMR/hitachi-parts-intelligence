@@ -115,3 +115,26 @@ def test_full_business_lifecycle_is_persisted_step_by_step(test_run_id):
     assert final["completed"] is True and final["next_action"] is None
     assert all(s["state"] == "done" for s in final["steps"])
     assert final["order"]["order_id"] == oid
+
+
+def test_an_order_can_be_cancelled_before_dispatch_and_stock_is_released(test_run_id):
+    _, _, r = _place(test_run_id)
+    oid = r.json()["order_id"]
+    H = _h(test_run_id)
+    assert client.post(f"{API}/orders/{oid}/ops/allocate", headers=H).status_code == 200
+    assert client.get(f"{API}/orders/{oid}/operations").json()["can_cancel"] is True
+    res = client.post(f"{API}/orders/{oid}/ops/cancel", headers=H)
+    assert res.status_code == 200 and res.json()["cancelled"] is True and res.json()["next_action"] is None
+    assert _db("MATCH (o:Order {id: $id}) RETURN o.status AS s", id=oid)[0]["s"] == "CANCELLED"
+    assert _db("MATCH (:Order {id: $id})-[:BASED_ON_ALLOCATION]->(a:Allocation) RETURN a.status AS s", id=oid)[0]["s"] == "RELEASED"
+    assert client.post(f"{API}/orders/{oid}/ops/allocate", headers=H).status_code == 409      # nothing more can happen to it
+
+
+def test_a_dispatched_order_cannot_be_cancelled(test_run_id):
+    _, _, r = _place(test_run_id)
+    oid = r.json()["order_id"]
+    H = _h(test_run_id)
+    for a in ("allocate", "fulfil", "create_shipment", "dispatch"):
+        assert client.post(f"{API}/orders/{oid}/ops/{a}", headers=H).status_code == 200
+    assert client.get(f"{API}/orders/{oid}/operations").json()["can_cancel"] is False
+    assert client.post(f"{API}/orders/{oid}/ops/cancel", headers=H).status_code == 409

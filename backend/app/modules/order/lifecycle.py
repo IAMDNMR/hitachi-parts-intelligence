@@ -20,8 +20,8 @@ from app.audit.service import record_audit_event
 from app.errors.exceptions import ConflictError, NotFoundError, UnprocessableError
 from app.integrations.contracts.order import OrderSubmission
 from app.integrations.contracts.pricing import PricingQuery
-from app.modules.allocation.service import create_allocation, get_allocation, is_demo_part_number
-from app.modules.order.service import advance_order_state, get_order, order_provider, pricing_provider
+from app.modules.allocation.service import create_allocation, get_allocation, is_demo_part_number, release_allocation
+from app.modules.order.service import advance_order_state, cancel_order, get_order, order_provider, pricing_provider
 from app.modules.service.service import (
     complete_service,
     create_service_job,
@@ -304,6 +304,8 @@ def get_operations(session, order_id: str) -> Dict[str, Any]:
         "service_job_status": k["service_job_status"],
         "order_status": k["order_status"],
         "completed": service_done,
+        "cancelled": k["order_status"] == "CANCELLED",
+        "can_cancel": _can_cancel(k),
         "integration_label": order["integration_label"],
     }
 
@@ -312,6 +314,8 @@ def run_action(session, order_id: str, action: str, actor_id: str = "OPERATIONS"
                test_run_id: Optional[str] = None) -> Dict[str, Any]:
     """Perform one operations step by calling the existing service, but only if it is the order's next action."""
     k = _links(session, order_id)
+    if action == "cancel":
+        return _cancel(session, order_id, k, actor_id, actor_role, test_run_id)
     nxt = _next_action(k)
     if not nxt or nxt["key"] != action:
         raise ConflictError(
@@ -353,6 +357,20 @@ def run_action(session, order_id: str, action: str, actor_id: str = "OPERATIONS"
     if action in ("deliver", "complete"):
         # delivery moves the order to FULFILLED, a completed service job closes it (the existing state machine); persisted on the Order
         advance_order_state(session, order_id, actor_id=actor_id, actor_role=actor_role, test_run_id=test_run_id)
+    return get_operations(session, order_id)
+
+
+def _can_cancel(k: Dict[str, Any]) -> bool:
+    """An order can be cancelled until its shipment is dispatched."""
+    return k["order_status"] in ("CREATED", "ACCEPTED") and k["shipment_status"] in (None, "CREATED")
+
+
+def _cancel(session, order_id: str, k: Dict[str, Any], actor_id: str, actor_role: str, test_run_id: Optional[str]) -> Dict[str, Any]:
+    if not _can_cancel(k):
+        raise ConflictError(f"Order {order_id} can no longer be cancelled (status {k['order_status']}, shipment {k['shipment_status'] or 'none'}).")
+    if k["allocation_status"] == "CONFIRMED":
+        release_allocation(session, k["req_id"], actor_id=actor_id, actor_role=actor_role, test_run_id=test_run_id)  # give the reserved stock back
+    cancel_order(session, order_id, reason="Cancelled by operations", actor_id=actor_id, actor_role=actor_role, test_run_id=test_run_id)
     return get_operations(session, order_id)
 
 

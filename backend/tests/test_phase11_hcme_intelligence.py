@@ -316,11 +316,10 @@ def test_graph_insights_and_mitigation_paths_use_the_gate():
 def test_kpi_set_is_short_meaningful_and_labelled(session):
     out = client.get(f"{API}/kpis").json()
     by = {k["kpi"]: k for k in out["kpis"]}
-    assert set(by) == {"Order traceability rate", "Master-data consistency rate", "Supplier-to-part coverage"}
+    assert set(by) == {"Master-data consistency rate", "Order completion rate", "Order traceability rate"}
     for k in out["kpis"] + out["demo_only"]:
         assert k["method"] and k.get("data_source") and "numerator" in k and "denominator" in k
-    cov = by["Supplier-to-part coverage"]
-    assert cov["numerator"] > 0 and cov["real_numerator"] == 0     # demo links are the headline; real SAP links counted separately
+    assert "stages" in by["Order completion rate"] and set(by["Order completion rate"]["stages"]) == {"placed", "in_fulfilment", "delivered", "completed"}
     assert by["Master-data consistency rate"]["value_pct"] > 90
     assert "excluded_test_orders" in by["Order traceability rate"]
     assert [k["kpi"] for k in out["demo_only"]] == ["Stock-out exposure"] and out["demo_only"][0]["demo_only"] is True

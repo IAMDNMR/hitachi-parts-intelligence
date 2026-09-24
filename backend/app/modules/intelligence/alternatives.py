@@ -10,7 +10,7 @@ without authoritative evidence (i.e. an explicit supersedes/superseded_by
 field from the source data), and never triggers allocation/order.
 """
 
-from typing import Any, Dict, List
+from typing import List
 
 from app.modules.intelligence.schemas import AlternativeCandidate
 from app.modules.intelligence import interchangeability as ic

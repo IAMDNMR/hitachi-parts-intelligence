@@ -15,7 +15,6 @@ import os
 import sys
 import time
 import subprocess
-import json
 from playwright.sync_api import sync_playwright
 
 ROOT_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -48,7 +47,7 @@ def run_e2e():
                 print("  ✓ Backend is live and /api/v1/dealers returned 200 OK")
                 backend_ready = True
                 break
-        except Exception as e:
+        except Exception:
             time.sleep(1)
     if not backend_ready:
         print("  ✗ Backend not responding on port 8000! Aborting.")

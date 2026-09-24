@@ -3,6 +3,7 @@ import GraphInsightsPanel from './GraphInsights'
 import NetworkGraph, { type GraphView } from './NetworkGraph'
 import { DisruptionView, KpiPanel, type DisruptionBrief } from './PartsAnalysis'
 import { PiIcon, type PiIconName } from './PiIcons'
+import { dealerCity, tidyAddress, tidyCase } from './dealerFormat'
 import './PartsIntelligence.css'
 
 /** A matched part in the result grid — POST /api/v1/intelligence/query → data.candidates. */
@@ -428,14 +429,14 @@ function TurnView({
               {dealers.slice(0, showAll ? dealers.length : 24).map((d) => (
                 <li key={d.dealer_id}>
                   <div className="pix-dealers__top">
-                    <strong>{d.dealer_name}</strong>
+                    <strong>{tidyCase(d.dealer_name)}</strong>
                     {d.distance_km != null && <span className="pix-chip">{d.distance_km} km</span>}
                     {/^account\s?manager/i.test(d.address ?? '') && <span className="pix-chip">Account manager</span>}
                   </div>
                   <span className="pix-dealers__loc">
-                    <PiIcon name="pin" size={13} /> {[d.city, d.country].filter(Boolean).join(', ')}
+                    <PiIcon name="pin" size={13} /> {[dealerCity(d.city, d.address), d.country].filter(Boolean).join(', ')}
                   </span>
-                  {d.address && <span className="pix-dealers__addr">{d.address}</span>}
+                  {d.address && <span className="pix-dealers__addr">{tidyAddress(d.address)}</span>}
                   <div className="pix-dealers__contact">
                     {d.phone && <a href={`tel:${d.phone.replace(/[^+\d]/g, '')}`}>{d.phone}</a>}
                     {d.email && <a href={`mailto:${d.email}`}>{d.email}</a>}

@@ -9,7 +9,7 @@ guesses numbers or percentages. The LLM only explains the mathematically
 computed scores based on the retrieved graph evidence.
 """
 
-from typing import Any, Dict, List, Optional, Set, Tuple
+from typing import Any, Dict, Optional, Set, Tuple
 
 
 def calculate_compatibility_score(

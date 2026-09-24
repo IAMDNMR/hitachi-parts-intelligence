@@ -422,8 +422,8 @@ def network_summary_by_country(session, country: str) -> Dict[str, Any]:
         "dealer_data_class": "SOURCE_DERIVED",
         "supplier_data_class": "SOURCE_DERIVED",
         "note": (
-            f"Dealer counts from HCME Europe dealer locator (SOURCE_DERIVED). "
-            f"Supplier counts from HCME SAP supplier master (SOURCE_DERIVED). "
+            "Dealer counts from HCME Europe dealer locator (SOURCE_DERIVED). "
+            "Supplier counts from HCME SAP supplier master (SOURCE_DERIVED). "
             "Shared cities are locations where both dealers and suppliers appear — no business relationship is implied."
         ),
     }

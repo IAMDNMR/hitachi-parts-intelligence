@@ -22,11 +22,9 @@ from app.integrations.contracts.inventory import (
     SourceAvailabilityQuery,
     SourceInventoryItem,
     InventoryStatus,
-    AvailabilityResponse,
 )
 from app.integrations.factory import get_inventory_provider
 from app.audit.service import record_audit_event
-from app.logging_config.logger import logger
 
 
 def check_availability(

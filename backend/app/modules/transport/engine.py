@@ -8,10 +8,9 @@ evaluates eligible multi-modal options, and computes deterministic costs and ETA
 
 from datetime import datetime, timedelta, timezone
 import math
-from typing import Any, Dict, List, Optional, Tuple
+from typing import List, Optional
 
 from app.modules.transport.models import (
-    DistanceBandEnum,
     LocationInfo,
     ServiceLevel,
     TransportComparisonResponse,
@@ -19,7 +18,6 @@ from app.modules.transport.models import (
     TransportOptionDTO,
 )
 from app.modules.transport.rate_card import (
-    DISTANCE_BANDS,
     RATE_SPECS,
     option_cost,
     transit_days_for,

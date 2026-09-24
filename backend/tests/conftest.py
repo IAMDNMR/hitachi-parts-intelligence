@@ -151,3 +151,6 @@ def _isolate_api_writes(test_run_id, neo4j_driver, monkeypatch):
     kwargs = {"database": settings.NEO4J_DATABASE} if settings.NEO4J_DATABASE else {}
     with neo4j_driver.session(**kwargs) as s:
         s.run("MATCH (n) WHERE n.testRunId = $run DETACH DELETE n", {"run": test_run_id}).consume()
+        # deleted test allocations must give their stock back, or the demo depot stock is used up by test runs
+        from app.modules.allocation.ledger import recompute_ledger_totals
+        recompute_ledger_totals(s)

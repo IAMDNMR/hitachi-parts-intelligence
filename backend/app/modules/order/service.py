@@ -30,7 +30,7 @@ from datetime import datetime, timezone
 from typing import Any, Dict, Optional
 
 from app.audit.service import record_audit_event
-from app.errors.exceptions import ConflictError, NotFoundError, UnprocessableError
+from app.errors.exceptions import ConflictError, NotFoundError
 from app.integrations.contracts.order import OrderSubmission
 from app.integrations.contracts.pricing import PricingQuery
 from app.integrations.factory import get_order_provider, get_pricing_provider

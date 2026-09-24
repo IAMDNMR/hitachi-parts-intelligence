@@ -11,7 +11,7 @@ Implements multi-tiered resilience:
 3. Offline embedded canonical fallback.
 """
 
-from typing import Any, Dict, List, Optional
+from typing import Optional
 import httpx
 
 from app.integrations.contracts.dealer import (

@@ -270,3 +270,21 @@ def attempt_inventory_allocation(
         "allocated_qty": requested_qty,
         "expiry_at": expiry.isoformat(),
     }
+
+
+def recompute_ledger_totals(session) -> int:
+    """Set every ledger's allocated total to the quantity of allocations that still exist (RESERVED / CONFIRMED / CONSUMED).
+
+    Deleting allocations directly (test clean-up, manual data repair) does not give their stock back to the ledger; running this does.
+    Returns the number of ledgers whose total changed."""
+    row = session.run(
+        """
+        MATCH (l:InventoryLedger)
+        OPTIONAL MATCH (a:Allocation) WHERE a.partNumber = l.partNumber AND a.sourceId = l.sourceId AND a.status IN ['RESERVED', 'CONFIRMED', 'CONSUMED']
+        WITH l, coalesce(sum(a.quantity), 0) AS live
+        WITH l, live, l.totalAllocatedQty AS before
+        SET l.totalAllocatedQty = live
+        RETURN sum(CASE WHEN before <> live THEN 1 ELSE 0 END) AS changed
+        """
+    ).single()
+    return int(row["changed"] or 0)

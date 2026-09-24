@@ -24,7 +24,7 @@ Guarantees:
 - LLM only reasons over retrieved facts and calculated scores.
 """
 
-from typing import Any, Dict, List, Optional, Set
+from typing import Any, Dict, List
 
 from app.errors.exceptions import NotFoundError
 from app.logging_config.logger import logger
@@ -33,7 +33,6 @@ from app.modules.intelligence.compliance import get_compliance_analysis
 from app.modules.intelligence.impact import get_impact_analysis
 from app.modules.intelligence.providers import (
     DeterministicLLMProvider,
-    LLMProvider,
     get_llm_provider,
 )
 from app.modules.intelligence.scoring import (

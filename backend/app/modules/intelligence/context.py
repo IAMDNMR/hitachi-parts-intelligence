@@ -15,7 +15,7 @@ explanation layer) can never present synthetic operational data as real HCME
 live data. This module performs no writes.
 """
 
-from typing import Any, Dict, List
+from typing import Any, Dict
 
 from app.errors.exceptions import NotFoundError
 

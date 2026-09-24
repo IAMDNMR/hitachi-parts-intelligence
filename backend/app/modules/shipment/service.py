@@ -22,7 +22,7 @@ Enforces:
 
 import uuid
 from datetime import datetime, timezone
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, Optional
 
 from app.audit.service import record_audit_event
 from app.errors.exceptions import ConflictError, NotFoundError, UnprocessableError

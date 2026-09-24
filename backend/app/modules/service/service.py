@@ -12,10 +12,9 @@ from typing import Any, Dict, List, Optional
 import uuid
 
 from app.audit.service import record_audit_event
-from app.errors.exceptions import ConflictError, NotFoundError, UnprocessableError
+from app.errors.exceptions import ConflictError, NotFoundError
 from app.integrations.contracts.service import ServiceScheduleRequest
 from app.integrations.factory import get_service_provider
-from app.logging_config.logger import logger
 
 
 def _get_raw_service_job(session, service_job_id: str) -> Dict[str, Any]:

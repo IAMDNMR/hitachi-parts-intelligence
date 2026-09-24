@@ -31,12 +31,10 @@ This module adds what ledger.py deliberately does not do:
   - The CONFIRMED / RELEASED transitions and FulfilmentRequest -> ALLOCATED.
 """
 
-from datetime import datetime, timezone
 from typing import Any, Dict, Optional
 
 from app.audit.service import record_audit_event
 from app.errors.exceptions import ConflictError, NotFoundError, UnprocessableError, ValidationError
-from app.logging_config.logger import logger
 from app.modules.allocation.ledger import attempt_inventory_allocation
 
 # Note: deliberately NOT importing anything from app.modules.intelligence.*

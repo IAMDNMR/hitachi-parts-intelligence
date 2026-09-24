@@ -6,11 +6,9 @@ Audits all 57 Parts Store catalogue items and all 60 canonical Neo4j Part nodes.
 Generates docs/research/PHASE_10_COMPLETE_PARTS_CATALOGUE_ENRICHMENT.md.
 """
 
-import json
 import os
 import sys
 from datetime import datetime
-from typing import Any, Dict, List, Optional
 
 # Add backend directory to sys.path
 BACKEND_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -143,10 +141,10 @@ def run_pipeline():
     # Generate Comprehensive Markdown Document
     now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     with open(report_path, "w", encoding="utf-8") as f:
-        f.write(f"# Phase 10 — Complete Parts Catalogue Research, Enrichment & Fulfilment Completion\n\n")
+        f.write("# Phase 10 — Complete Parts Catalogue Research, Enrichment & Fulfilment Completion\n\n")
         f.write(f"**Execution Date**: {now}  \n")
-        f.write(f"**Status**: VERIFIED & REPRODUCIBLE  \n")
-        f.write(f"**Target Architecture**: React + TypeScript + Vite → Python + FastAPI → Neo4j AuraDB  \n\n")
+        f.write("**Status**: VERIFIED & REPRODUCIBLE  \n")
+        f.write("**Target Architecture**: React + TypeScript + Vite → Python + FastAPI → Neo4j AuraDB  \n\n")
         f.write("---\n\n")
 
         f.write("## 1. Executive Summary & Objective\n\n")

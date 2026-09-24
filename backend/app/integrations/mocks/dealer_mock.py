@@ -5,7 +5,7 @@ Test dealer provider implementation for development, demo, and test environments
 Provides mock European dealer branches without requiring external HTTP or live Neo4j queries.
 """
 
-from typing import Dict, List, Optional
+from typing import Dict, Optional
 from app.integrations.contracts.dealer import (
     DealerBranchInfo,
     DealerNetworkResult,

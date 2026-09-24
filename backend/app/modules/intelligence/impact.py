@@ -13,7 +13,7 @@ actually linked in the live Neo4j graph. Never hallucinates numbers.
 """
 
 from collections import Counter
-from typing import Any, Dict, List
+from typing import Any, Dict
 
 from app.errors.exceptions import NotFoundError
 

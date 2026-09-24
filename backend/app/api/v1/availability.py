@@ -5,7 +5,7 @@ from pydantic import BaseModel, ConfigDict
 from pydantic.alias_generators import to_camel
 
 from app.db.neo4j.connection import get_neo4j_session
-from app.errors.exceptions import NotFoundError, ValidationError
+from app.errors.exceptions import NotFoundError
 from app.modules.availability.service import check_availability
 from app.middleware.auth import get_current_user, AuthUser
 from app.idempotency.service import check_idempotency, save_idempotency_record

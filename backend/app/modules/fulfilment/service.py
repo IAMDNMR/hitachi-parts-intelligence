@@ -20,15 +20,12 @@ Business rules:
 
 import json
 import uuid
-from datetime import datetime, timezone, timedelta
+from datetime import datetime, timezone
 from typing import Any, Dict, List, Optional
 
 from app.errors.exceptions import NotFoundError, ValidationError, ConflictError, UnprocessableError
-from app.integrations.contracts.routing import RouteQuery
-from app.integrations.contracts.shipping_rate import ShippingRateQuery
 from app.integrations.factory import get_routing_provider, get_shipping_rate_provider
 from app.audit.service import record_audit_event
-from app.logging_config.logger import logger
 
 routing_provider = get_routing_provider()
 rate_provider = get_shipping_rate_provider()

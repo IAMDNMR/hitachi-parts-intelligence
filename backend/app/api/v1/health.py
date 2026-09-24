@@ -14,19 +14,12 @@ import time
 from typing import Any, Dict, List, Literal, Optional
 
 from fastapi import APIRouter, Depends
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 
 from app.db.neo4j.connection import get_neo4j_session, check_neo4j_health
 from app.integrations.adapters.osrm_adapter import OSRMRouteAdapter
 from app.integrations.factory import (
-    get_dealer_provider,
-    get_inventory_provider,
-    get_order_provider,
-    get_pricing_provider,
     get_routing_provider,
-    get_service_provider,
-    get_shipment_provider,
-    get_shipping_rate_provider,
     get_tracking_provider,
 )
 from app.logging_config.logger import logger

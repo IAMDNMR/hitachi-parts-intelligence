@@ -10,7 +10,6 @@ import subprocess
 import time
 import urllib.request
 import os
-import sys
 
 ROOT_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 FRONTEND_DIR = os.path.join(ROOT_DIR, "frontend")
