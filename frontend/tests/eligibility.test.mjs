@@ -57,7 +57,7 @@ describe('Parts Store Data-Truth Eligibility Contract (Phase 11)', () => {
     }
   })
 
-  test('ambiguous assemblies require serial lookup and route to identification modal', () => {
+  test('ambiguous assemblies go straight to the demo order with a labelled reference', () => {
     const ambiguousIds = ['hydraulic-cylinder', 'fuel-injection-pump']
     for (const id of ambiguousIds) {
       const part = partsStoreCatalogue.find((p) => p.id === id)
@@ -65,7 +65,8 @@ describe('Parts Store Data-Truth Eligibility Contract (Phase 11)', () => {
       const res = classifyCartItem(part)
       assert.equal(res.classification, 'AMBIGUOUS', `${id} should be AMBIGUOUS`)
       assert.equal(res.isEligible, false)
-      assert.equal(res.actionType, 'IDENTIFY_SERIAL')
+      assert.equal(res.actionType, 'DEMO_CHECKOUT')
+      assert.ok(res.demoPartReference && res.demoPartReference.startsWith('DEMO-'))
       assert.equal(isFulfilmentEligible(part), false)
     }
   })

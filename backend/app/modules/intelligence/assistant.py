@@ -111,7 +111,8 @@ _ANSWER_SYSTEM = (
     "... dataset'); DERIVED = computed from that data (say how); SYNTHETIC_DEMO = say explicitly 'this is "
     "based on synthetic demo data'; NOT_CONNECTED = say the live HCME system is not connected. "
     "Attribute each fact to its OWN provenance: never describe a synthetic fact (suppliers, stock, BOM "
-    "quantities, criticality, certificates, orders, shipments) as HCME published data. "
+    "quantities, criticality, certificates, orders, shipments) as HCME published data, and never describe the "
+    "HCME SAP supplier master or the dealer locator as synthetic: they are real source data. "
     "Cover every part of the question that the evidence supports (e.g. for an order: status, part, "
     "shipment, receiving dealer and service job). Do not add general knowledge beyond the evidence. "
     "Write British English, plain text (no JSON, no markdown headings), short: 2-6 sentences or a short "
@@ -428,11 +429,13 @@ def h_part_search(session, ext, ctx):
             return {"evidence": {"matches": top, "requested_specs": hy["requested_specs"], "provenance": "SOURCE_DERIVED catalogue; electrical specs read from real part names"},
                     "graph_path": ["Part"], "data": {"candidates": cards},
                     "fallback": f"Found {len(cards)} part(s) for the requested specs. Best match: {cards[0]['part_id']} {cards[0]['part_name']} ({cards[0]['match_pct']}%)."}
-    cards = find_parts(session, text, ext.get("machine_ref"), limit=ctx["limit"])
-    if not cards and ext.get("machine_ref"):
-        cards = find_parts(session, text, None, limit=ctx["limit"])
+    every = find_parts(session, text, ext.get("machine_ref"), limit=500)
+    if not every and ext.get("machine_ref"):
+        every = find_parts(session, text, None, limit=500)
+    cards = every[:ctx["limit"]]
     top = [{"part_id": c["part_id"], "name": c["part_name"], "match_pct": c["match_pct"]} for c in cards[:5]]
-    fb = (f"Found {len(cards)} matching part(s) in the HCME Europe catalogue. Best match: "
+    shown = f"; showing the top {len(cards)}" if len(every) > len(cards) else ""
+    fb = (f"Found {len(every)} matching part(s) in the HCME Europe catalogue{shown}. Best match: "
           f"{cards[0]['part_id']} {cards[0]['part_name']} ({cards[0]['match_pct']}%)." if cards
           else "No part in the current HCME Europe catalogue matches that description.")
     return {"evidence": {"matches": top, "machine_filter": ext.get("machine_ref"),
@@ -538,15 +541,23 @@ def h_part_info(session, ext, ctx):
         "provenance_notes": [gi["impact"]["data_basis"], gi["supplier_risk"]["data_basis"],
                              "Depot stock and orders: SYNTHETIC_DEMO. Live HCME ERP stock/orders: NOT_CONNECTED."],
     }
-    sups = ", ".join(s["name"] for s in gi["supplier_risk"]["part_suppliers"]) or "none recorded"
+    sups = ", ".join(s["name"] for s in gi["supplier_risk"]["part_suppliers"]) or "none recorded (the supplier master has no part numbers)"
     fb = (f"{p['part_id']} is {p.get('part_name')} ({p.get('part_category')} / {p.get('part_subcategory')}), "
           f"fitted to {gi['impact']['affected_machines']} machine model(s) according to HCME Europe source data. "
           f"Supplier(s): {sups}; compliance gaps: {len(gi['compliance']['gaps'])}; "
           f"{len(gi['mitigation']['alternatives'])} candidate alternative(s). Suppliers, stock, certificates and "
           "orders are based on synthetic demo data; live HCME ERP data is not connected.")
-    return {"evidence": ev, "graph_path": ["Part", "Machine", "Assembly", "Supplier", "ComplianceRequirement",
+    return {"evidence": ev, "deterministic": True, "graph_path": ["Part", "Machine", "Assembly", "Supplier", "ComplianceRequirement",
                                            "Alternative Part", "InventorySnapshot", "Order"],
             "data": {"part_id": p["part_id"], "candidates": [_card_for(session, p)]}, "fallback": fb}
+
+
+def _candidate_card(session, p):
+    """Card for an 'alternatives' answer: no match % (it is not a search hit) and an honest status line."""
+    c = _card_for(session, p)
+    c["match_pct"] = None
+    c["assessment"] = "Candidate for engineering review, not an approved substitute."
+    return c
 
 
 def _card_for(session, p):
@@ -714,14 +725,14 @@ def _alternatives_by_domain(session, ext, ctx):
         fb = (f"No verified {qualifiers[0]} {domain.lower()} alternative is recorded in the current HCME Europe catalogue. "
               f"The catalogue lists {len(parts)} {domain.lower()} product(s) ("
               + ", ".join(f"{x['part_id']} {x['part_name']}" for x in parts) + ") but none records that attribute.")
-        cards = [_card_for(session, x) for x in parts[:6]]
+        cards = [_candidate_card(session, x) for x in parts[:6]]
         return {"evidence": ev, "graph_path": ["Part (product domain)"], "result_type": "INSUFFICIENT_DATA",
                 "data": {"candidates": cards}, "fallback": fb}
     fb = (f"The catalogue lists {len(matching)} {domain.lower()} product(s): "
           + ", ".join(f"{x['part_id']} {x['part_name']}" for x in matching[:6])
           + ". These are candidates for engineering review, not approved substitutes.")
     return {"evidence": ev, "graph_path": ["Part (product domain)"],
-            "data": {"candidates": [_card_for(session, x) for x in matching[:6]]}, "fallback": fb}
+            "data": {"candidates": [_candidate_card(session, x) for x in matching[:6]]}, "fallback": fb}
 
 
 def _norm_words(text: str) -> str:
@@ -757,7 +768,7 @@ def h_supply_chain(session, ext, ctx):
         return _need_part("supply chain")
     rows = session.run(
         """MATCH (p:Part {part_id: $id})
-           OPTIONAL MATCH (p)-[l:SUPPLIED_BY]->(s:Supplier)
+           OPTIONAL MATCH (p)-[l:SUPPLIED_BY]->(s:Supplier) WHERE s.data_source = 'HCME_SAP_SUPPLIER_MASTER'
            WITH p, collect({supplier: s.name, country: s.country, share_pct: l.share_pct}) AS suppliers
            OPTIONAL MATCH (p)-[:HAS_SYNTHETIC_INVENTORY]->(i:InventorySnapshot)
            OPTIONAL MATCH (d:Depot {depot_id: i.location_id})
@@ -766,7 +777,7 @@ def h_supply_chain(session, ext, ctx):
         id=p["part_id"]).single()
     depot = session.run("MATCH (d:Depot) RETURN d.name AS name, d.city AS city, d.country AS country, d.storage_locations AS storage_locations, d.source_id AS source_id").data()
     ev = {"part": _part_brief(p),
-          "suppliers": [s for s in rows["suppliers"] if s["supplier"]], "suppliers_provenance": "SYNTHETIC_DEMO",
+          "suppliers": [s for s in rows["suppliers"] if s["supplier"]], "suppliers_provenance": "SOURCE_DERIVED (HCME SAP supplier master; it has no part numbers, so no supplier is linked to a part)",
           "stock": [s for s in rows["stock"] if s["location"]], "stock_provenance": "SYNTHETIC_DEMO (no live HCME stock feed is connected)",
           "hcme_depot": depot, "depot_provenance": "SOURCE_DERIVED (published facility facts; no per-part stock)",
           "transport": "NOT_CONNECTED — no HCME carrier, tariff or transit data is connected"}
@@ -775,8 +786,7 @@ def h_supply_chain(session, ext, ctx):
     fb = (f"{p['part_id']} ({p.get('part_name')}): " +
           (f"demo stock of {sum(s['qty'] or 0 for s in stock)} unit(s) at " + ", ".join(s["location"] for s in stock) + " (synthetic demo data — no live HCME stock feed is connected). "
            if stock else "no stock is recorded for it (no live HCME stock feed is connected). ") +
-          (f"Supplier link: {', '.join(s['supplier'] for s in sups)} (synthetic demo data). " if sups else "Supplier-to-part relationship is not recorded in the current source data. ") +
-          "Transport is NOT_CONNECTED.")
+          (f"Supplier link: {', '.join(s['supplier'] for s in sups)}. " if sups else "No supplier is recorded for this part (the HCME supplier master has no part numbers)."))
     return {"evidence": ev, "graph_path": ["Part", "Supplier", "InventorySnapshot", "Depot"],
             "data": {"part_id": p["part_id"], "part": _part_brief(p), "stock": stock, "supply_suppliers": sups},
             "fallback": fb}
@@ -978,7 +988,10 @@ def h_supplier_lookup(session, ext, ctx):
                   f"{', the city of ' + res['anchor_dealer'] if res['anchor_dealer'] else ''} "
                   f"({rel_label}; geographic colocation only — no commercial supply relationship is recorded).")
             graph_path = ["DealerBranch", "City", "Supplier"]
-        return {"evidence": ev, "graph_path": graph_path, "result_type": "NETWORK_RESULTS",
+        names = [x.get("name") for x in res["suppliers"][:5] if x.get("name")]
+        if names:
+            fb += " Suppliers: " + ", ".join(names).rstrip(".") + (" and others." if res["supplier_total"] > len(names) else ".")
+        return {"evidence": ev, "graph_path": graph_path, "result_type": "NETWORK_RESULTS", "deterministic": True,
                 "data": {"suppliers": res["suppliers"], "dealers": res["dealers"], "depots": res["depots"]}, "fallback": fb}
     number = ref if ref and ref.isdigit() else None
     name = ref if ref and not ref.isdigit() else None
@@ -992,7 +1005,7 @@ def h_supplier_lookup(session, ext, ctx):
     where = number or name or place or country
     fb = (f"The HCME supplier master lists {res['total']} supplier(s) for {where}." if res["total"]
           else f"No supplier in the HCME supplier master matches {where}.")
-    return {"evidence": ev, "graph_path": ["Supplier", "City", "Country"],
+    return {"evidence": ev, "graph_path": ["Supplier", "City", "Country"], "deterministic": True,
             "data": {"suppliers": res["suppliers"]}, "fallback": fb}
 
 

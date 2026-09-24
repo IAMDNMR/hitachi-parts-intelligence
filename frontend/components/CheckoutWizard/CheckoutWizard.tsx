@@ -111,6 +111,11 @@ export default function CheckoutWizard({ item: initialItem, onClose, onComplete 
     }
   }, [])
 
+  // Every stage opens at its top (jumping back via the stepper used to leave the previous scroll position, hiding the stage heading)
+  useEffect(() => {
+    document.querySelector('.cw-body')?.scrollTo({ top: 0 })
+  }, [currentStage])
+
   // Persist identity changes
   const saveIdentity = () => {
     try {
@@ -159,6 +164,11 @@ export default function CheckoutWizard({ item: initialItem, onClose, onComplete 
 
         const reqData: FulfilmentRequest = await createRes.json()
         curReqId = reqData.id
+        // A new request means the old options, transport comparison and selection belong to a different destination/quantity
+        setFulfilmentOptions(null)
+        setTransportComparison(null)
+        setSelectedOptionId(null)
+        setSelectedOption(null)
         setRequestId(reqData.id)
         setLastCheckedBranchId(selectedDealerId)
         setLastCheckedQty(item.qty)

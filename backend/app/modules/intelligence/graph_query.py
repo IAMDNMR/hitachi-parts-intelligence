@@ -386,7 +386,7 @@ def network_summary_by_country(session, country: str) -> Dict[str, Any]:
     Used for 'dealer and supplier network in [country]' queries.
     """
     dealer_count = session.run(
-        "MATCH (d:DealerBranch) WHERE d.country = toUpper($c) RETURN count(d) AS n",
+        "MATCH (d:DealerBranch) WHERE d.country = toUpper($c) AND NOT (coalesce(d.address, '') =~ '(?i)\\s*account\\s?manager.*') RETURN count(d) AS n",
         c=country,
     ).single()["n"]
 
@@ -403,6 +403,7 @@ def network_summary_by_country(session, country: str) -> Dict[str, Any]:
         """
         MATCH (d:DealerBranch)-[:LOCATED_IN]->(city:City)<-[:LOCATED_IN]-(s:Supplier)
         WHERE d.country = toUpper($c) AND s.data_source = 'HCME_SAP_SUPPLIER_MASTER'
+          AND NOT (coalesce(d.address, '') =~ '(?i)\\s*account\\s?manager.*')
         RETURN city.name AS city_name,
                count(DISTINCT d) AS dealer_count,
                count(DISTINCT s) AS supplier_count,

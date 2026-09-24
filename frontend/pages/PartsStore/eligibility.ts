@@ -172,21 +172,22 @@ function classifyBase(item: CartItem): Omit<ItemEligibilityResult, 'demoPartRefe
 /**
  * Every catalogue item can move into the demonstration order workflow. Verified parts use their real OEM number; every other item runs the
  * same workflow with a clearly labelled DEMO- reference (never presented as an OEM part number, never green/"verified"). Ambiguous
- * assemblies keep the machine/serial identification and can also continue as a demo order.
+ * assemblies (cylinders, injection pumps) no longer stop at a machine/serial question.
  */
 export function classifyCartItem(item: CartItem): ItemEligibilityResult {
   const base = classifyBase(item)
   if (base.actionType === 'CHECKOUT') return { ...base, demoPartReference: null }
   const ref = demoPartReferenceFor(item)
-  if (base.actionType === 'IDENTIFY_SERIAL') return { ...base, demoPartReference: ref }
+  const keepsPartNumber = base.partNumberDisplay && base.partNumberDisplay !== 'Not identified' && base.partNumberDisplay !== 'Multiple OEM matches' && base.partNumberDisplay !== '—'
   return {
     ...base,
+    partNumberDisplay: keepsPartNumber ? base.partNumberDisplay : 'Assigned at order',
     actionType: 'DEMO_CHECKOUT',
-    badgeLabel: '⚠ Demo order — part not verified',
+    badgeLabel: 'Demo order',
     badgeClass: 'ps-cart-badge--warning',
     buttonLabel: 'Continue to demo order →',
     buttonTitle: 'Run the demonstration order workflow with a labelled demo part reference (not an official HCME part number)',
-    note: 'Not an official HCME part number. The demonstration order workflow runs with a labelled demo reference; no real HCME order is created.',
+    note: null,
     demoPartReference: ref,
   }
 }

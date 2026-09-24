@@ -348,30 +348,17 @@ def run_e2e():
 
             cyl_item = page.locator(".ps-quote-cart-list li", has_text="Hydraulic Cylinder")
             assert cyl_item.count() > 0, "Hydraulic Cylinder not in cart"
-            assert "Multiple OEM assemblies found" in cyl_item.locator(".ps-cart-badge").inner_text()
+            assert "Demo order" in cyl_item.locator(".ps-cart-badge").inner_text()
+            assert cyl_item.locator("button:has-text('Identify by machine/serial')").count() == 0, "The serial question must not block the order"
 
-            identify_btn = cyl_item.locator("button:has-text('Identify by machine/serial →')")
-            assert identify_btn.count() > 0, "Missing Identify by machine/serial button"
-            print("  ✓ Ambiguous hydraulic cylinder carries 'Identify by machine/serial →'")
+            cyl_item.locator("button:has-text('Continue to demo order →')").first.click()
+            page.wait_for_selector(".cw-stage", timeout=8000)
+            assert "NOT AN OFFICIAL HCME PART NUMBER" in page.locator(".cw-stage").inner_text().upper()
+            print("  ✓ Ambiguous cylinder goes straight to the demo order with a labelled DEMO reference (no serial question)")
 
-            # Click Identify by machine/serial ->
-            identify_btn.click()
-            page.wait_for_selector(".ps-modal h2:has-text('Identify OEM Assembly')", timeout=5000)
-            print("  ✓ Serial Identification Modal opened")
-
-            # Fill Serial/PIN and confirm Boom Cylinder assembly (4410244)
-            page.fill("input[placeholder*='HCMDH210']", "HCMDFJ00E00012345")
-            page.locator("button:has-text('Apply & Enable Fulfilment →')").click()
-            page.wait_for_timeout(500)
-
-            # Verify in cart: item updated to 4410244 and button is now Check stock & fulfil ->
-            resolved_item = page.locator(".ps-quote-cart-list li", has_text="4410244")
-            assert resolved_item.count() > 0, "Resolved cylinder part number 4410244 not in cart"
-            fulfil_btn_resolved = resolved_item.locator("button.ps-quote-cart-list__fulfil")
-            assert fulfil_btn_resolved.count() > 0, "Resolved item not fulfilment-eligible"
-            assert "Check stock & fulfil" in fulfil_btn_resolved.inner_text()
-            print("  ✓ Ambiguous cylinder resolved via Serial/PIN to OEM 4410244 and unlocked for fulfilment checkout")
-
+            if page.locator(".cw-header__back-btn").count() > 0:
+                page.locator(".cw-header__back-btn").first.click()
+                page.wait_for_timeout(300)
             if page.locator(".ps-modal__close").count() > 0:
                 page.locator(".ps-modal__close").first.click()
                 page.wait_for_timeout(300)

@@ -11,7 +11,7 @@ export interface PartCard {
   part_number: string | null
   part_name: string | null
   description: string | null
-  match_pct: number
+  match_pct: number | null
   category: string | null
   subcategory: string | null
   assembly: string | null
@@ -505,7 +505,7 @@ function ResultCard({ card: c, onInsights, onStore }: { card: PartCard; onInsigh
     <li className="pix-card">
       <div className="pix-card__top">
         <h3>{c.part_id}</h3>
-        <span className="pix-card__pct">{c.match_pct}%</span>
+        {c.match_pct != null && <span className="pix-card__pct">{c.match_pct}%</span>}
       </div>
       <p className="pix-card__name">{c.part_name}</p>
 

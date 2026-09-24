@@ -292,6 +292,6 @@ def test_dealers_api_lists_real_netherlands_branches():
     from app.main import app
 
     rows = TestClient(app).get("/api/v1/dealers", params={"country": "nl"}).json()
-    assert len(rows) >= 19
+    assert len(rows) >= 13
     assert all(r["country"] == "NL" and r["dealer_id"].startswith("DLR-") for r in rows)
     assert all(r["source_id"] for r in rows)

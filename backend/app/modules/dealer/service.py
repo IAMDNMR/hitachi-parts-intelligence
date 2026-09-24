@@ -9,6 +9,10 @@ caller can state provenance.
 import re
 from typing import Any, Dict, List, Optional
 
+# The dealer-locator feed lists account managers (people) next to dealer branches and has no type field; they are recognisable by their
+# address text ("Accountmanager voor ..."). They are not dealers, so dealer answers leave them out.
+NOT_ACCOUNT_MANAGER = "NOT (coalesce(d.address, '') =~ '(?i)\\s*account\\s?manager.*')"
+
 _DEALER_FIELDS = """
     d.dealer_id AS dealer_id, d.dealer_name AS dealer_name, d.address AS address,
     d.city AS city, d.country AS country, d.phone AS phone, d.email AS email,
@@ -25,6 +29,7 @@ def list_dealers(session, country: Optional[str] = None, city: Optional[str] = N
         MATCH (d:DealerBranch)
         WHERE ($country IS NULL OR d.country = toUpper($country))
           AND ($city IS NULL OR toLower(d.city) = toLower($city))
+          AND {NOT_ACCOUNT_MANAGER}
         RETURN {_DEALER_FIELDS}
         ORDER BY d.country, d.city, d.dealer_name
         """,
@@ -41,6 +46,7 @@ def nearest_dealers(session, lat: float, lon: float, country: Optional[str] = No
         MATCH (d:DealerBranch)
         WHERE d.latitude IS NOT NULL AND d.longitude IS NOT NULL
           AND ($country IS NULL OR d.country = toUpper($country))
+          AND {NOT_ACCOUNT_MANAGER}
         WITH d, point.distance(point({{latitude: d.latitude, longitude: d.longitude}}),
                                point({{latitude: $lat, longitude: $lon}})) / 1000.0 AS km
         RETURN {_DEALER_FIELDS}, round(km, 1) AS distance_km
@@ -78,7 +84,7 @@ def dealers_for_machine_categories(session, categories: List[str], country: Opti
     return session.run(
         f"""
         MATCH (d:DealerBranch)
-        WHERE ($country IS NULL OR d.country = toUpper($country))
+        WHERE ($country IS NULL OR d.country = toUpper($country)) AND {NOT_ACCOUNT_MANAGER}
           AND any(s IN $slugs WHERE any(pc IN d.product_categories WHERE pc CONTAINS s))
         RETURN {_DEALER_FIELDS} ORDER BY d.country, d.dealer_name LIMIT $limit
         """,
@@ -141,7 +147,7 @@ def co_located(session, dealer_name: Optional[str] = None, city: Optional[str] =
     sups = session.run(f"MATCH (c:City {{city_id: $id}})<-[:LOCATED_IN]-(s:Supplier) "
                        f"WHERE s.data_source = 'HCME_SAP_SUPPLIER_MASTER' "
                        f"RETURN {_SUPPLIER_FIELDS} ORDER BY name LIMIT $limit", id=row["id"], limit=limit).data()
-    dealers = session.run(f"MATCH (c:City {{city_id: $id}})<-[:LOCATED_IN]-(d:DealerBranch) RETURN {_DEALER_FIELDS}",
+    dealers = session.run(f"MATCH (c:City {{city_id: $id}})<-[:LOCATED_IN]-(d:DealerBranch) WHERE {NOT_ACCOUNT_MANAGER} RETURN {_DEALER_FIELDS}",
                           id=row["id"]).data()
     depots = session.run("MATCH (c:City {city_id: $id})<-[:LOCATED_IN]-(d:Depot) RETURN d.name AS name", id=row["id"]).value()
     total = session.run("MATCH (c:City {city_id: $id})<-[:LOCATED_IN]-(s:Supplier) "

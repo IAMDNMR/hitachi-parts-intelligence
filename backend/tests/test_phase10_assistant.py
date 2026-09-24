@@ -44,7 +44,7 @@ def test_nearest_dealer_without_location_asks_for_one():
 def test_netherlands_dealers_come_from_the_graph():
     r = ask("Which Hitachi dealers are in the Netherlands?")
     assert r["intent"] == "dealer_list"
-    assert len(r["data"]["dealers"]) == 19
+    assert len(r["data"]["dealers"]) == 13  # 19 feed entries minus 6 account managers
     assert all(d["country"] == "NL" for d in r["data"]["dealers"])
 
 

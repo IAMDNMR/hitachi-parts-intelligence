@@ -86,7 +86,7 @@ def test_05_dealer_supplier_network_derived_relationship():
     """Dealers and suppliers in Netherlands shows geographic colocation (SAME CITY - DERIVED)."""
     r = ask("Show me the dealers and suppliers in Netherlands.")
     assert r["intent"] == "dealer_supplier_network"
-    assert r["evidence"]["dealer_count"] == 19
+    assert r["evidence"]["dealer_count"] == 13
     assert r["evidence"]["supplier_count"] == 1131
     assert r["evidence"]["relationship"] == "SAME CITY — DERIVED"
     assert len(r["evidence"]["shared_cities"]) >= 9

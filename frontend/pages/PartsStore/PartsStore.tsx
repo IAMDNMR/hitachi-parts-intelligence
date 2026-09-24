@@ -733,172 +733,9 @@ interface QuoteCartPanelProps {
  * UI/design wherever possible". Lists exactly what's already in `cart` —
  * no price, no stock, nothing this project doesn't actually have.
  */
-interface SerialIdentificationModalProps {
-  item: CartItem
-  onClose: () => void
-  onResolve: (updatedItem: CartItem) => void
-  onDemoOrder: () => void
-}
-
-function SerialIdentificationModal({ item, onClose, onResolve, onDemoOrder }: SerialIdentificationModalProps) {
-  const [selectedMachine, setSelectedMachine] = useState('ZX210LC-6')
-  const [serialPin, setSerialPin] = useState('')
-  const [selectedAssembly, setSelectedAssembly] = useState(
-    item.id === 'hydraulic-cylinder' ? '4410244' : '8982843930'
-  )
-  const [error, setError] = useState<string | null>(null)
-
-  const isCylinder = item.id === 'hydraulic-cylinder'
-
-  const assemblies = isCylinder
-    ? [
-        {
-          id: '4410244',
-          name: 'Hitachi Genuine Boom Hydraulic Cylinder Assembly (Left/Main)',
-          partNumber: '4410244',
-          desc: 'OEM Part No. 4410244 / 4438208 (Seal Kit 4448398, Reman YA60039378PI). Bore: 120mm, Rod: 85mm. Fits ZX200/210/240 series.',
-        },
-        {
-          id: '4385638',
-          name: 'Hitachi Genuine Arm / Stick Hydraulic Cylinder Assembly',
-          partNumber: '4385638',
-          desc: 'OEM Part No. 4385638 / 4613950 (Seal Kit 4448399, Reman YA60039379PI). Bore: 135mm, Rod: 95mm. Fits ZX200/210/225/240 series.',
-        },
-        {
-          id: '4385637',
-          name: 'Hitachi Genuine Bucket Hydraulic Cylinder Assembly',
-          partNumber: '4385637',
-          desc: 'OEM Part No. 4385637 / 4629154 (Seal Kit 4448400, Reman YA60039380PI). Bore: 115mm, Rod: 80mm. Fits ZX120/200/210/230/330 series.',
-        },
-      ]
-    : [
-        {
-          id: '8982843930',
-          name: 'Hitachi / Isuzu Genuine High-Pressure Fuel Injection Pump (4HK1)',
-          partNumber: '8982843930',
-          desc: 'Isuzu 4HK1 Stage IV/V engine common rail high-pressure fuel pump assembly for ZX210/ZX225.',
-        },
-        {
-          id: '8980915652',
-          name: 'Hitachi / Isuzu Genuine High-Pressure Fuel Injection Pump (6HK1)',
-          partNumber: '8980915652',
-          desc: 'Isuzu 6HK1 Stage IV/V engine common rail high-pressure fuel pump assembly for ZX250/ZX300/ZX350.',
-        },
-      ]
-
-  const handleConfirm = (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!serialPin.trim()) {
-      setError('Machine serial / PIN is required to confirm exact OEM cylinder assembly.')
-      return
-    }
-    const chosen = assemblies.find((a) => a.id === selectedAssembly) || assemblies[0]
-    if (!chosen) return
-    onResolve({
-      ...item,
-      name: chosen.name,
-      partNumber: chosen.partNumber,
-      machine: `${selectedMachine} (Serial/PIN: ${serialPin.trim().toUpperCase()})`,
-    })
-  }
-
-  return (
-    <div className="ps-modal-overlay" role="presentation" onClick={onClose}>
-      <div
-        className="ps-modal ps-modal--narrow"
-        role="dialog"
-        aria-modal="true"
-        onClick={(e) => e.stopPropagation()}
-        style={{ maxWidth: '640px' }}
-      >
-        <button type="button" className="ps-modal__close" onClick={onClose} aria-label="Close">×</button>
-        <header className="ps-modal__header">
-          <p className="ps-modal__eyebrow">Machine &amp; Serial Resolution</p>
-          <h2 className="ps-modal__title">Identify OEM Assembly</h2>
-          <p className="ps-modal__lede" style={{ margin: '0.4rem 0 0', fontSize: '0.9rem', color: '#475569' }}>
-            Excavators require distinct cylinder assemblies for boom, arm, and bucket functions.
-            Select your machine model, provide equipment serial/PIN, and pick the required assembly to enable verified fulfilment.
-          </p>
-        </header>
-
-        <form onSubmit={handleConfirm} className="ps-serial-modal__form">
-          <label>
-            Machine Model
-            <select value={selectedMachine} onChange={(e) => setSelectedMachine(e.target.value)}>
-              {MACHINES.map((m) => (
-                <option key={m.id} value={m.model}>
-                  {m.model} ({m.name})
-                </option>
-              ))}
-            </select>
-          </label>
-
-          <label>
-            Machine Serial / PIN
-            <input
-              type="text"
-              placeholder="e.g. HCMDH210A00012345"
-              value={serialPin}
-              onChange={(e) => {
-                setSerialPin(e.target.value)
-                if (error) setError(null)
-              }}
-              required
-            />
-          </label>
-          {error && <span className="ps-quote-form__field-error" style={{ color: '#dc2626' }}>{error}</span>}
-
-          <div style={{ marginTop: '0.5rem' }}>
-            <span style={{ fontSize: '0.85rem', fontWeight: 700, color: '#1e293b' }}>Select Target OEM Assembly:</span>
-            <div className="ps-serial-modal__options" style={{ marginTop: '0.4rem' }}>
-              {assemblies.map((a) => (
-                <label
-                  key={a.id}
-                  className={`ps-serial-modal__opt ${selectedAssembly === a.id ? 'is-selected' : ''}`}
-                >
-                  <input
-                    type="radio"
-                    name="assembly"
-                    value={a.id}
-                    checked={selectedAssembly === a.id}
-                    onChange={() => setSelectedAssembly(a.id)}
-                    style={{ marginTop: '0.2rem' }}
-                  />
-                  <div>
-                    <strong>{a.name}</strong>
-                    <div style={{ fontSize: '0.8rem', color: '#64748b', marginTop: '0.15rem' }}>{a.desc}</div>
-                  </div>
-                </label>
-              ))}
-            </div>
-          </div>
-
-          <footer className="ps-modal__footer" style={{ marginTop: '1.2rem' }}>
-            <button
-              type="button"
-              className="ps-modal__secondary"
-              onClick={() => {
-                onClose()
-                onDemoOrder()
-              }}
-              title="Cannot resolve the exact assembly? Continue with the demonstration order workflow"
-            >
-              Continue to demo order →
-            </button>
-            <button type="submit">
-              Apply &amp; Enable Fulfilment →
-            </button>
-          </footer>
-        </form>
-      </div>
-    </div>
-  )
-}
-
 function QuoteCartPanel({ cart, setCart, onClose }: QuoteCartPanelProps) {
   // The cart item being fulfilled in the Guided Checkout Journey
   const [checkoutItem, setCheckoutItem] = useState<CartItem | null>(null)
-  const [serialModalItem, setSerialModalItem] = useState<CartItem | null>(null)
 
   const removeItem = (id: string) => setCart(cart.filter((item) => item.id !== id))
   const changeQty = (id: string, delta: number) =>
@@ -907,7 +744,7 @@ function QuoteCartPanel({ cart, setCart, onClose }: QuoteCartPanelProps) {
 
   return (
     <>
-      {!checkoutItem && !serialModalItem && (
+      {!checkoutItem && (
         <div className="ps-modal-overlay" role="presentation" onClick={onClose}>
           <div className="ps-modal ps-modal--narrow" role="dialog" aria-modal="true" onClick={(event) => event.stopPropagation()}>
             <button type="button" className="ps-modal__close" onClick={onClose} aria-label="Close">×</button>
@@ -960,15 +797,6 @@ function QuoteCartPanel({ cart, setCart, onClose }: QuoteCartPanelProps) {
                         >
                           {elig.buttonLabel}
                         </button>
-                      ) : elig.actionType === 'IDENTIFY_SERIAL' ? (
-                        <button
-                          type="button"
-                          className="ps-quote-cart-list__inquire"
-                          onClick={() => setSerialModalItem(item)}
-                          title={elig.buttonTitle}
-                        >
-                          {elig.buttonLabel}
-                        </button>
                       ) : (
                         <button
                           type="button"
@@ -977,16 +805,6 @@ function QuoteCartPanel({ cart, setCart, onClose }: QuoteCartPanelProps) {
                           title={elig.buttonTitle}
                         >
                           {elig.buttonLabel}
-                        </button>
-                      )}
-                      {elig.actionType === 'IDENTIFY_SERIAL' && elig.demoPartReference && (
-                        <button
-                          type="button"
-                          className="ps-quote-cart-list__demo"
-                          onClick={() => setCheckoutItem({ ...item, partNumber: elig.demoPartReference })}
-                          title="Skip identification and run the demonstration order workflow with a labelled demo reference"
-                        >
-                          Continue to demo order →
                         </button>
                       )}
                       <button type="button" className="ps-quote-cart-list__remove" onClick={() => removeItem(item.id)} aria-label={`Remove ${item.name}`}>Remove</button>
@@ -1005,8 +823,7 @@ function QuoteCartPanel({ cart, setCart, onClose }: QuoteCartPanelProps) {
                   if (!first) return
                   const target = cart.find(isFulfilmentEligible) ?? first
                   const e = classifyCartItem(target)
-                  if (e.actionType === 'IDENTIFY_SERIAL') setSerialModalItem(target)
-                  else setCheckoutItem({ ...target, partNumber: e.demoPartReference ?? target.partNumber })
+                  setCheckoutItem({ ...target, partNumber: e.demoPartReference ?? target.partNumber })
                 }}
                 disabled={cart.length === 0}
                 title="Proceed to the order workflow"
@@ -1016,22 +833,6 @@ function QuoteCartPanel({ cart, setCart, onClose }: QuoteCartPanelProps) {
             </footer>
           </div>
         </div>
-      )}
-
-      {serialModalItem && (
-        <SerialIdentificationModal
-          item={serialModalItem}
-          onClose={() => setSerialModalItem(null)}
-          onResolve={(updatedItem) => {
-            setCart((prev) => prev.map((c) => (c.id === updatedItem.id ? updatedItem : c)))
-            setSerialModalItem(null)
-          }}
-          onDemoOrder={() => {
-            const target = classifyCartItem(serialModalItem)
-            setSerialModalItem(null)
-            setCheckoutItem({ ...serialModalItem, partNumber: target.demoPartReference ?? serialModalItem.partNumber })
-          }}
-        />
       )}
 
       {checkoutItem && (
