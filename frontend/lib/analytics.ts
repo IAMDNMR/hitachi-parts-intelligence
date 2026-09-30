@@ -106,15 +106,52 @@ function flushDuration() {
 
 function trackPageview(path: string) {
   flushDuration()
+  scrollFired = new Set()
   const { visitorId, sessionId } = ids()
   currentPageviewId = uuid()
   pageEnteredAt = Date.now()
   post({ type: 'pageview', visitor_id: visitorId, session_id: sessionId, pageview_id: currentPageviewId, path })
 }
 
+export type InteractionName = 'click' | 'scroll_depth' | 'pi_query' | 'order_placed'
+
+/** Record one named thing the visitor did. A no-op unless consent was given and tracking has started. */
+export function trackInteraction(name: InteractionName, label?: string | null) {
+  if (!started) return
+  const { visitorId, sessionId } = ids()
+  post({
+    type: 'interaction', visitor_id: visitorId, session_id: sessionId, interaction_id: uuid(),
+    name, label: label ?? null, path: window.location.hash || '#/',
+  })
+}
+
+const isHome = () => (window.location.hash || '#/') === '#/'
+let scrollFired = new Set<number>()
+
+function onScroll() {
+  if (!isHome()) return
+  const doc = document.documentElement
+  const depth = ((window.scrollY + window.innerHeight) / Math.max(doc.scrollHeight, 1)) * 100
+  for (const mark of [25, 50, 75, 100]) {
+    if (depth >= mark - 1 && !scrollFired.has(mark)) {
+      scrollFired.add(mark)
+      trackInteraction('scroll_depth', String(mark))
+    }
+  }
+}
+
+/** Button and link clicks, labelled by data-track, aria-label or the visible text (capped). The consent banner is excluded. */
+function onClick(e: MouseEvent) {
+  const el = (e.target as HTMLElement | null)?.closest?.('button, a[href]') as HTMLElement | null
+  if (!el || el.closest('.cc-banner')) return
+  const label = (el.getAttribute('data-track') || el.getAttribute('aria-label') || el.textContent || '').replace(/\s+/g, ' ').trim().slice(0, 60)
+  if (label) trackInteraction('click', label)
+}
+
 /** Called once consent is accepted (either just now, or on a later visit where it was already accepted). */
 export function startAnalytics() {
-  if (started || getConsent() !== 'accepted') return
+  // The internal dashboard is never tracked: it has no hash, so its visits would be recorded as home-page visits.
+  if (started || getConsent() !== 'accepted' || window.location.pathname.startsWith('/analytics')) return
   started = true
 
   let visitorId = getCookie(VISITOR_COOKIE)
@@ -137,6 +174,8 @@ export function startAnalytics() {
   }
   trackPageview(path)
   window.addEventListener('hashchange', () => trackPageview(window.location.hash || '#/'))
+  window.addEventListener('scroll', onScroll, { passive: true })
+  document.addEventListener('click', onClick, true)
   window.addEventListener('pagehide', flushDuration)
   document.addEventListener('visibilitychange', () => {
     if (document.visibilityState === 'hidden') flushDuration()

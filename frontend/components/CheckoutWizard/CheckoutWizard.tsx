@@ -15,6 +15,7 @@ import Stage4Availability from './Stage4Availability'
 import Stage5Transportation, { type UnifiedTransportOption } from './Stage5Transportation'
 import Stage6OrderReview from './Stage6OrderReview'
 import Stage7OrderConfirmation, { type PlacedOrder } from './Stage7OrderConfirmation'
+import { trackInteraction } from '../../lib/analytics'
 import './CheckoutWizard.css'
 
 interface CheckoutWizardProps {
@@ -314,6 +315,7 @@ export default function CheckoutWizard({ item: initialItem, onClose, onComplete 
       const data = await res.json()
       if (!res.ok) throw new Error(data.error?.message || data.detail || 'The order could not be placed.')
       setPlacedOrder(data as PlacedOrder)
+      trackInteraction('order_placed', (data as PlacedOrder).order_id) // links this visit to the order it produced
       setCurrentStage(7)
     } catch (err) {
       setOrderError(err instanceof Error ? err.message : String(err))

@@ -38,7 +38,7 @@ class DeviceInfo(BaseModel):
 
 
 class TrackEvent(BaseModel):
-    type: str  # "session_start" | "pageview" | "duration"
+    type: str  # "session_start" | "pageview" | "duration" | "interaction"
     visitor_id: str
     session_id: str
     pageview_id: Optional[str] = None
@@ -47,6 +47,9 @@ class TrackEvent(BaseModel):
     landing_path: Optional[str] = None
     duration_seconds: Optional[float] = None
     device: Optional[DeviceInfo] = None
+    interaction_id: Optional[str] = None
+    name: Optional[str] = None  # interaction name: click | scroll_depth | pi_query | order_placed
+    label: Optional[str] = None
 
 
 @router.post("/event")
@@ -62,6 +65,9 @@ def track_event(dto: TrackEvent, request: Request, test_run_id: Optional[str] = 
         service.record_pageview(session, dto.session_id, dto.pageview_id, dto.path, test_run_id=test_run_id)
     elif dto.type == "duration":
         service.record_duration(session, dto.pageview_id, dto.duration_seconds or 0)
+    elif dto.type == "interaction":
+        service.record_interaction(session, dto.session_id, dto.interaction_id, dto.name, dto.label, dto.path,
+                                   test_run_id=test_run_id)
     else:
         return {"ok": False}
     return {"ok": True}

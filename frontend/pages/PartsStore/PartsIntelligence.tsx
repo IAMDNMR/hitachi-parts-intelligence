@@ -3,6 +3,7 @@ import GraphInsightsPanel from './GraphInsights'
 import NetworkGraph, { type GraphView } from './NetworkGraph'
 import { DisruptionView, KpiPanel, type DisruptionBrief } from './PartsAnalysis'
 import { PiIcon, type PiIconName } from './PiIcons'
+import { trackInteraction } from '../../lib/analytics'
 import { dealerCity, tidyAddress, tidyCase } from './dealerFormat'
 import './PartsIntelligence.css'
 
@@ -146,6 +147,7 @@ export default function PartsIntelligencePanel({
     setTurns((t) => [...t, turn])
     setQuery('')
     setLoading(true)
+    trackInteraction('pi_query', q) // only recorded if the visitor accepted the cookie banner
     const started = performance.now()
     try {
       const payload: Record<string, any> = {

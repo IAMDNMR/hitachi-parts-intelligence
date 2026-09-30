@@ -24,9 +24,10 @@ export function CookieConsentBanner() {
     <div className="cc-banner" role="dialog" aria-label="Cookie consent" aria-live="polite">
       <div className="cc-banner__body">
         <p>
-          We use first-party cookies to understand how the site is used — pages viewed, time spent, your
-          approximate location (from your IP address, via a lookup service, never a precise address), and your
-          device/browser type. No data is sold or shared with advertisers, and nothing runs until you accept.
+          We use first-party cookies to understand how the site is used — pages viewed, time spent, your IP
+          address, your approximate location worked out from it (via a lookup service, never a precise address),
+          and your device/browser type. No data is sold or shared with advertisers, and nothing runs until you
+          accept.
         </p>
       </div>
       <div className="cc-banner__actions">

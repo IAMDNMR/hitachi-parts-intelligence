@@ -1,4 +1,5 @@
 import os
+import secrets
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 class Settings(BaseSettings):
@@ -12,7 +13,9 @@ class Settings(BaseSettings):
     NEO4J_PASSWORD: str = os.getenv("NEO4J_PASSWORD", "password")
     NEO4J_DATABASE: str = os.getenv("NEO4J_DATABASE", "")
 
-    JWT_SECRET: str = os.getenv("JWT_SECRET", "hcme-super-secret-production-jwt-key-2026")
+    # No hard-coded fallback: a default that lives in the source is a default anyone can read (and forge tokens with).
+    # If JWT_SECRET is not set, a random per-process secret is used instead - tokens then last only until a restart.
+    JWT_SECRET: str = os.getenv("JWT_SECRET") or secrets.token_urlsafe(48)
     JWT_ALGORITHM: str = "HS256"
     TEST_AUTH_ENABLED: bool = os.getenv("TEST_AUTH_ENABLED", "true").lower() == "true"
 

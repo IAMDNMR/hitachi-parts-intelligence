@@ -17,7 +17,7 @@ const GROUND = '#/the-ground'
 const PARTS_STORE = '#/parts-store'
 const PARTS_INTELLIGENCE = '#/parts-intelligence'
 const ORDERS = '#/orders'
-const ANALYTICS = '#/analytics' // internal only, not linked from the public nav
+const ANALYTICS_PATH = '/analytics' // a plain path, not a hash route — internal only, not linked from the public nav
 
 /**
  * Routing, such as it is.
@@ -37,6 +37,20 @@ export default function App() {
     const onHash = () => setRoute(window.location.hash)
     window.addEventListener('hashchange', onHash)
     return () => window.removeEventListener('hashchange', onHash)
+  }, [])
+
+  // /analytics is a plain path, not a hash route (kept off the hash-router pattern the rest of the site uses,
+  // so it reads as a real page rather than a section of the single-page app). popstate covers back/forward.
+  const [pathname, setPathname] = useState(() => window.location.pathname)
+  useEffect(() => {
+    const onPop = () => setPathname(window.location.pathname)
+    window.addEventListener('popstate', onPop)
+    return () => window.removeEventListener('popstate', onPop)
+  }, [])
+  const goHomeFromAnalytics = useCallback(() => {
+    window.history.pushState('', '', '/')
+    setPathname('/')
+    window.scrollTo(0, 0)
   }, [])
 
   /* Optionally onto a specific node — the hero's domain panels open the map
@@ -63,7 +77,9 @@ export default function App() {
      to the route and is read by the view itself. */
   const on = (base: string) => route === base || route.startsWith(`${base}/`)
 
-  if (on(ANALYTICS)) return <><AnalyticsPage onHome={goHome} /><CookieConsentBanner /></>
+  if (pathname === ANALYTICS_PATH || pathname === `${ANALYTICS_PATH}/`) {
+    return <AnalyticsPage onHome={goHomeFromAnalytics} />
+  }
   if (on(GROUND)) return <><TheGround onHome={goHome} /><CookieConsentBanner /></>
   if (on(PARTS_INTELLIGENCE)) return <><PartsIntelligenceScreen onHome={goHome} /><CookieConsentBanner /></>
   if (on(PARTS_STORE)) return <><PartsStore onHome={goHome} /><CookieConsentBanner /></>
