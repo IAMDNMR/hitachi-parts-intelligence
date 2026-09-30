@@ -10,11 +10,14 @@ import { MachinerySection } from './sections/Machinery/MachinerySection'
 import { PartsStore } from './pages/PartsStore/PartsStore'
 import { PartsIntelligenceScreen } from './pages/PartsStore/PartsIntelligenceScreen'
 import { OrdersPage } from './pages/Orders/OrdersPage'
+import { AnalyticsPage } from './pages/Analytics/AnalyticsPage'
+import { CookieConsentBanner } from './components/CookieConsent/CookieConsentBanner'
 
 const GROUND = '#/the-ground'
 const PARTS_STORE = '#/parts-store'
 const PARTS_INTELLIGENCE = '#/parts-intelligence'
 const ORDERS = '#/orders'
+const ANALYTICS = '#/analytics' // internal only, not linked from the public nav
 
 /**
  * Routing, such as it is.
@@ -60,10 +63,11 @@ export default function App() {
      to the route and is read by the view itself. */
   const on = (base: string) => route === base || route.startsWith(`${base}/`)
 
-  if (on(GROUND)) return <TheGround onHome={goHome} />
-  if (on(PARTS_INTELLIGENCE)) return <PartsIntelligenceScreen onHome={goHome} />
-  if (on(PARTS_STORE)) return <PartsStore onHome={goHome} />
-  if (on(ORDERS)) return <OrdersPage onHome={goHome} />
+  if (on(ANALYTICS)) return <><AnalyticsPage onHome={goHome} /><CookieConsentBanner /></>
+  if (on(GROUND)) return <><TheGround onHome={goHome} /><CookieConsentBanner /></>
+  if (on(PARTS_INTELLIGENCE)) return <><PartsIntelligenceScreen onHome={goHome} /><CookieConsentBanner /></>
+  if (on(PARTS_STORE)) return <><PartsStore onHome={goHome} /><CookieConsentBanner /></>
+  if (on(ORDERS)) return <><OrdersPage onHome={goHome} /><CookieConsentBanner /></>
 
   return (
     <>
@@ -85,6 +89,7 @@ export default function App() {
       {/* The footer offers the map. By this point the header that also
           offers it is five sections of scrolling away. */}
       <UptimeClose onOpenGround={openGround} />
+      <CookieConsentBanner />
     </>
   )
 }

@@ -16,6 +16,9 @@ class Settings(BaseSettings):
     JWT_ALGORITHM: str = "HS256"
     TEST_AUTH_ENABLED: bool = os.getenv("TEST_AUTH_ENABLED", "true").lower() == "true"
 
+    # Visitor analytics dashboard - one shared admin password, not a per-user account system
+    ANALYTICS_ADMIN_PASSWORD: str = os.getenv("ANALYTICS_ADMIN_PASSWORD", "")
+
     AVAILABILITY_FRESHNESS_TTL_SECONDS: int = int(
         os.getenv("AVAILABILITY_FRESHNESS_TTL_SECONDS", "3600")
     )

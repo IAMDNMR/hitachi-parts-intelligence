@@ -15,6 +15,7 @@ from app.api.v1.service_jobs import router as service_jobs_router
 from app.api.v1.quote_request import router as quote_request_router
 
 from app.api.v1.part_enrichment import router as part_enrichment_router
+from app.api.v1.analytics import router as analytics_router
 from app.api.v1.intelligence import router as intelligence_router
 from app.api.v1.dealers import router as dealers_router
 from app.modules.transport.router import router as transport_router
@@ -85,6 +86,7 @@ app.include_router(transport_router, prefix="/api/v1")
 
 app.include_router(quote_request_router, prefix="/api/v1")
 app.include_router(part_enrichment_router, prefix="/api/v1")
+app.include_router(analytics_router, prefix="/api/v1")
 
 
 @app.get("/")
