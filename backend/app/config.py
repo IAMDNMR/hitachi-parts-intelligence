@@ -9,13 +9,13 @@ class Settings(BaseSettings):
 
     # Neo4j — sole runtime database
     NEO4J_URI: str = os.getenv("NEO4J_URI", "bolt://localhost:7687")
-    NEO4J_USER: str = os.getenv("NEO4J_USER", "neo4j")
+    NEO4J_USER: str = os.getenv("NEO4J_USER") or os.getenv("NEO4J_USERNAME") or "neo4j"
     NEO4J_PASSWORD: str = os.getenv("NEO4J_PASSWORD", "password")
     NEO4J_DATABASE: str = os.getenv("NEO4J_DATABASE", "")
 
     # No hard-coded fallback: a default that lives in the source is a default anyone can read (and forge tokens with).
     # If JWT_SECRET is not set, a random per-process secret is used instead - tokens then last only until a restart.
-    JWT_SECRET: str = os.getenv("JWT_SECRET") or secrets.token_urlsafe(48)
+    JWT_SECRET: str = os.getenv("JWT_SECRET") or os.getenv("SESSION_SECRET") or secrets.token_urlsafe(48)
     JWT_ALGORITHM: str = "HS256"
     TEST_AUTH_ENABLED: bool = os.getenv("TEST_AUTH_ENABLED", "true").lower() == "true"
 

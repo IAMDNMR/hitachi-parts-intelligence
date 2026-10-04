@@ -281,6 +281,35 @@ class GeminiLLMProvider(LLMProvider):
         return content.strip()
 
 
+class GroqLLMProvider(GeminiLLMProvider):
+    """Groq (OpenAI-compatible chat completions). Reuses the Gemini provider's
+    prompts; only the transport differs. Key comes from GROQ_API_KEY."""
+
+    def _generate(self, system: str, user: str, json_mode: bool = False, timeout: float = GEMINI_TIMEOUT_SECONDS) -> str:
+        import httpx
+
+        body: Dict = {
+            "model": self._model,
+            "temperature": 0,
+            "messages": [{"role": "system", "content": system}, {"role": "user", "content": user}],
+        }
+        if json_mode:
+            body["response_format"] = {"type": "json_object"}
+        try:
+            with httpx.Client(timeout=timeout) as client:
+                resp = client.post("https://api.groq.com/openai/v1/chat/completions",
+                                   headers={"Authorization": f"Bearer {self._api_key}"}, json=body)
+        except Exception as e:
+            raise GeminiProviderError(f"Groq API call failed: {type(e).__name__}") from e
+        if resp.status_code != 200:
+            raise GeminiProviderError(f"Groq API call failed: HTTP {resp.status_code}")
+        try:
+            self.last_model = self._model
+            return resp.json()["choices"][0]["message"]["content"]
+        except Exception as e:
+            raise GeminiProviderError(f"Groq bad payload {type(e).__name__}") from e
+
+
 class NullEmbeddingProvider(EmbeddingProvider):
     """No embedding backend configured. Semantic search degrades to lexical."""
 
@@ -305,6 +334,9 @@ def get_llm_provider() -> LLMProvider:
     in code."""
     from app.config import settings
 
+    groq_key = os.getenv("GROQ_API_KEY", "")
+    if groq_key and (os.getenv("LLM_PROVIDER", "").lower() == "groq" or not settings.GEMINI_API_KEY):
+        return GroqLLMProvider(api_key=groq_key, model=os.getenv("GROQ_MODEL", "llama-3.1-8b-instant"))
     if settings.GEMINI_API_KEY:
         return GeminiLLMProvider(api_key=settings.GEMINI_API_KEY, model=settings.GEMINI_MODEL)
     return DeterministicLLMProvider()
